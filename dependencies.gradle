@@ -2,7 +2,7 @@ ext.versions = [
         minSdk            : 19,
         compileSdk        : 30,
         buildTools        : '30.0.2',
-        publishGroupID    : 'pravbeseda',
+        publishGroupID    : 'ru.pravbeseda',
         publishArtifactID : 'CurrencyEditText',
         publishVersion    : '0.0.10',
         publishVersionCode: 1,
