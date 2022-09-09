@@ -4,15 +4,17 @@ A library to dynamically format your `EditTexts` to take currency inputs.
 
 This project is fork of https://github.com/CottaCush/CurrencyEditText
 
+Attention! This is an alpha release of the library, it is under active development. 
+
 [![ci](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml/badge.svg)](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/pravbeseda/CurrencyEditText.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22pravbeseda%22%20AND%20a:%22CurrencyEditText%22)
+[![Maven Central](https://img.shields.io/maven-central/v/ru.pravbeseda/CurrencyEditText.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22ru.pravbeseda%22%20AND%20a:%22CurrencyEditText%22)
 
 ## Gradle Dependency
 
 Add the dependency to your app's `build.gradle`:
 
 ```groovy
-implementation 'pravbeseda:CurrencyEditText:<insert-latest-version-here>'
+implementation 'ru.pravbeseda:CurrencyEditText:<insert-latest-version-here>'
 ```
 For versions, kindly head over to the [releases page](https://github.com/pravbeseda/CurrencyEditText/releases)
 
@@ -20,7 +22,7 @@ For versions, kindly head over to the [releases page](https://github.com/pravbes
 
 Add the `CurrencyEditText` to your layout. 
 ```xml
-   <pravbeseda.currencyedittext.CurrencyEditText
+   <ru.pravbeseda.currencyedittext.CurrencyEditText
             ...
             android:layout_width="wrap_content"
             android:layout_height="60dp"
@@ -38,7 +40,7 @@ The formatted currency value will be prepended with the `currencySymbol` value. 
 be used as hint, as described by the `useCurrencySymbolAsHint` attribute.
  
 ```xml
-   <pravbeseda.currencyedittext.CurrencyEditText
+   <ru.pravbeseda.currencyedittext.CurrencyEditText
             ...
             app:currencySymbol="₦"
             app:useCurrencySymbolAsHint="true"/>
@@ -57,7 +59,7 @@ The `CurrencyEditText` uses the default `Locale` if no locale is specified. `Loc
  valid `Locale` and locale-tags can be found [here](https://docs.oracle.com/javase/tutorial/i18n/locale/create.html#factory).
   
  ```xml
-    <pravbeseda.currencyedittext.CurrencyEditText
+    <ru.pravbeseda.currencyedittext.CurrencyEditText
              ...
              app:localeTag="en-NG"/>
  ```
@@ -72,7 +74,7 @@ The maximum number of decimal digits can be specified using the `maxNumberOfDeci
 a minimum value of 1. It has a default value of 2.
 
 ```xml
-   <pravbeseda.currencyedittext.CurrencyEditText
+   <ru.pravbeseda.currencyedittext.CurrencyEditText
             ...
             app:maxNumberOfDecimalDigits="3" />
 ```

@@ -5,9 +5,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="pravbeseda.currencyedittext.MainActivity">
+        tools:context="ru.pravbeseda.currencyedittext.MainActivity">
 
-    <pravbeseda.currencyedittext.CurrencyEditText
+    <ru.pravbeseda.currencyedittext.CurrencyEditText
             app:currencySymbol="$"
             app:useCurrencySymbolAsHint="true"
             app:localeTag="en-NG"

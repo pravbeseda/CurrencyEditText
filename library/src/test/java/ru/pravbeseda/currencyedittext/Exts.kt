@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pravbeseda.currencyedittext
+package ru.pravbeseda.currencyedittext
 
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import pravbeseda.currencyedittext.model.LocaleVars
+import ru.pravbeseda.currencyedittext.model.LocaleVars
 import java.util.*
 
 fun TextWatcher.runAllWatcherMethods(

@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pravbeseda.currencyedittext
+package ru.pravbeseda.currencyedittext.model
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import pravbeseda.R
-import kotlinx.android.synthetic.main.activity_main.*
-
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        button.setOnClickListener { textView.text = "${editText.getNumericValue()}" }
-    }
-}
+data class LocaleVars(
+    val tag: String,
+    val decimalSeparator: Char,
+    val groupingSeparator: Char,
+    val currencySymbol: String
+)

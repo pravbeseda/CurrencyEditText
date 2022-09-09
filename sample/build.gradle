@@ -15,7 +15,7 @@ android {
   }
 
   defaultConfig {
-    applicationId "pravbeseda.currencyedittext"
+    applicationId "ru.pravbeseda.currencyedittext"
     minSdkVersion versions.minSdk
     targetSdkVersion versions.compileSdk
     versionCode versions.publishVersionCode

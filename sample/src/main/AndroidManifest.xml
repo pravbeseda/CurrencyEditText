@@ -12,7 +12,7 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme"
       tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-    <activity android:name="pravbeseda.currencyedittext.MainActivity">
+    <activity android:name="ru.pravbeseda.currencyedittext.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
