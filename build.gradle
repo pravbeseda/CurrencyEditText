@@ -10,9 +10,9 @@ buildscript {
 
   dependencies {
     classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
-    classpath "com.diffplug.spotless:spotless-plugin-gradle:" + versions.spotlessPlugin
-    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + versions.kotlin
-    classpath 'com.vanniktech:gradle-maven-publish-plugin:' + versions.mavenPublishPlugin
+    classpath "com.diffplug.spotless:spotless-plugin-gradle:4.0.0"
+    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10'
+    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.21.0'
     classpath 'com.android.tools.build:gradle:7.2.2'
   }
 }
