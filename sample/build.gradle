@@ -6,8 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 
 android {
-  compileSdkVersion versions.compileSdk
-  buildToolsVersion versions.buildTools
+  compileSdkVersion 33
+  buildToolsVersion '33.0.0'
 
   compileOptions {
     sourceCompatibility 1.8
@@ -16,8 +16,8 @@ android {
 
   defaultConfig {
     applicationId "ru.pravbeseda.currencyedittext"
-    minSdkVersion versions.minSdk
-    targetSdkVersion versions.compileSdk
+    minSdkVersion 19
+    targetSdkVersion 33
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
   }
@@ -25,11 +25,11 @@ android {
 
 dependencies {
   implementation project(':library')
-  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
-  implementation 'androidx.core:core-ktx:' + versions.ktx
-  implementation 'com.google.android.material:material:' + versions.material
-  implementation 'androidx.appcompat:appcompat:' + versions.androidx
-  implementation 'com.android.support.constraint:constraint-layout:' + versions.constraintLayout
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21'
+  implementation 'androidx.core:core-ktx:1.9.0'
+  implementation 'com.google.android.material:material:1.8.0-alpha01'
+  implementation 'androidx.appcompat:appcompat:1.5.1'
+  implementation 'com.android.support.constraint:constraint-layout:2.0.4'
 }
 
 apply from: '../spotless.gradle'
