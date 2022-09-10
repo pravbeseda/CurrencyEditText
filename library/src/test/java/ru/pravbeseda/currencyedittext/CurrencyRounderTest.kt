@@ -52,7 +52,7 @@ class CurrencyRounderTest(
 
         @JvmStatic
         @Parameterized.Parameters
-        fun data(): Iterable<Array<Any>> = listOf(
+        fun data(): Iterable<Array<out Any>> = listOf(
             emptyStringTestCase,
             extraDecimalTestCase1,
             extraDecimalTestCaseThreeDpVersion,
