@@ -27,7 +27,7 @@ internal fun parseMoneyValue(
     groupingSeparator: String,
     currencySymbol: String
 ): String =
-    value.replace(groupingSeparator, "").replace(currencySymbol, "")
+    value.replace(currencySymbol, "").replace(groupingSeparator, "")
 
 internal fun parseMoneyValueWithLocale(
     locale: Locale,

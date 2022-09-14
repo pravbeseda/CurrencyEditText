@@ -30,6 +30,8 @@ class CurrencyInputWatcher(
     private val editText: EditText,
     private val currencySymbol: String,
     locale: Locale,
+    private val decimalSeparator: String? = null,
+    private val groupingSeparator: String? = null,
     private val maxNumberOfDecimalPlaces: Int = 2
 ) : TextWatcher {
 
@@ -47,9 +49,12 @@ class CurrencyInputWatcher(
     private val wholeNumberDecimalFormat =
         (NumberFormat.getNumberInstance(locale) as DecimalFormat).apply {
             applyPattern("#,##0")
+            decimalFormatSymbols = getModifiedDecimalFormatSymbols()
         }
 
-    private val fractionDecimalFormat = (NumberFormat.getNumberInstance(locale) as DecimalFormat)
+    private val fractionDecimalFormat = (NumberFormat.getNumberInstance(locale) as DecimalFormat).apply {
+        decimalFormatSymbols = getModifiedDecimalFormatSymbols()
+    }
 
     val decimalFormatSymbols: DecimalFormatSymbols
         get() = wholeNumberDecimalFormat.decimalFormatSymbols
@@ -64,7 +69,7 @@ class CurrencyInputWatcher(
 
     @SuppressLint("SetTextI18n")
     override fun afterTextChanged(s: Editable) {
-        var newInputString = s.toString()
+        var newInputString: String = s.toString()
         val isParsableString = try {
             fractionDecimalFormat.parse(newInputString)!!
             true
@@ -109,9 +114,11 @@ class CurrencyInputWatcher(
                     FRACTION_FORMAT_PATTERN_PREFIX +
                             getFormatSequenceAfterDecimalSeparator(numberWithoutGroupingSeparator)
                 )
-                editText.setText("$currencySymbol${fractionDecimalFormat.format(parsedNumber)}")
+                val newText = "$currencySymbol${fractionDecimalFormat.format(parsedNumber)}"
+                editText.setText(newText)
             } else {
-                editText.setText("$currencySymbol${wholeNumberDecimalFormat.format(parsedNumber)}")
+                val newText = "$currencySymbol${wholeNumberDecimalFormat.format(parsedNumber)}"
+                editText.setText(newText)
             }
             val endLength = editText.text.length
             val selection = selectionStartIndex + (endLength - startLength)
@@ -134,5 +141,16 @@ class CurrencyInputWatcher(
     private fun getFormatSequenceAfterDecimalSeparator(number: String): String {
         val noOfCharactersAfterDecimalPoint = number.length - number.indexOf(decimalFormatSymbols.decimalSeparator) - 1
         return "0".repeat(min(noOfCharactersAfterDecimalPoint, maxNumberOfDecimalPlaces))
+    }
+
+    private fun getModifiedDecimalFormatSymbols(): DecimalFormatSymbols {
+        val unusualSymbols = DecimalFormatSymbols()
+        if (!decimalSeparator.isNullOrEmpty()) {
+            unusualSymbols.decimalSeparator = decimalSeparator[0]
+        }
+        if (!groupingSeparator.isNullOrEmpty()) {
+            unusualSymbols.groupingSeparator = groupingSeparator[0]
+        }
+        return unusualSymbols
     }
 }

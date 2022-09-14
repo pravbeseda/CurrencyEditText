@@ -19,6 +19,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.text.InputType
+import android.text.method.DigitsKeyListener
 import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputEditText
@@ -31,12 +32,15 @@ class CurrencyEditText(
 ) : TextInputEditText(context, attrs) {
     private lateinit var currencySymbolPrefix: String
     private var textWatcher: CurrencyInputWatcher
-    private var locale: Locale = Locale.getDefault()
+    private var locale: Locale = Locale.ENGLISH
+    private var decimalSeparator: String? = null
+    private var groupingSeparator: String? = null
     private var maxDP: Int
 
     init {
         var useCurrencySymbolAsHint = false
         inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        keyListener = DigitsKeyListener.getInstance("0123456789.,")
         var localeTag: String?
         val prefix: String
         context.theme.obtainStyledAttributes(
@@ -47,6 +51,8 @@ class CurrencyEditText(
             try {
                 prefix = getString(R.styleable.CurrencyEditText_currencySymbol).orEmpty()
                 localeTag = getString(R.styleable.CurrencyEditText_localeTag)
+                decimalSeparator = getString(R.styleable.CurrencyEditText_decimalSeparator)
+                groupingSeparator = getString(R.styleable.CurrencyEditText_groupingSeparator)
                 useCurrencySymbolAsHint = getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
                 maxDP = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalDigits, 2)
             } finally {
@@ -56,7 +62,7 @@ class CurrencyEditText(
         currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
         if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) locale = getLocaleFromTag(localeTag!!)
-        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, maxDP)
+        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP)
         addTextChangedListener(textWatcher)
     }
 
@@ -68,6 +74,16 @@ class CurrencyEditText(
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setLocale(localeTag: String) {
         locale = getLocaleFromTag(localeTag)
+        invalidateTextWatcher()
+    }
+
+    fun setDecimalSeparator(newSeparator: String) {
+        decimalSeparator = newSeparator
+        invalidateTextWatcher()
+    }
+
+    fun setGroupingSeparator(newSeparator: String) {
+        groupingSeparator = newSeparator
         invalidateTextWatcher()
     }
 
@@ -84,7 +100,7 @@ class CurrencyEditText(
 
     private fun invalidateTextWatcher() {
         removeTextChangedListener(textWatcher)
-        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, maxDP)
+        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP)
         addTextChangedListener(textWatcher)
     }
 
