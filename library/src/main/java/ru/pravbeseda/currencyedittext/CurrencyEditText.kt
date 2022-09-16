@@ -35,12 +35,13 @@ class CurrencyEditText(
     private var locale: Locale = Locale.ENGLISH
     private var decimalSeparator: String? = null
     private var groupingSeparator: String? = null
+    private var negativeValueAllow: Boolean = false
     private var maxDP: Int
 
     init {
         var useCurrencySymbolAsHint = false
         inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-        keyListener = DigitsKeyListener.getInstance("0123456789.,")
+        keyListener = DigitsKeyListener.getInstance("0123456789.,-")
         var localeTag: String?
         val prefix: String
         context.theme.obtainStyledAttributes(
@@ -55,6 +56,7 @@ class CurrencyEditText(
                 groupingSeparator = getString(R.styleable.CurrencyEditText_groupingSeparator)
                 useCurrencySymbolAsHint = getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
                 maxDP = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalDigits, 2)
+                negativeValueAllow = getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false);
             } finally {
                 recycle()
             }
@@ -62,7 +64,7 @@ class CurrencyEditText(
         currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
         if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) locale = getLocaleFromTag(localeTag!!)
-        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP)
+        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP, negativeValueAllow)
         addTextChangedListener(textWatcher)
     }
 
@@ -87,6 +89,11 @@ class CurrencyEditText(
         invalidateTextWatcher()
     }
 
+    fun setNegativeValueAllow(newValue: Boolean) {
+        negativeValueAllow = newValue
+        invalidateTextWatcher()
+    }
+
     fun setCurrencySymbol(currencySymbol: String, useCurrencySymbolAsHint: Boolean = false) {
         currencySymbolPrefix = "$currencySymbol "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
@@ -100,7 +107,7 @@ class CurrencyEditText(
 
     private fun invalidateTextWatcher() {
         removeTextChangedListener(textWatcher)
-        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP)
+        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP, negativeValueAllow)
         addTextChangedListener(textWatcher)
     }
 

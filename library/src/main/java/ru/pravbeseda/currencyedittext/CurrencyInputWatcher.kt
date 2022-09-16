@@ -18,6 +18,7 @@ package ru.pravbeseda.currencyedittext
 import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -32,8 +33,9 @@ class CurrencyInputWatcher(
     locale: Locale,
     private val decimalSeparator: String? = null,
     private val groupingSeparator: String? = null,
-    private val maxNumberOfDecimalPlaces: Int = 2
-) : TextWatcher {
+    private val maxNumberOfDecimalPlaces: Int = 2,
+    private val negativeValueAllow: Boolean = false
+) : EasyTextWatcher() {
 
     init {
         if (maxNumberOfDecimalPlaces < 1) {
@@ -59,16 +61,69 @@ class CurrencyInputWatcher(
     val decimalFormatSymbols: DecimalFormatSymbols
         get() = wholeNumberDecimalFormat.decimalFormatSymbols
 
-    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+    override fun onTextModified(
+        newPartOfText: String?,
+        newText: String?,
+        oldText: String?,
+        editPosition: Int?
+    ) {
+        val currentDecimalSeparator = wholeNumberDecimalFormat.decimalFormatSymbols.decimalSeparator
+
+        Log.d("!!!", "currencySymbol: '$currencySymbol', newPartOfText: '$newPartOfText', newText: '$newText', oldText: '$oldText', editPosition: $editPosition")
+        var resultText: String = newText ?: ""
+
+        // Place sign minus before value
+        val sign = if (negativeValueAllow && resultText.count { it == '-' } == 1) "-" else ""
+        resultText = resultText.replace("-", "");
+
+        // Replace new "," or "." to decimalSeparator
+        if (arrayOf(",", ".").contains(newPartOfText) && newPartOfText != currentDecimalSeparator.toString()) {
+            val pos = editPosition ?: 0;
+            resultText = resultText.replaceRange(pos-1, pos, currentDecimalSeparator.toString())
+        }
+
+        // Prevent manual removing currency symbol
+        if (!resultText.startsWith(currencySymbol)) {
+            resultText = currencySymbol + resultText.trimStart { currencySymbol.toCharArray().contains(it) }
+        }
+
+        // Remove currency symbol
+        resultText = resultText.removePrefix(currencySymbol)
+
+        val hasDecimalPoint = resultText.contains(currentDecimalSeparator)
+
+        // Only first decimalSeparator is valid
+        if (hasDecimalPoint) {
+            val decimalParts = resultText.split(currentDecimalSeparator) as MutableList<String>
+            resultText = decimalParts[0] + currentDecimalSeparator
+            decimalParts.removeFirst()
+            var decimalPart = decimalParts.joinToString("")
+            if (decimalPart.length > maxNumberOfDecimalPlaces) {
+                decimalPart = decimalPart.substring(0, maxNumberOfDecimalPlaces)
+            }
+            // "." => "0."
+            if (resultText == currentDecimalSeparator.toString()) {
+                resultText = "0$currentDecimalSeparator"
+            }
+            resultText += decimalPart
+        }
+
+        // val posDecimalSeparator = resultText.indexOfFirst{ it == currentDecimalSeparator }
+
+        resultText = currencySymbol + sign + resultText
+        editText.setText(resultText)
+    }
+
+    /*fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         fractionDecimalFormat.isDecimalSeparatorAlwaysShown = true
     }
 
-    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+    fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         hasDecimalPoint = s.toString().contains(decimalFormatSymbols.decimalSeparator.toString())
     }
 
     @SuppressLint("SetTextI18n")
-    override fun afterTextChanged(s: Editable) {
+    fun afterTextChanged(s: Editable) {
         var newInputString: String = s.toString()
         val isParsableString = try {
             fractionDecimalFormat.parse(newInputString)!!
@@ -131,7 +186,7 @@ class CurrencyInputWatcher(
             e.printStackTrace()
         }
         editText.addTextChangedListener(this)
-    }
+    }*/
 
     /**
      * @param number the original number to format

@@ -6,6 +6,7 @@
         <attr name="decimalSeparator" format="string"/>
         <attr name="groupingSeparator" format="string"/>
         <attr name="useCurrencySymbolAsHint" format="boolean"/>
+        <attr name="negativeValueAllow" format="boolean"/>
         <attr name="maxNumberOfDecimalDigits" format="integer"/>
     </declare-styleable>
 </resources>

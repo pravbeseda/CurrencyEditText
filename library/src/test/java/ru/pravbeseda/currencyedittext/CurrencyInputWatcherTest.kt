@@ -26,10 +26,10 @@ class CurrencyInputWatcherTest {
 
     // TODO Add more locale tests by their, tags, decimal separator and theur grouping separator
     private val locales = listOf(
-        LocaleVars("en-NG", '.', ',', "$ "),
-        LocaleVars("en-US", '.', ',', "$ "),
-        LocaleVars("da-DK", ',', '.', "$ "),
-        LocaleVars("fr-CA", ',', ' ', "$ ")
+        LocaleVars("en-NG", '.', ',', "$ ", 2, false),
+        LocaleVars("en-US", '.', ',', "$ ", 2, false),
+        LocaleVars("da-DK", ',', '.', "$ ", 2, false),
+        LocaleVars("fr-CA", ',', ' ', "$ ", 2, false)
     )
 
     @Test
@@ -107,8 +107,6 @@ class CurrencyInputWatcherTest {
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcher.runAllWatcherMethods(editable)
-
-            val result = editText.text.toString()
 
             // Verify that the EditText's text was set to the expected text
             verify(editText, times(1)).setText(expectedText)
@@ -289,7 +287,10 @@ class CurrencyInputWatcherTest {
             val expectedText = "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}50"
 
             val (editText, editable) = setupTestVariables(locale)
-            val watcherWithDefaultDP = CurrencyInputWatcher(editText, locale.currencySymbol, locale.tag.toLocale(), locale.decimalSeparator.toString(), locale.groupingSeparator.toString())
+            val watcherWithDefaultDP = CurrencyInputWatcher(editText, locale.currencySymbol,
+                locale.tag.toLocale(), locale.decimalSeparator.toString(), locale.groupingSeparator.toString(),
+                locale.maxNumberOfDecimalPlaces, locale.negativeValueAllow
+            )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcherWithDefaultDP.runAllWatcherMethods(editable)
@@ -391,7 +392,8 @@ class CurrencyInputWatcherTest {
             val secondExpectedText = "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}519"
 
             val (editText, editable, watcher) = setupTestVariables(locale, decimalPlaces = 2)
-            val secondWatcher = locale.toWatcher(editText, 3, locale.decimalSeparator.toString(), locale.groupingSeparator.toString())
+            val secondWatcher = locale.toWatcher(editText, 3, locale.decimalSeparator.toString(),
+                locale.groupingSeparator.toString(), false)
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcher.runAllWatcherMethods(editable)
@@ -424,7 +426,8 @@ class CurrencyInputWatcherTest {
         val editable = mock(Editable::class.java)
         `when`(editText.text).thenReturn(editable)
         `when`(editable.append(isA(String::class.java))).thenReturn(editable)
-        val watcher = locale.toWatcher(editText, decimalPlaces, locale.decimalSeparator.toString(), locale.groupingSeparator.toString())
+        val watcher = locale.toWatcher(editText, decimalPlaces, locale.decimalSeparator.toString(),
+            locale.groupingSeparator.toString(), locale.negativeValueAllow)
         return TestVars(editText, editable, watcher)
     }
 }
