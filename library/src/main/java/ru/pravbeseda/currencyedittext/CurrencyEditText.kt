@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 Alexander Ivanov
+ * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
+import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
+import ru.pravbeseda.currencyedittext.util.parseMoneyValueWithLocale
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
@@ -196,10 +199,6 @@ class CurrencyEditText(
         }
     }
 
-    /**
-     * Устанавливает колбэк на обработку изменения значения + состояния
-     * @param action действие, которое необходимо совершить
-     */
     fun setOnValueChanged(action: (BigDecimal?, state: State) -> Unit) {
         onValueChanged = object : OnValueChanged {
             override fun onValueChanged(newValue: BigDecimal?, state: State) {
@@ -213,7 +212,7 @@ class CurrencyEditText(
     }
 
     /**
-     * Интерефейс для колбэка изменения значения и состояния
+     * Interface for value and state change callback
      */
     interface OnValueChanged {
         fun onValueChanged(newValue: BigDecimal?, state: State)
@@ -221,12 +220,12 @@ class CurrencyEditText(
 
     companion object {
         /**
-         * Возможные состояния значения View
+         * Component's state values
          */
         enum class State {
-            OK,             // Валидное состояние (но текст еще изменяется)
-            ERROR,
-            APPLY           // Валидное состояние (текст больше не изменится, пока его опять не начнут редактировать)
+            OK,             // Valid, not changed
+            ERROR,          // Invalid value
+            DIRTY           // Valid, not saved
         }
     }
 }

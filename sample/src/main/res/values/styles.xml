@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CustomThemeEditText">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
 </resources>

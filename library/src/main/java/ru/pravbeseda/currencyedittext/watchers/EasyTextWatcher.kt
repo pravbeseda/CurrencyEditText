@@ -1,4 +1,4 @@
-package ru.pravbeseda.currencyedittext
+package ru.pravbeseda.currencyedittext.watchers
 
 import android.text.Editable
 import android.text.TextWatcher

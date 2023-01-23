@@ -1,10 +1,12 @@
-# CurrencyEditText 
+# CurrencyEditText
 
 A library to dynamically format your `EditTexts` to take currency inputs.
 
 This project is fork of https://github.com/CottaCush/CurrencyEditText
+Also there was used ideas of another project: https://github.com/firmfreez/CurrencyEditText
+Thanks a lot to both authors.
 
-Attention! This is an alpha release of the library, it is under active development. 
+Attention! This is an alpha release of the library, it is under active development.
 
 [![ci](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml/badge.svg)](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/ru.pravbeseda/CurrencyEditText.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22ru.pravbeseda%22%20AND%20a:%22CurrencyEditText%22)
@@ -16,94 +18,38 @@ Add the dependency to your app's `build.gradle`:
 ```groovy
 implementation 'ru.pravbeseda:CurrencyEditText:<insert-latest-version-here>'
 ```
-For versions, kindly head over to the [releases page](https://github.com/pravbeseda/CurrencyEditText/releases)
+
+For versions, kindly head over to
+the [releases page](https://github.com/pravbeseda/CurrencyEditText/releases)
+
+## Library content
+
+There are 2 components in this library `CurrencyEditText` and `CurrencyMaterialEditText`.
+The `CurrencyMaterialEditText` component is inherited from `TextInputLayout` and is a wrapper
+over `CurrencyEditText`.
 
 ## Usage
 
-Add the `CurrencyEditText` to your layout. 
+Add the `CurrencyEditText` to your layout.
+
 ```xml
-   <ru.pravbeseda.currencyedittext.CurrencyEditText
-            ...
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:ems="10"
-            android:id="@+id/editText"/>
+
+<ru.pravbeseda.currencyedittext.CurrencyEditText 
+    android:layout_width="wrap_content"
+    android:layout_height="60dp" 
+    android:ems="10" 
+    android:id="@+id/editText" />
 ```
+
 That's all for basic setup. Your `editText` should automatically format currency inputs.
- 
- 
+
 ## Customisation
 
-### Currency Symbol
-You can specify the currency symbol using the  `currencySymbol` and `useCurrencySymbolAsHint` attributes in xml. 
-The formatted currency value will be prepended with the `currencySymbol` value. The `currencySymbol` value can also 
-be used as hint, as described by the `useCurrencySymbolAsHint` attribute.
- 
-```xml
-   <ru.pravbeseda.currencyedittext.CurrencyEditText
-            ...
-            app:currencySymbol="₦"
-            app:useCurrencySymbolAsHint="true"/>
-```
-or programmatically:
-```kotlin
-   currencyEditText.setCurrencySymbol("₦", useCurrencySymbolAsHint = true)
-```
+Coming soon...
 
-### Locale 
-The `CurrencyEditText` uses the default `Locale` if no locale is specified. `Locale` can be specified programmatically via
-```kotlin
-   currencyEditText.setLocale(locale)
-```
- Locales can also be specified using locale-tags. The locale tag method requires API 21 and above. Instructions on how to construct
- valid `Locale` and locale-tags can be found [here](https://docs.oracle.com/javase/tutorial/i18n/locale/create.html#factory).
-  
- ```xml
-    <ru.pravbeseda.currencyedittext.CurrencyEditText
-             ...
-             app:localeTag="en-NG"/>
- ```
- or programmatically via 
- 
- ```kotlin
-    currencyEditText.setLocale("en-NG") //Requires API level 21 and above.
- ```
- 
-### Decimal Places
-The maximum number of decimal digits can be specified using the `maxNumberOfDecimalDigits` attributes in the xml, requiring
-a minimum value of 1. It has a default value of 2.
+## License
 
-```xml
-   <ru.pravbeseda.currencyedittext.CurrencyEditText
-            ...
-            app:maxNumberOfDecimalDigits="3" />
-```
-or programmatically:
-```kotlin
-   currencyEditText.setMaxNumberOfDecimalDigits(3)
-```
-        
-## Getting the input value
-
-Numeric values for the editText can be gotten as shown below. 
- ```kotlin
-    currencyEditText.getNumericValue()
- ```
-If you need a `BigDecimal` to continue your monetary calculations right away, you can get it by  
- ```kotlin
-    currencyEditText.getNumericValueBigDecimal()
- ```
-
-## Using the formatter directly
-If you'd like to use the library with any `EditText` widget, you can attach your `EditText` with the `CurrencyInputWatcher` class:
-  
- ```kotlin
-    editText.addTextChangedListener(CurrencyInputWatcher(editText,"₦", Locale.getDefault()))
- ```
- 
-##  License
-
-    Copyright (c) 2022 Alexander Ivanov
+    Copyright (c) 2022-2023 Alexander Ivanov
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

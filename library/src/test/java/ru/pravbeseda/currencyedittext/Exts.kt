@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 Alexander Ivanov
+ * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import ru.pravbeseda.currencyedittext.model.LocaleVars
+import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
+import java.lang.ref.WeakReference
 import java.util.*
 
 fun TextWatcher.runAllWatcherMethods(
@@ -41,6 +43,15 @@ fun String.removeFirstChar() = removeCharAt(0)
 
 fun String.toLocale(): Locale = Locale.Builder().setLanguageTag(this).build()
 
-fun LocaleVars.toWatcher(editText: EditText, decimalPlaces: Int = 2, decimalSeparator: String? = null,
-                         groupingSeparator: String? = null, negativeValueAllow: Boolean)
-    = CurrencyInputWatcher(editText, currencySymbol, tag.toLocale(), decimalSeparator, groupingSeparator, decimalPlaces, negativeValueAllow)
+fun LocaleVars.toWatcher(
+    editText: EditText, decimalPlaces: Int = 2, decimalSeparator: String? = null,
+    groupingSeparator: String? = null, negativeValueAllow: Boolean
+) = CurrencyInputWatcher(
+    WeakReference(editText),
+    currencySymbol,
+    tag.toLocale(),
+    decimalSeparator,
+    groupingSeparator,
+    decimalPlaces,
+    negativeValueAllow
+)

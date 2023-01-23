@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 Alexander Ivanov
+ * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package ru.pravbeseda.currencyedittext.model
 
 data class LocaleVars(
     val tag: String,
-    val decimalSeparator: Char,
-    val groupingSeparator: Char,
+    val decimalSeparator: String,
+    val groupingSeparator: String,
     val currencySymbol: String,
     val maxNumberOfDecimalPlaces: Int,
     val negativeValueAllow: Boolean,

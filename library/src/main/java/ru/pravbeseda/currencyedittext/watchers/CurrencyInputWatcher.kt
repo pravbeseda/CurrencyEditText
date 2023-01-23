@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 Alexander Ivanov
+ * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ru.pravbeseda.currencyedittext
+package ru.pravbeseda.currencyedittext.watchers
 
 import android.widget.EditText
 import java.lang.ref.WeakReference
-import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
-import kotlin.math.min
 
 class CurrencyInputWatcher(
     private val editTextRef: WeakReference<EditText>,
@@ -42,22 +40,19 @@ class CurrencyInputWatcher(
     }
 
     private val editText: EditText? get() = editTextRef.get()
-    private var hasDecimalPoint = false
     private val wholeNumberDecimalFormat =
         (NumberFormat.getNumberInstance(locale) as DecimalFormat).apply {
             applyPattern("#,##0")
             decimalFormatSymbols = getModifiedDecimalFormatSymbols()
         }
 
-    private val fractionDecimalFormat = (NumberFormat.getNumberInstance(locale) as DecimalFormat).apply {
-        decimalFormatSymbols = getModifiedDecimalFormatSymbols()
-    }
-
     val decimalFormatSymbols: DecimalFormatSymbols
         get() = wholeNumberDecimalFormat.decimalFormatSymbols
 
-    private val decimalSeparator = if (paramDecimalSeparator !== null) paramDecimalSeparator else wholeNumberDecimalFormat.decimalFormatSymbols.decimalSeparator.toString()
-    private val groupingSeparator = if (paramGroupingSeparator !== null) paramGroupingSeparator else wholeNumberDecimalFormat.decimalFormatSymbols.groupingSeparator.toString()
+    private val decimalSeparator =
+        if (paramDecimalSeparator !== null) paramDecimalSeparator else wholeNumberDecimalFormat.decimalFormatSymbols.decimalSeparator.toString()
+    private val groupingSeparator =
+        if (paramGroupingSeparator !== null) paramGroupingSeparator else wholeNumberDecimalFormat.decimalFormatSymbols.groupingSeparator.toString()
 
     override fun onTextModified(
         newPartOfText: String?,
@@ -66,14 +61,13 @@ class CurrencyInputWatcher(
         editPosition: Int?
     ) {
 
-        val gropingSeparatorsCount = countMatches(newText, groupingSeparator)
         var resultText: String = newText ?: ""
         var sign = ""
         var position = editPosition ?: currencySymbol.length
 
         // Replace inserted comma or point to decimalSeparator
         if (arrayOf(",", ".").contains(newPartOfText) && newPartOfText != decimalSeparator) {
-            resultText = resultText.replaceRange(position-1, position, decimalSeparator)
+            resultText = resultText.replaceRange(position - 1, position, decimalSeparator)
         }
 
         // Place sign minus before value
@@ -81,7 +75,7 @@ class CurrencyInputWatcher(
             val numberOfMinus = resultText.count { it == '-' }
             sign = if (numberOfMinus == 1) "-" else ""
             if (numberOfMinus > 1 && position > currencySymbol.length) {
-                position -=2
+                position -= 2
             }
         }
         resultText = resultText.replace("-", "")
@@ -93,26 +87,25 @@ class CurrencyInputWatcher(
 
         // Prevent manual removing currency symbol
         if (!resultText.startsWith(currencySymbol)) {
-            resultText = currencySymbol + resultText.trimStart { currencySymbol.toCharArray().contains(it) }
+            resultText =
+                currencySymbol + resultText.trimStart { currencySymbol.toCharArray().contains(it) }
         }
 
-        val newTextWithoutGroupingSeparators = resultText.replace(currencySymbol, "").replace(groupingSeparator, "") ?: ""
+        val newTextWithoutGroupingSeparators =
+            resultText.replace(currencySymbol, "").replace(groupingSeparator, "")
 
         // Calc decimal separator position (without grouping separators)
         val decimalSeparatorPos = newTextWithoutGroupingSeparators.indexOf(decimalSeparator)
 
-        // Расчет позиции курсора (в тексте без разделителей)
-        var cursorPosition = position.let {
+        // Cursor position calculation (in text without separators)
+        val cursorPosition = position.let {
             val text = newText?.substring(0, it)
-            val curSpaceCount = countMatches(text, groupingSeparator, false)
-            val spaceCountInCurrencySymbol = countMatches(currencySymbol, groupingSeparator, false)
+            val curSpaceCount = countMatches(text, groupingSeparator)
+            val spaceCountInCurrencySymbol = countMatches(currencySymbol, groupingSeparator)
             it - curSpaceCount + spaceCountInCurrencySymbol
-        } ?: currencySymbol.length
+        }
 
-        val newPartOfTextWithoutGroupingSeparators = newPartOfText?.replace(groupingSeparator, "") ?: ""
-        val oldTextWithoutGroupingSeparators = oldText?.replace(groupingSeparator, "") ?: ""
-
-        var integerPart = if (decimalSeparatorPos == -1) {
+        val integerPart = if (decimalSeparatorPos == -1) {
             newTextWithoutGroupingSeparators
         } else {
             newTextWithoutGroupingSeparators.substring(0, decimalSeparatorPos)
@@ -127,13 +120,6 @@ class CurrencyInputWatcher(
             fractionalPart = fractionalPart.substring(0, maxNumberOfDecimalPlaces)
         }
 
-        // Если поле ввода состоит только из 0 - заменяем его введенным символом
-//        if (newPartOfTextWithoutGroupingSeparators.isNotEmpty() && oldTextWithoutGroupingSeparators == "0" && fractionalPart == null && decimalSeparatorPos == -1 && cursorPosition == 1) {
-//            setText(resultText = newPartOfTextWithoutGroupingSeparators, resultEditPosition = cursorPosition, currencySymbol, sign)
-//            return
-//        }
-
-
         resultText = integerPart
         if (decimalSeparatorPos > -1) {
             if (resultText == "") {
@@ -142,117 +128,7 @@ class CurrencyInputWatcher(
             resultText += decimalSeparator + fractionalPart
         }
 
-        // val hasDecimalPoint = resultText.contains(decimalSeparator)
-
-//        if (fractionalPart.isNotEmpty()) {
-////            val decimalParts = resultText.split(decimalSeparator) as MutableList<String>
-////            resultText = decimalParts[0] + decimalSeparator
-////            decimalParts.removeFirst()
-////            var decimalPart = decimalParts.joinToString("")
-//            if (fractionalPart.length > maxNumberOfDecimalPlaces) {
-//                fractionalPart = fractionalPart.substring(0, maxNumberOfDecimalPlaces)
-//            }
-//            // "." => "0."
-//            if (resultText == decimalSeparator) {
-//                resultText = "0$decimalSeparator"
-//            }
-//            resultText += fractionalPart
-//        }
-
-//        var numberWithoutGroupingSeparator =
-//            parseMoneyValue(
-//                newInputString,
-//                decimalFormatSymbols.groupingSeparator.toString(),
-//                currencySymbol
-//            )
-
-        // val posDecimalSeparator = resultText.indexOfFirst{ it == currentDecimalSeparator }
-
         setText(resultText, cursorPosition, currencySymbol, sign)
-    }
-
-    /*fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-        fractionDecimalFormat.isDecimalSeparatorAlwaysShown = true
-    }
-
-    fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        hasDecimalPoint = s.toString().contains(decimalFormatSymbols.decimalSeparator.toString())
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun afterTextChanged(s: Editable) {
-        var newInputString: String = s.toString()
-        val isParsableString = try {
-            fractionDecimalFormat.parse(newInputString)!!
-            true
-        } catch (e: ParseException) {
-            false
-        }
-
-        if (newInputString.length < currencySymbol.length && !isParsableString) {
-            editText.setText(currencySymbol)
-            editText.setSelection(currencySymbol.length)
-            return
-        }
-
-        if (newInputString == currencySymbol) {
-            editText.setSelection(currencySymbol.length)
-            return
-        }
-
-        editText.removeTextChangedListener(this)
-        val startLength = editText.text.length
-        try {
-            var numberWithoutGroupingSeparator =
-                parseMoneyValue(
-                    newInputString,
-                    decimalFormatSymbols.groupingSeparator.toString(),
-                    currencySymbol
-                )
-            if (numberWithoutGroupingSeparator == decimalFormatSymbols.decimalSeparator.toString()) {
-                numberWithoutGroupingSeparator = "0$numberWithoutGroupingSeparator"
-            }
-
-            numberWithoutGroupingSeparator = truncateNumberToMaxDecimalDigits(
-                numberWithoutGroupingSeparator,
-                maxNumberOfDecimalPlaces,
-                decimalFormatSymbols.decimalSeparator
-            )
-
-            val parsedNumber = fractionDecimalFormat.parse(numberWithoutGroupingSeparator)!!
-            val selectionStartIndex = editText.selectionStart
-            if (hasDecimalPoint) {
-                fractionDecimalFormat.applyPattern(
-                    FRACTION_FORMAT_PATTERN_PREFIX +
-                            getFormatSequenceAfterDecimalSeparator(numberWithoutGroupingSeparator)
-                )
-                val newText = "$currencySymbol${fractionDecimalFormat.format(parsedNumber)}"
-                editText.setText(newText)
-            } else {
-                val newText = "$currencySymbol${wholeNumberDecimalFormat.format(parsedNumber)}"
-                editText.setText(newText)
-            }
-            val endLength = editText.text.length
-            val selection = selectionStartIndex + (endLength - startLength)
-            if (selection > 0 && selection <= editText.text.length) {
-                editText.setSelection(selection)
-            } else {
-                editText.setSelection(editText.text.length - 1)
-            }
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        editText.addTextChangedListener(this)
-    }*/
-
-    /**
-     * @param number the original number to format
-     * @return the appropriate zero sequence for the input number. e.g 156.1 returns "0",
-     *  14.98 returns "00"
-     */
-    private fun getFormatSequenceAfterDecimalSeparator(number: String): String {
-        val noOfCharactersAfterDecimalPoint = number.length - number.indexOf(decimalFormatSymbols.decimalSeparator) - 1
-        return "0".repeat(min(noOfCharactersAfterDecimalPoint, maxNumberOfDecimalPlaces))
     }
 
     private fun getModifiedDecimalFormatSymbols(): DecimalFormatSymbols {
@@ -266,19 +142,21 @@ class CurrencyInputWatcher(
         return unusualSymbols
     }
 
-    private fun countMatches(string: String?, pattern: String, trim: Boolean = true): Int {
+    private fun countMatches(string: String?, pattern: String): Int {
         if (string.isNullOrEmpty()) {
             return 0
         }
-        var res = string.split(pattern)
-        if (trim) {
-            res = res.dropLastWhile { it.isEmpty() }
-        }
+        val res = string.split(pattern)
         return res.toTypedArray().size - 1
     }
 
-    private fun setText(resultText: String?, resultEditPosition: Int?,  currencySymbol: String, sign: String) {
-        // Устанавливаем разделители в текст
+    private fun setText(
+        resultText: String?,
+        resultEditPosition: Int?,
+        currencySymbol: String,
+        sign: String
+    ) {
+        // Format text
         val (text, position) = calculateSpacing(
             resultText = resultText,
             resultEditPosition = resultEditPosition,
@@ -286,45 +164,40 @@ class CurrencyInputWatcher(
             sign
         )
 
-        // Устанавливаем текст
         editText?.setText((text as? String?) ?: "")
 
-        // Устанавливаем курсор на нужную позицию
+        // Set cursor
         editText?.setSelection((position as? Int?) ?: 0)
 
-        // Возвращаем колбэк
         onValueChanged?.invoke(text.toString())
     }
 
-    private fun calculateSpacing(resultText: String?, resultEditPosition: Int?,  currencySymbol: String, sign: String): Array<Any?> {
-        // Переменная для расчета позиции
+    private fun calculateSpacing(
+        resultText: String?,
+        resultEditPosition: Int?,
+        currencySymbol: String,
+        sign: String
+    ): Array<Any?> {
         var resultPosition = resultEditPosition ?: currencySymbol.length
-
-        // Расчет индекса точки в тексте
         val dotPos = resultText?.indexOf(decimalSeparator) ?: -1
 
-        // Расчет текста до точки
         var textBeforeDot = if (dotPos == -1) {
             resultText ?: ""
         } else {
             resultText?.substring(0, dotPos) ?: ""
         }
 
-        // Расчет текста после точки
         var textAfterDot = if (dotPos == -1) {
             null
         } else {
-            resultText?.substring(dotPos + 1, resultText.length)?: ""
+            resultText?.substring(dotPos + 1, resultText.length) ?: ""
         }
 
-        // Расчет количества отступов
         val spaceCount = textBeforeDot.length / 3
 
-        // Индекс последнего символа
         var index = textBeforeDot.length
 
-        // Перебираем все пробелы и устанавливаем их в результирующий текст
-        // паралельно сдвигая курсор
+        // Count all group separators and calc cursor position
         for (i in 1 until spaceCount + 1) {
             index -= 3
             if (index > 0) {
@@ -336,7 +209,6 @@ class CurrencyInputWatcher(
             }
         }
 
-        // Окончательный расчет текста после точки
         textAfterDot = if (textAfterDot != null) {
             "$decimalSeparator$textAfterDot"
         } else {
