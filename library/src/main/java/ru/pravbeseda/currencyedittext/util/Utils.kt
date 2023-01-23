@@ -25,20 +25,22 @@ import java.util.IllformedLocaleException
 internal fun parseMoneyValue(
     value: String,
     groupingSeparator: String,
+    decimalSeparator: String,
     currencySymbol: String
 ): String =
-    value.replace(currencySymbol, "").replace(groupingSeparator, "")
+    value.replace(currencySymbol, "")
+        .replace(groupingSeparator, "")
+        .replace(decimalSeparator, ".")
 
 internal fun parseMoneyValueWithLocale(
-    locale: Locale,
     value: String,
     groupingSeparator: String,
+    decimalSeparator: String,
     currencySymbol: String
 ): Number {
-
-    val valueWithoutSeparator = parseMoneyValue(value, groupingSeparator, currencySymbol)
+    val valueWithoutSeparator = parseMoneyValue(value, groupingSeparator, decimalSeparator, currencySymbol)
     return try {
-        NumberFormat.getInstance(locale).parse(valueWithoutSeparator)!!
+        NumberFormat.getInstance(Locale.ENGLISH).parse(valueWithoutSeparator)!!
     } catch (exception: ParseException) {
         0
     }

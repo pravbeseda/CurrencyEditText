@@ -22,21 +22,31 @@ import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.util.AttributeSet
 import androidx.annotation.RequiresApi
-import com.google.android.material.textfield.TextInputEditText
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
+import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.util.*
 
 class CurrencyEditText(
     context: Context,
     attrs: AttributeSet?
-) : TextInputEditText(context, attrs) {
-    private lateinit var currencySymbolPrefix: String
+) : AppCompatEditText(context, attrs) {
+    private lateinit var currencySymbolPrefix: String // lateinit is important!
     private var textWatcher: CurrencyInputWatcher
     private var locale: Locale = Locale.ENGLISH
     private var decimalSeparator: String? = null
     private var groupingSeparator: String? = null
     private var negativeValueAllow: Boolean = false
     private var maxDP: Int
+
+    private val _liveTextError = MutableLiveData<String?>()
+    val liveTextError: LiveData<String?> = _liveTextError
+
+    private var onValueChanged: OnValueChanged? = null
+    private var validator: ((BigDecimal) -> String?)? = null
 
     init {
         var useCurrencySymbolAsHint = false
@@ -54,17 +64,20 @@ class CurrencyEditText(
                 localeTag = getString(R.styleable.CurrencyEditText_localeTag)
                 decimalSeparator = getString(R.styleable.CurrencyEditText_decimalSeparator)
                 groupingSeparator = getString(R.styleable.CurrencyEditText_groupingSeparator)
-                useCurrencySymbolAsHint = getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
+                useCurrencySymbolAsHint =
+                    getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
                 maxDP = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalDigits, 2)
-                negativeValueAllow = getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false);
+                negativeValueAllow =
+                    getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false);
             } finally {
                 recycle()
             }
         }
         currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
-        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) locale = getLocaleFromTag(localeTag!!)
-        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP, negativeValueAllow)
+        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) locale =
+            getLocaleFromTag(localeTag!!)
+        textWatcher = createTextWatcher()
         addTextChangedListener(textWatcher)
     }
 
@@ -107,25 +120,50 @@ class CurrencyEditText(
 
     private fun invalidateTextWatcher() {
         removeTextChangedListener(textWatcher)
-        textWatcher = CurrencyInputWatcher(this, currencySymbolPrefix, locale, decimalSeparator, groupingSeparator, maxDP, negativeValueAllow)
+        textWatcher = createTextWatcher()
         addTextChangedListener(textWatcher)
+    }
+
+    private fun createTextWatcher(): CurrencyInputWatcher {
+        return CurrencyInputWatcher(
+            WeakReference(this),
+            currencySymbolPrefix,
+            locale,
+            decimalSeparator,
+            groupingSeparator,
+            maxDP,
+            negativeValueAllow
+        ) {
+            var state: State = State.OK
+            val value = stringToBigDecimal(it)
+            val textError = (validator?.let { it1 -> it1(value) })
+            if (textError !== null) {
+                state = State.ERROR
+            }
+            _liveTextError.value = textError
+            onValueChanged?.onValueChanged(value, state)
+        }
     }
 
     fun getNumericValue(): Double {
         return parseMoneyValueWithLocale(
-            locale,
             text.toString(),
             textWatcher.decimalFormatSymbols.groupingSeparator.toString(),
+            textWatcher.decimalFormatSymbols.decimalSeparator.toString(),
             currencySymbolPrefix
         ).toDouble()
     }
 
     fun getNumericValueBigDecimal(): BigDecimal {
+        return stringToBigDecimal(text.toString())
+    }
+
+    private fun stringToBigDecimal(str: String?): BigDecimal {
         return BigDecimal(
             parseMoneyValueWithLocale(
-                locale,
-                text.toString(),
+                str ?: "",
                 textWatcher.decimalFormatSymbols.groupingSeparator.toString(),
+                textWatcher.decimalFormatSymbols.decimalSeparator.toString(),
                 currencySymbolPrefix
             ).toString()
         )
@@ -155,6 +193,40 @@ class CurrencyEditText(
             setSelection(symbolLength)
         } else {
             super.onSelectionChanged(selStart, selEnd)
+        }
+    }
+
+    /**
+     * Устанавливает колбэк на обработку изменения значения + состояния
+     * @param action действие, которое необходимо совершить
+     */
+    fun setOnValueChanged(action: (BigDecimal?, state: State) -> Unit) {
+        onValueChanged = object : OnValueChanged {
+            override fun onValueChanged(newValue: BigDecimal?, state: State) {
+                action.invoke(newValue, state)
+            }
+        }
+    }
+
+    fun setValidator(newValidator: ((BigDecimal) -> String?)?) {
+        validator = newValidator
+    }
+
+    /**
+     * Интерефейс для колбэка изменения значения и состояния
+     */
+    interface OnValueChanged {
+        fun onValueChanged(newValue: BigDecimal?, state: State)
+    }
+
+    companion object {
+        /**
+         * Возможные состояния значения View
+         */
+        enum class State {
+            OK,             // Валидное состояние (но текст еще изменяется)
+            ERROR,
+            APPLY           // Валидное состояние (текст больше не изменится, пока его опять не начнут редактировать)
         }
     }
 }
