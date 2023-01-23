@@ -21,5 +21,5 @@ data class LocaleVars(
     val groupingSeparator: String,
     val currencySymbol: String,
     val maxNumberOfDecimalPlaces: Int,
-    val negativeValueAllow: Boolean,
+    val negativeValueAllow: Boolean
 )

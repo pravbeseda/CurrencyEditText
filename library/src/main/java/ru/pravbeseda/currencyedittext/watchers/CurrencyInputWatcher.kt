@@ -35,7 +35,9 @@ class CurrencyInputWatcher(
 
     init {
         if (maxNumberOfDecimalPlaces < 1) {
-            throw IllegalArgumentException("Maximum number of Decimal Digits must be a positive integer")
+            throw IllegalArgumentException(
+                "Maximum number of Decimal Digits must be a positive integer"
+            )
         }
     }
 
@@ -50,9 +52,17 @@ class CurrencyInputWatcher(
         get() = wholeNumberDecimalFormat.decimalFormatSymbols
 
     private val decimalSeparator =
-        if (paramDecimalSeparator !== null) paramDecimalSeparator else wholeNumberDecimalFormat.decimalFormatSymbols.decimalSeparator.toString()
+        if (paramDecimalSeparator !== null) {
+            paramDecimalSeparator
+        } else {
+            wholeNumberDecimalFormat.decimalFormatSymbols.decimalSeparator.toString()
+        }
     private val groupingSeparator =
-        if (paramGroupingSeparator !== null) paramGroupingSeparator else wholeNumberDecimalFormat.decimalFormatSymbols.groupingSeparator.toString()
+        if (paramGroupingSeparator !== null) {
+            paramGroupingSeparator
+        } else {
+            wholeNumberDecimalFormat.decimalFormatSymbols.groupingSeparator.toString()
+        }
 
     override fun onTextModified(
         newPartOfText: String?,
@@ -60,7 +70,6 @@ class CurrencyInputWatcher(
         oldText: String?,
         editPosition: Int?
     ) {
-
         var resultText: String = newText ?: ""
         var sign = ""
         var position = editPosition ?: currencySymbol.length
