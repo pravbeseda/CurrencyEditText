@@ -17,9 +17,9 @@ package ru.pravbeseda.currencyedittext
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import pravbeseda.R
-import kotlinx.android.synthetic.main.activity_main.*
 import java.math.BigDecimal
+import kotlinx.android.synthetic.main.activity_main.*
+import pravbeseda.R
 
 class MainActivity : AppCompatActivity() {
 

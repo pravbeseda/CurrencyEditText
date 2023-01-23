@@ -34,5 +34,4 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
             result
         }
     }
-
 }

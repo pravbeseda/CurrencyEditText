@@ -19,8 +19,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import java.text.NumberFormat
 import java.text.ParseException
-import java.util.Locale
 import java.util.IllformedLocaleException
+import java.util.Locale
 
 internal fun parseMoneyValue(
     value: String,

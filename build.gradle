@@ -1,33 +1,33 @@
 apply from: './dependencies.gradle'
 
 buildscript {
-  apply from: './dependencies.gradle'
+    apply from: './dependencies.gradle'
 
-  repositories {
-    google()
-    mavenCentral()
-  }
+    repositories {
+        google()
+        mavenCentral()
+    }
 
-  dependencies {
-    classpath 'com.android.tools.build:gradle:7.3.1'
-    classpath "com.diffplug.spotless:spotless-plugin-gradle:4.0.0"
-    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10'
-    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.21.0'
-    classpath 'com.android.tools.build:gradle:7.3.1'
-  }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:4.0.0"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.21.0'
+        classpath 'com.android.tools.build:gradle:7.3.1'
+    }
 }
 
 allprojects {
-  repositories {
-    google()
-    mavenCentral()
-  }
+    repositories {
+        google()
+        mavenCentral()
+    }
 
-  tasks.withType(Javadoc).all {
-    enabled = false
-  }
+    tasks.withType(Javadoc).all {
+        enabled = false
+    }
 }
 
 task clean(type: Delete) {
-  delete rootProject.buildDir
+    delete rootProject.buildDir
 }

@@ -25,13 +25,13 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.lang.ref.WeakReference
+import java.math.BigDecimal
+import java.util.*
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 import ru.pravbeseda.currencyedittext.util.parseMoneyValueWithLocale
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
-import java.lang.ref.WeakReference
-import java.math.BigDecimal
-import java.util.*
 
 class CurrencyEditText(
     context: Context,
@@ -60,7 +60,8 @@ class CurrencyEditText(
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.CurrencyEditText,
-            0, 0
+            0,
+            0
         ).run {
             try {
                 prefix = getString(R.styleable.CurrencyEditText_currencySymbol).orEmpty()
@@ -71,7 +72,7 @@ class CurrencyEditText(
                     getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
                 maxDP = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalDigits, 2)
                 negativeValueAllow =
-                    getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false);
+                    getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false)
             } finally {
                 recycle()
             }
@@ -223,9 +224,9 @@ class CurrencyEditText(
          * Component's state values
          */
         enum class State {
-            OK,             // Valid, not changed
-            ERROR,          // Invalid value
-            DIRTY           // Valid, not saved
+            OK, // Valid, not changed
+            ERROR, // Invalid value
+            DIRTY // Valid, not saved
         }
     }
 }
