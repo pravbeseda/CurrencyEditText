@@ -1,4 +1,2 @@
 0.0.1 - initial version
-0.0.2
-    * change package name
-    * fixed readme file
+0.0.5 - Added new component CurrencyMaterialEditText. Many internal changes.
