@@ -608,8 +608,8 @@ class CurrencyInputWatcherTest {
         val watcher = locale.toWatcher(
             editText,
             decimalPlaces,
-            locale.decimalSeparator.toString(),
-            locale.groupingSeparator.toString(),
+            locale.decimalSeparator,
+            locale.groupingSeparator,
             locale.negativeValueAllow
         )
         return TestVars(editText, editable, watcher)
