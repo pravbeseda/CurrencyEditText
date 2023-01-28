@@ -16,6 +16,7 @@
 package ru.pravbeseda.currencyedittext
 
 import android.content.Context
+import android.text.Editable
 import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
@@ -23,11 +24,31 @@ import java.math.BigDecimal
 class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
     TextInputLayout(context, attrs) {
 
+    var text: Editable?
+        get() {
+            return editText.text
+        }
+        set(value) {
+            editText.text = value
+        }
+
     private val editText: CurrencyEditText
 
     init {
         editText = CurrencyEditText(context, null)
         addView(editText)
+    }
+
+    fun setText(text: CharSequence) {
+        editText.setText(text)
+    }
+
+    fun setNegativeValueAllow(allow: Boolean) {
+        editText.setNegativeValueAllow(allow)
+    }
+
+    fun getNegativeValueAllow(): Boolean {
+        return editText.getNegativeValueAllow()
     }
 
     fun setOnValueChanged(action: (BigDecimal?, state: CurrencyEditText.Companion.State) -> Unit) {

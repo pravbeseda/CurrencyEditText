@@ -29,7 +29,7 @@ class CurrencyInputWatcher(
     private val paramDecimalSeparator: String? = null,
     private val paramGroupingSeparator: String? = null,
     private val maxNumberOfDecimalPlaces: Int = 2,
-    private val negativeValueAllow: Boolean = false,
+    private val negativeValueAllow: Boolean = true,
     private val onValueChanged: ((String?) -> Unit)? = null
 ) : EasyTextWatcher() {
 

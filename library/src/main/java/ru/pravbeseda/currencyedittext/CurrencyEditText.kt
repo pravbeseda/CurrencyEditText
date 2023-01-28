@@ -111,6 +111,10 @@ class CurrencyEditText(
         invalidateTextWatcher()
     }
 
+    fun getNegativeValueAllow(): Boolean {
+        return negativeValueAllow
+    }
+
     fun setCurrencySymbol(currencySymbol: String, useCurrencySymbolAsHint: Boolean = false) {
         currencySymbolPrefix = "$currencySymbol "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix

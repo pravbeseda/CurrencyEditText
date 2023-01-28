@@ -17,19 +17,19 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class CurrencyEditTextTest {
-    // Alternative getting context: private val context: Context = ApplicationProvider.getApplicationContext()
+class CurrencyMaterialEditTextTest() {
     private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private lateinit var currencyEditText: CurrencyEditText
+    private lateinit var currencyEditText: CurrencyMaterialEditText
 
     @Before
     fun init() {
-        currencyEditText = CurrencyEditText(context, null)
+        context.setTheme(R.style.Theme_AppCompat)
+        currencyEditText = CurrencyMaterialEditText(context, null)
     }
 
     @Test
@@ -55,6 +55,6 @@ class CurrencyEditTextTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setText(text)
         }
-        assertEquals(expected, currencyEditText.text.toString())
+        Assert.assertEquals(expected, currencyEditText.text.toString())
     }
 }
