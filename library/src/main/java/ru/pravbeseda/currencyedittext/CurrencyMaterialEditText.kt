@@ -36,6 +36,15 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     init {
         editText = CurrencyEditText(context, null)
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.CurrencyMaterialEditText,
+            0,
+            0
+        ).run {
+            // editText.setText("11")
+            editText.setText(getString(R.styleable.CurrencyMaterialEditText_text))
+        }
         addView(editText)
     }
 

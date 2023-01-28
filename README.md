@@ -30,7 +30,7 @@ over `CurrencyEditText`.
 
 ## Usage
 
-Add the `CurrencyEditText` to your layout.
+You can add the `CurrencyEditText` to your layout.
 
 ```xml
 
@@ -38,14 +38,31 @@ Add the `CurrencyEditText` to your layout.
     android:layout_width="wrap_content"
     android:layout_height="60dp" 
     android:ems="10" 
-    android:id="@+id/editText" />
+    android:id="@+id/editText"
+    android:text="1234.67"
+/>
+```
+
+Or you can use the `CurrencyMaterialEditText` component.
+
+```xml
+
+<ru.pravbeseda.currencyedittext.CurrencyMaterialEditText 
+    android:layout_width="wrap_content"
+    android:layout_height="60dp" 
+    android:ems="10" 
+    android:id="@+id/editText"
+    app:text="1234.67"
+/>
 ```
 
 That's all for basic setup. Your `editText` should automatically format currency inputs.
 
-## Customisation
+After that, you can configure the View parameters separately in the code:
 
-Coming soon...
+```Kotlin
+edittext.setText("4321.76")
+```
 
 ## License
 

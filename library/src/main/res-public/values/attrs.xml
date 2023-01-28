@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="currencySymbol" format="string" />
+    <attr name="localeTag" format="string" />
+    <attr name="decimalSeparator" format="string" />
+    <attr name="groupingSeparator" format="string" />
+    <attr name="useCurrencySymbolAsHint" format="boolean" />
+    <attr name="negativeValueAllow" format="boolean" />
+    <attr name="maxNumberOfDecimalDigits" format="integer" />
+
     <declare-styleable name="CurrencyEditText">
-        <attr name="currencySymbol" format="string"/>
-        <attr name="localeTag" format="string"/>
-        <attr name="decimalSeparator" format="string"/>
-        <attr name="groupingSeparator" format="string"/>
-        <attr name="useCurrencySymbolAsHint" format="boolean"/>
-        <attr name="negativeValueAllow" format="boolean"/>
-        <attr name="maxNumberOfDecimalDigits" format="integer"/>
+        <attr name="currencySymbol" />
+        <attr name="localeTag" />
+        <attr name="decimalSeparator" />
+        <attr name="groupingSeparator" />
+        <attr name="useCurrencySymbolAsHint" />
+        <attr name="negativeValueAllow" />
+        <attr name="maxNumberOfDecimalDigits" />
+    </declare-styleable>
+    <declare-styleable name="CurrencyMaterialEditText">
+        <attr name="text" format="string" />
+        <attr name="currencySymbol" />
+        <attr name="localeTag" />
+        <attr name="decimalSeparator" />
+        <attr name="groupingSeparator" />
+        <attr name="useCurrencySymbolAsHint" />
+        <attr name="negativeValueAllow" />
+        <attr name="maxNumberOfDecimalDigits" />
     </declare-styleable>
 </resources>
