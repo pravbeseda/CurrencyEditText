@@ -29,7 +29,7 @@ class CurrencyInputWatcher(
     private val paramDecimalSeparator: String? = null,
     private val paramGroupingSeparator: String? = null,
     private val maxNumberOfDecimalPlaces: Int = 2,
-    private val negativeValueAllow: Boolean = true,
+    private val negativeValueAllow: Boolean = false,
     private val onValueChanged: ((String?) -> Unit)? = null
 ) : EasyTextWatcher() {
 
@@ -89,19 +89,22 @@ class CurrencyInputWatcher(
         }
         resultText = resultText.replace("-", "")
 
-        // Remove content after second decimalSeparator with itself
-        val decimalParts = resultText.split(decimalSeparator)
-        resultText = decimalParts[0]
-        if (decimalParts.size > 1) resultText += decimalSeparator + decimalParts[1]
-
         // Prevent manual removing currency symbol
         if (!resultText.startsWith(currencySymbol)) {
             resultText =
                 currencySymbol + resultText.trimStart { currencySymbol.toCharArray().contains(it) }
         }
 
+        // Leave last decimalSeparator only
+        val lastIndex = resultText.lastIndexOf(decimalSeparator)
+        if (lastIndex > -1) {
+            val firstPart = resultText.substring(0, lastIndex)
+            val secondPart = resultText.substring(lastIndex + 1)
+            resultText = firstPart.replace(decimalSeparator, "") + decimalSeparator + secondPart
+        }
+
         val newTextWithoutGroupingSeparators =
-            resultText.replace(currencySymbol, "").replace(groupingSeparator, "")
+            resultText.replace("[^\\d$decimalSeparator]".toRegex(), "")
 
         // Calc decimal separator position (without grouping separators)
         val decimalSeparatorPos = newTextWithoutGroupingSeparators.indexOf(decimalSeparator)

@@ -265,7 +265,7 @@ class CurrencyInputWatcherTest {
             val currentEditTextContent =
                 "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}50"
             val expectedText =
-                "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}50"
+                "${locale.currencySymbol}132${locale.groupingSeparator}050${locale.decimalSeparator}"
 
             val (editText, editable, watcher) = setupTestVariables(locale)
             `when`(editable.toString()).thenReturn(currentEditTextContent + locale.decimalSeparator)
@@ -597,6 +597,23 @@ class CurrencyInputWatcherTest {
 
             verify(editText, times(1)).setText(expectedText)
             verify(editText).setSelection(expectedCursorPosition)
+        }
+    }
+
+    @Test
+    fun `should remove any non digit character`() {
+        negativeValueAllow = true
+        for (locale in locales) {
+            val currentEditTextContent = "- 10006metres"
+            val expectedText =
+                "${locale.currencySymbol}-10${locale.groupingSeparator}006"
+
+            val (editText, editable, watcher) = setupTestVariables(locale)
+            `when`(editable.toString()).thenReturn(currentEditTextContent)
+
+            watcher.runAllWatcherMethods(editable)
+
+            verify(editText, times(1)).setText(expectedText)
         }
     }
 

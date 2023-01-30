@@ -40,6 +40,7 @@ You can add the `CurrencyEditText` to your layout.
     android:ems="10" 
     android:id="@+id/editText"
     android:text="1234.67"
+    app:negativeValueAllow="true"
 />
 ```
 
@@ -53,6 +54,7 @@ Or you can use the `CurrencyMaterialEditText` component.
     android:ems="10" 
     android:id="@+id/editText"
     app:text="1234.67"
+    app:negativeValueAllow="true"
 />
 ```
 
@@ -62,6 +64,7 @@ After that, you can configure the View parameters separately in the code:
 
 ```Kotlin
 edittext.setText("4321.76")
+edittext.setNegativeValueAllow(true)
 ```
 
 ## License

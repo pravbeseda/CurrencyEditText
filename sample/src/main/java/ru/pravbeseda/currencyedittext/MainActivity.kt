@@ -32,8 +32,6 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener { editText.text?.clear() }
 
         editText3.setValidator(::validator)
-
-        editText.setText("4321.76")
     }
 
     /**

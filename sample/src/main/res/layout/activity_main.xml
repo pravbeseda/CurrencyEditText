@@ -64,6 +64,7 @@
         android:importantForAutofill="noExcludeDescendants"
         android:textAlignment="viewStart"
         android:theme="@style/CustomThemeEditText"
+        app:negativeValueAllow="true"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -36,16 +36,14 @@ class CurrencyEditTextTest {
     fun shouldSetText() {
         val samples = listOf(
             arrayOf("100", "100"),
-            arrayOf("4321.76", "4,321.76"),
+            arrayOf("4321.76", "4 321.76"),
             arrayOf("0.", "0.")
         )
+        currencyEditText.setGroupingSeparator(" ")
+        currencyEditText.setDecimalSeparator(".")
         samples.forEach {
             testSetText(it[0], it[1])
         }
-        // Todo correct this bug
-//        currencyEditText.setGroupingSeparator(" ")
-//        currencyEditText.setDecimalSeparator(",")
-//        testSetText("4321.76", "4 321,76")
     }
 
     @Test

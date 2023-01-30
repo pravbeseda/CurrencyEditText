@@ -42,8 +42,13 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
             0,
             0
         ).run {
-            // editText.setText("11")
             editText.setText(getString(R.styleable.CurrencyMaterialEditText_text))
+            editText.setNegativeValueAllow(
+                getBoolean(
+                    R.styleable.CurrencyMaterialEditText_negativeValueAllow,
+                    false
+                )
+            )
         }
         addView(editText)
     }
