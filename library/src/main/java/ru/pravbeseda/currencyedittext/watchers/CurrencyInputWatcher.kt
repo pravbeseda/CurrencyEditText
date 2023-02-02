@@ -17,9 +17,7 @@ package ru.pravbeseda.currencyedittext.watchers
 
 import android.widget.EditText
 import java.lang.ref.WeakReference
-import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.text.NumberFormat
 import java.util.*
 
 class CurrencyInputWatcher(
@@ -42,26 +40,18 @@ class CurrencyInputWatcher(
     }
 
     private val editText: EditText? get() = editTextRef.get()
-    private val wholeNumberDecimalFormat =
-        (NumberFormat.getNumberInstance(locale) as DecimalFormat).apply {
-            applyPattern("#,##0")
-            decimalFormatSymbols = getModifiedDecimalFormatSymbols()
-        }
-
-    val decimalFormatSymbols: DecimalFormatSymbols
-        get() = wholeNumberDecimalFormat.decimalFormatSymbols
 
     private val decimalSeparator =
         if (paramDecimalSeparator !== null) {
             paramDecimalSeparator
         } else {
-            wholeNumberDecimalFormat.decimalFormatSymbols.decimalSeparator.toString()
+            DecimalFormatSymbols.getInstance(locale).decimalSeparator.toString()
         }
     private val groupingSeparator =
         if (paramGroupingSeparator !== null) {
             paramGroupingSeparator
         } else {
-            wholeNumberDecimalFormat.decimalFormatSymbols.groupingSeparator.toString()
+            DecimalFormatSymbols.getInstance(locale).groupingSeparator.toString()
         }
 
     override fun onTextModified(
@@ -143,15 +133,12 @@ class CurrencyInputWatcher(
         setText(resultText, cursorPosition, currencySymbol, sign)
     }
 
-    private fun getModifiedDecimalFormatSymbols(): DecimalFormatSymbols {
-        val unusualSymbols = DecimalFormatSymbols()
-        if (!paramDecimalSeparator.isNullOrEmpty()) {
-            unusualSymbols.decimalSeparator = paramDecimalSeparator[0]
-        }
-        if (!paramGroupingSeparator.isNullOrEmpty()) {
-            unusualSymbols.groupingSeparator = paramGroupingSeparator[0]
-        }
-        return unusualSymbols
+    public fun getDecimalSeparator(): String {
+        return decimalSeparator
+    }
+
+    fun getGroupingSeparator(): String {
+        return groupingSeparator
     }
 
     private fun countMatches(string: String?, pattern: String): Int {

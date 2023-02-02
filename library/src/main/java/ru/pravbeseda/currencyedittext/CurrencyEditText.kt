@@ -23,8 +23,6 @@ import android.text.method.DigitsKeyListener
 import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.util.*
@@ -39,14 +37,11 @@ class CurrencyEditText(
 ) : AppCompatEditText(context, attrs) {
     private lateinit var currencySymbolPrefix: String // lateinit is important!
     private var textWatcher: CurrencyInputWatcher
-    private var locale: Locale = Locale.ENGLISH
+    private var locale: Locale = Locale.getDefault()
     private var decimalSeparator: String? = null
     private var groupingSeparator: String? = null
     private var negativeValueAllow: Boolean = false
     private var maxDP: Int
-
-    private val _liveTextError = MutableLiveData<String?>()
-    val liveTextError: LiveData<String?> = _liveTextError
 
     private var onValueChanged: OnValueChanged? = null
     private var validator: ((BigDecimal) -> String?)? = null
@@ -148,7 +143,6 @@ class CurrencyEditText(
             if (textError !== null) {
                 state = State.ERROR
             }
-            _liveTextError.value = textError
             onValueChanged?.onValueChanged(value, state)
         }
     }
@@ -156,8 +150,8 @@ class CurrencyEditText(
     fun getNumericValue(): Double {
         return parseMoneyValueWithLocale(
             text.toString(),
-            textWatcher.decimalFormatSymbols.groupingSeparator.toString(),
-            textWatcher.decimalFormatSymbols.decimalSeparator.toString(),
+            textWatcher.getGroupingSeparator(),
+            textWatcher.getDecimalSeparator(),
             currencySymbolPrefix
         ).toDouble()
     }
@@ -170,8 +164,8 @@ class CurrencyEditText(
         return BigDecimal(
             parseMoneyValueWithLocale(
                 str ?: "",
-                textWatcher.decimalFormatSymbols.groupingSeparator.toString(),
-                textWatcher.decimalFormatSymbols.decimalSeparator.toString(),
+                textWatcher.getGroupingSeparator(),
+                textWatcher.getDecimalSeparator(),
                 currencySymbolPrefix
             ).toString()
         )

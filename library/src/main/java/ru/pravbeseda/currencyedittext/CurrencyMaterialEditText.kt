@@ -20,6 +20,9 @@ import android.text.Editable
 import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
+import java.util.*
+import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
+import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 
 class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
     TextInputLayout(context, attrs) {
@@ -36,25 +39,46 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     init {
         editText = CurrencyEditText(context, null)
+        var localeTag: String?
+        var text: String?
+        var negativeValueAllow: Boolean
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.CurrencyMaterialEditText,
             0,
             0
         ).run {
-            editText.setText(getString(R.styleable.CurrencyMaterialEditText_text))
-            editText.setNegativeValueAllow(
-                getBoolean(
-                    R.styleable.CurrencyMaterialEditText_negativeValueAllow,
-                    false
-                )
+            localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
+            text = getString(R.styleable.CurrencyMaterialEditText_text)
+            negativeValueAllow = getBoolean(
+                R.styleable.CurrencyMaterialEditText_negativeValueAllow,
+                false
             )
         }
+        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) setLocale(
+            getLocaleFromTag(
+                localeTag!!
+            )
+        )
+        setNegativeValueAllow(negativeValueAllow)
+        if (!text.isNullOrBlank()) setText(text!!)
         addView(editText)
     }
 
     fun setText(text: CharSequence) {
         editText.setText(text)
+    }
+
+    fun setLocale(locale: Locale) {
+        editText.setLocale(locale)
+    }
+
+    fun setDecimalSeparator(newSeparator: String) {
+        editText.setDecimalSeparator(newSeparator)
+    }
+
+    fun setGroupingSeparator(newSeparator: String) {
+        editText.setGroupingSeparator(newSeparator)
     }
 
     fun setNegativeValueAllow(allow: Boolean) {

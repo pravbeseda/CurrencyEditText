@@ -17,6 +17,7 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import java.util.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -52,6 +53,28 @@ class CurrencyEditTextTest {
         testSetText("-100", "100")
         currencyEditText.setNegativeValueAllow(true)
         testSetText("-100", "-100")
+    }
+
+    @Test
+    fun shouldSetLocale() {
+        currencyEditText.setLocale(Locale.ENGLISH)
+        testSetText("1000.45", "1,000.45")
+        currencyEditText.setLocale(Locale("ru", "RU"))
+        testSetText("1000,45", "1 000,45")
+    }
+
+    @Test
+    fun shouldSetSeparators() {
+        val samples = listOf(
+            arrayOf("100", "100"),
+            arrayOf("4321.76", "4 321.76"),
+            arrayOf("0.", "0.")
+        )
+        currencyEditText.setGroupingSeparator(" ")
+        currencyEditText.setDecimalSeparator(".")
+        samples.forEach {
+            testSetText(it[0], it[1])
+        }
     }
 
     private fun testSetText(text: String, expected: String) {
