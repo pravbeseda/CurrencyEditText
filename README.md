@@ -33,7 +33,6 @@ over `CurrencyEditText`.
 You can add the `CurrencyEditText` to your layout.
 
 ```xml
-
 <ru.pravbeseda.currencyedittext.CurrencyEditText 
     android:layout_width="wrap_content"
     android:layout_height="60dp" 
@@ -47,7 +46,6 @@ You can add the `CurrencyEditText` to your layout.
 Or you can use the `CurrencyMaterialEditText` component.
 
 ```xml
-
 <ru.pravbeseda.currencyedittext.CurrencyMaterialEditText 
     android:layout_width="wrap_content"
     android:layout_height="60dp" 
@@ -65,6 +63,38 @@ After that, you can configure the View parameters separately in the code:
 ```Kotlin
 edittext.setText("4321.76")
 edittext.setNegativeValueAllow(true)
+```
+
+## Localization
+
+The library supports localization. You can set the locale in the layout file:
+
+```
+    app:localeTag="da-DK"
+```
+
+Or in the code:
+
+```Kotlin
+edittext.setLocale(Locale("da", "DK"))
+// or
+edittext.setLocale(Locale.GERMAN)
+// or
+edittext.setLocale("da-DK")
+```
+
+You can just set the decimal and grouping separators:
+
+```
+    app:decimalSeparator=","
+    app:groupingSeparator=" "
+```
+
+Or in the code:
+
+```Kotlin
+    edittext.setDecimalSeparator(",")
+    edittext.setGroupingSeparator(" ")
 ```
 
 ## License

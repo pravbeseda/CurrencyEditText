@@ -16,8 +16,10 @@
 package ru.pravbeseda.currencyedittext
 
 import android.content.Context
+import android.os.Build
 import android.text.Editable
 import android.util.AttributeSet
+import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
 import java.util.*
@@ -42,6 +44,8 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         var localeTag: String?
         var text: String?
         var negativeValueAllow: Boolean
+        var decimalSeparator: String? = null
+        var groupingSeparator: String? = null
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.CurrencyMaterialEditText,
@@ -50,6 +54,8 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         ).run {
             localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
             text = getString(R.styleable.CurrencyMaterialEditText_text)
+            decimalSeparator = getString(R.styleable.CurrencyMaterialEditText_decimalSeparator)
+            groupingSeparator = getString(R.styleable.CurrencyMaterialEditText_groupingSeparator)
             negativeValueAllow = getBoolean(
                 R.styleable.CurrencyMaterialEditText_negativeValueAllow,
                 false
@@ -62,6 +68,8 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         )
         setNegativeValueAllow(negativeValueAllow)
         if (!text.isNullOrBlank()) setText(text!!)
+        if (!decimalSeparator.isNullOrBlank()) setDecimalSeparator(decimalSeparator!!)
+        if (groupingSeparator !== null) setGroupingSeparator(groupingSeparator!!)
         addView(editText)
     }
 
@@ -71,6 +79,11 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     fun setLocale(locale: Locale) {
         editText.setLocale(locale)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun setLocale(localeTag: String) {
+        editText.setLocale(localeTag)
     }
 
     fun setDecimalSeparator(newSeparator: String) {
