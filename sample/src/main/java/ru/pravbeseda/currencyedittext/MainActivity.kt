@@ -27,11 +27,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        editText.setOnValueChanged { bigDecimal, _ -> textView.text = bigDecimal.toString() }
+        currencyEditText.setValue(BigDecimal(1234.76))
+        currencyMaterialEditText.setValue(BigDecimal(4321.67))
 
-        button.setOnClickListener { editText.text?.clear() }
+        currencyEditText.setOnValueChanged { bigDecimal, _ ->
+            textView.text = bigDecimal.toString()
+        }
 
-        editText3.setValidator(::validator)
+        button.setOnClickListener { currencyEditText.text?.clear() }
+
+        currencyMaterialEditText.setValidator(::validator)
     }
 
     /**

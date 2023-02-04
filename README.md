@@ -110,6 +110,15 @@ edittext.setDecimalSeparator(",")
 edittext.setGroupingSeparator(" ")
 ```
 
+## CurrencyMaterialEditText Features
+
+Since CurrencyMaterialEditText is not a descendant of EditText, some EditText properties are passed with the prefix app. For example:
+
+```
+app:text="1234.67"
+app:selectAllOnFocus="true"
+```
+
 ## License
 
     Copyright (c) 2022-2023 Alexander Ivanov

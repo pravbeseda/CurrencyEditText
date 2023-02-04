@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ru.pravbeseda.currencyedittext.CurrencyEditText
-        android:id="@+id/editText"
+        android:id="@+id/currencyEditText"
         android:layout_width="200dp"
         android:layout_height="60dp"
         android:layout_marginStart="60dp"
@@ -29,6 +29,7 @@
         android:layout_marginEnd="60dp"
         android:layout_marginBottom="20dp"
         android:text="1234"
+        android:selectAllOnFocus="true"
         app:currencySymbol="$"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,10 +48,10 @@
         android:text="Clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/currencyEditText" />
 
     <ru.pravbeseda.currencyedittext.CurrencyMaterialEditText
-        android:id="@+id/editText3"
+        android:id="@+id/currencyMaterialEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
@@ -59,6 +60,9 @@
         android:layout_marginBottom="20dp"
         android:hint="CurrencyMaterialEditText"
         app:text="123467"
+        app:decimalSeparator=","
+        app:groupingSeparator=" "
+        app:selectAllOnFocus="true"
         android:importantForAutofill="noExcludeDescendants"
         android:textAlignment="viewStart"
         android:theme="@style/CustomThemeEditText"

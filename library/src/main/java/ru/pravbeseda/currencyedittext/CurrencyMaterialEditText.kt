@@ -44,6 +44,7 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         var localeTag: String?
         var text: String?
         var negativeValueAllow: Boolean
+        var selectAllOnFocus: Boolean
         var decimalSeparator: String? = null
         var groupingSeparator: String? = null
         context.theme.obtainStyledAttributes(
@@ -60,6 +61,8 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
                 R.styleable.CurrencyMaterialEditText_negativeValueAllow,
                 false
             )
+            selectAllOnFocus =
+                getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
         }
         if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) setLocale(
             getLocaleFromTag(
@@ -70,6 +73,7 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         if (!text.isNullOrBlank()) setText(text!!)
         if (!decimalSeparator.isNullOrBlank()) setDecimalSeparator(decimalSeparator!!)
         if (groupingSeparator !== null) setGroupingSeparator(groupingSeparator!!)
+        setSelectAllOnFocus(selectAllOnFocus)
         addView(editText)
     }
 
@@ -100,6 +104,10 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     fun setNegativeValueAllow(allow: Boolean) {
         editText.setNegativeValueAllow(allow)
+    }
+
+    fun setSelectAllOnFocus(selectOnFocus: Boolean) {
+        editText.setSelectAllOnFocus(selectOnFocus)
     }
 
     fun getNegativeValueAllow(): Boolean {

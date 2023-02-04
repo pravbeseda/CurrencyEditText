@@ -19,6 +19,7 @@
     </declare-styleable>
     <declare-styleable name="CurrencyMaterialEditText">
         <attr name="text" format="string" />
+        <attr name="selectAllOnFocus" format="boolean" />
         <attr name="currencySymbol" />
         <attr name="localeTag" />
         <attr name="decimalSeparator" />
