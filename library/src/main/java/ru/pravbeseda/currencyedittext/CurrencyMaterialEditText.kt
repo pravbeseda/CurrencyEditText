@@ -73,6 +73,10 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         addView(editText)
     }
 
+    fun setValue(value: BigDecimal) {
+        editText.setValue(value)
+    }
+
     fun setText(text: CharSequence) {
         editText.setText(text)
     }

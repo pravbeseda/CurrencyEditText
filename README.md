@@ -61,9 +61,22 @@ That's all for basic setup. Your `editText` should automatically format currency
 After that, you can configure the View parameters separately in the code:
 
 ```Kotlin
-edittext.setText("4321.76")
 edittext.setNegativeValueAllow(true)
 ```
+
+You can set the value via `setValue` method:
+
+```Kotlin
+edittext.setValue(BigDecimal(4321.76))
+```
+
+Or you can set the text value directly:
+
+```Kotlin
+edittext.setText("4321.76")
+```
+
+But in the last case the value is needed to be formatted according to CurrencyEditText localization settings.
 
 ## Localization
 
@@ -86,15 +99,15 @@ edittext.setLocale("da-DK")
 You can just set the decimal and grouping separators:
 
 ```
-    app:decimalSeparator=","
-    app:groupingSeparator=" "
+app:decimalSeparator=","
+app:groupingSeparator=" "
 ```
 
 Or in the code:
 
 ```Kotlin
-    edittext.setDecimalSeparator(",")
-    edittext.setGroupingSeparator(" ")
+edittext.setDecimalSeparator(",")
+edittext.setGroupingSeparator(" ")
 ```
 
 ## License

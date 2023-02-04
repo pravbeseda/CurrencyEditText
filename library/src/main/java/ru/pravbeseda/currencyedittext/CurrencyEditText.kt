@@ -26,6 +26,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.util.*
+import ru.pravbeseda.currencyedittext.util.formatMoneyValue
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 import ru.pravbeseda.currencyedittext.util.parseMoneyValueWithLocale
@@ -80,6 +81,16 @@ class CurrencyEditText(
         addTextChangedListener(textWatcher)
     }
 
+    fun setValue(value: BigDecimal) {
+        setText(
+            formatMoneyValue(
+                value,
+                textWatcher.getGroupingSeparator(),
+                textWatcher.getDecimalSeparator()
+            )
+        )
+    }
+
     fun setLocale(locale: Locale) {
         this.locale = locale
         invalidateTextWatcher()
@@ -96,9 +107,17 @@ class CurrencyEditText(
         invalidateTextWatcher()
     }
 
+    fun getDecimalSeparator(): String {
+        return textWatcher.getDecimalSeparator()
+    }
+
     fun setGroupingSeparator(newSeparator: String) {
         groupingSeparator = newSeparator
         invalidateTextWatcher()
+    }
+
+    fun getGroupingSeparator(): String {
+        return textWatcher.getGroupingSeparator()
     }
 
     fun setNegativeValueAllow(newValue: Boolean) {

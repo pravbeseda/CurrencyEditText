@@ -17,6 +17,9 @@ package ru.pravbeseda.currencyedittext.util
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.text.ParseException
 import java.util.IllformedLocaleException
@@ -45,6 +48,18 @@ internal fun parseMoneyValueWithLocale(
     } catch (exception: ParseException) {
         0
     }
+}
+
+internal fun formatMoneyValue(
+    value: BigDecimal,
+    groupingSeparator: String,
+    decimalSeparator: String
+): String {
+    val separators = DecimalFormatSymbols()
+    separators.decimalSeparator = decimalSeparator[0]
+    separators.groupingSeparator = groupingSeparator[0]
+    val df = DecimalFormat("#,##0.##", separators)
+    return df.format(value)
 }
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

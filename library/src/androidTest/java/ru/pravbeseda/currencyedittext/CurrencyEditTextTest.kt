@@ -17,6 +17,7 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import java.math.BigDecimal
 import java.util.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -34,7 +35,42 @@ class CurrencyEditTextTest {
     }
 
     @Test
-    fun shouldSetText() {
+    fun testSetValue() {
+        val samples = {
+            val decimalSeparator = currencyEditText.getDecimalSeparator()
+            val groupingSeparator = currencyEditText.getGroupingSeparator()
+            listOf(
+                arrayOf(BigDecimal(4321.76), "4${groupingSeparator}321${decimalSeparator}76"),
+                arrayOf(BigDecimal(100.0), "100"),
+                arrayOf(BigDecimal(0.0), "0")
+            )
+        }
+        // Run all checks
+        val valuesAssertEquals = {
+            samples().forEach {
+                valueAssertEquals(it[0] as BigDecimal, it[1] as String)
+            }
+        }
+
+        // For default separators
+        valuesAssertEquals()
+
+        // Custom locales
+        currencyEditText.setLocale(Locale("ru", "RU"))
+        valuesAssertEquals()
+
+        // Custom separators
+        currencyEditText.setLocale(Locale.ENGLISH)
+        currencyEditText.setDecimalSeparator(",")
+        currencyEditText.setGroupingSeparator(" ")
+        valuesAssertEquals()
+        currencyEditText.setDecimalSeparator("_")
+        currencyEditText.setGroupingSeparator("^")
+        valuesAssertEquals()
+    }
+
+    @Test
+    fun testSetText() {
         val samples = listOf(
             arrayOf("100", "100"),
             arrayOf("4321.76", "4 321.76"),
@@ -43,24 +79,24 @@ class CurrencyEditTextTest {
         currencyEditText.setGroupingSeparator(" ")
         currencyEditText.setDecimalSeparator(".")
         samples.forEach {
-            testSetText(it[0], it[1])
+            textAssertEquals(it[0], it[1])
         }
     }
 
     @Test
     fun shouldNegativeValueAllow() {
         currencyEditText.setNegativeValueAllow(false)
-        testSetText("-100", "100")
+        textAssertEquals("-100", "100")
         currencyEditText.setNegativeValueAllow(true)
-        testSetText("-100", "-100")
+        textAssertEquals("-100", "-100")
     }
 
     @Test
     fun shouldSetLocale() {
         currencyEditText.setLocale(Locale.ENGLISH)
-        testSetText("1000.45", "1,000.45")
+        textAssertEquals("1000.45", "1,000.45")
         currencyEditText.setLocale(Locale("ru", "RU"))
-        testSetText("1000,45", "1 000,45")
+        textAssertEquals("1000,45", "1 000,45")
     }
 
     @Test
@@ -73,11 +109,18 @@ class CurrencyEditTextTest {
         currencyEditText.setGroupingSeparator(" ")
         currencyEditText.setDecimalSeparator(".")
         samples.forEach {
-            testSetText(it[0], it[1])
+            textAssertEquals(it[0], it[1])
         }
     }
 
-    private fun testSetText(text: String, expected: String) {
+    private fun valueAssertEquals(value: BigDecimal, expected: String) {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setValue(value)
+        }
+        assertEquals(expected, currencyEditText.text.toString())
+    }
+
+    private fun textAssertEquals(text: String, expected: String) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setText(text)
         }
