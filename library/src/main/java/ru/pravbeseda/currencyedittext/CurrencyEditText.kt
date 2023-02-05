@@ -79,6 +79,7 @@ class CurrencyEditText(
             getLocaleFromTag(localeTag!!)
         textWatcher = createTextWatcher()
         addTextChangedListener(textWatcher)
+        text = this.text // to apply text watcher formatting
     }
 
     fun setValue(value: BigDecimal) {
