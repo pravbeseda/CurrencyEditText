@@ -519,15 +519,24 @@ class CurrencyInputWatcherTest {
     fun `Should change sign by press minus if it's disallowed`() {
         negativeValueAllow = false
         for (locale in locales) {
-            val currentEditTextContent = "${locale.currencySymbol}1"
-            val expectedText = "${locale.currencySymbol}1"
+            val currentEditTextContent = "${locale.currencySymbol}100"
+            val expectedText = "${locale.currencySymbol}100"
+            val expectedCursorPosition = expectedText.length - 1
 
             val (editText, editable, watcher) = setupTestVariables(locale)
-            `when`(editable.toString()).thenReturn("$currentEditTextContent-")
+            `when`(editable.toString()).thenReturn("${locale.currencySymbol}10-0")
 
-            watcher.runAllWatcherMethods(editable)
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                currentEditTextContent.length,
+                0,
+                1
+            )
+            watcher.onTextChanged(editable, currentEditTextContent.length - 1, 0, 1)
+            watcher.afterTextChanged(editable)
 
             verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
         }
     }
 

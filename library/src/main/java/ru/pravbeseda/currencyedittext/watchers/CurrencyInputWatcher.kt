@@ -70,12 +70,14 @@ class CurrencyInputWatcher(
         }
 
         // Place sign minus before value
+        val numberOfMinus = resultText.count { it == '-' }
         if (negativeValueAllow) {
-            val numberOfMinus = resultText.count { it == '-' }
             sign = if (numberOfMinus == 1) "-" else ""
             if (numberOfMinus > 1 && position > currencySymbol.length) {
                 position -= 2
             }
+        } else {
+            position -= numberOfMinus
         }
         resultText = resultText.replace("-", "")
 
