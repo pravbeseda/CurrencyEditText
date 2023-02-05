@@ -100,7 +100,7 @@ class CurrencyInputWatcher(
         val decimalSeparatorPos = newTextWithoutGroupingSeparators.indexOf(decimalSeparator)
 
         // Cursor position calculation (in text without separators)
-        val cursorPosition = position.let {
+        var cursorPosition = position.let {
             val text = newText?.substring(0, it)
             val curSpaceCount = countMatches(text, groupingSeparator)
             val spaceCountInCurrencySymbol = countMatches(currencySymbol, groupingSeparator)
@@ -126,6 +126,7 @@ class CurrencyInputWatcher(
         if (decimalSeparatorPos > -1) {
             if (resultText == "") {
                 resultText = "0"
+                cursorPosition++
             }
             resultText += decimalSeparator + fractionalPart
         }

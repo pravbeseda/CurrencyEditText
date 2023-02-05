@@ -27,7 +27,6 @@ import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 class CurrencyInputWatcherTest {
     private var negativeValueAllow = false
 
-    // TODO Add more locale tests by their, tags, decimal separator and theur grouping separator
     private val locales
         get() = listOf(
             LocaleVars("en-NG", ".", ",", "$ ", 2, negativeValueAllow),
@@ -55,7 +54,7 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
-    fun `Should set text To "$ 5" when text is set to "5"`() {
+    fun `Should set text to "$ 5" when text is set to "5"`() {
         for (locale in locales) {
             val currentEditTextContent = "5"
             val expectedText = "${locale.currencySymbol}5"
@@ -172,13 +171,24 @@ class CurrencyInputWatcherTest {
         for (locale in locales) {
             val currentEditTextContent = locale.currencySymbol
             val expectedText = "${locale.currencySymbol}0${locale.decimalSeparator}"
+            val expectedCursorPosition =
+                expectedText.length // cursor should be at the end of the text
 
             val (editText, editable, watcher) = setupTestVariables(locale)
             `when`(editable.toString()).thenReturn(currentEditTextContent + locale.decimalSeparator)
 
-            watcher.runAllWatcherMethods(editable)
+            val start = currentEditTextContent.length
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                start,
+                1,
+                start + 1
+            )
+            watcher.onTextChanged(editable, start, 0, 1)
+            watcher.afterTextChanged(editable)
 
             verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
         }
     }
 
