@@ -45,8 +45,9 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         var text: String?
         var negativeValueAllow: Boolean
         var selectAllOnFocus: Boolean
-        var decimalSeparator: String? = null
-        var groupingSeparator: String? = null
+        var decimalSeparator: String?
+        var groupingSeparator: String?
+        var maxDecimalPlaces: Int
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.CurrencyMaterialEditText,
@@ -63,17 +64,22 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
             )
             selectAllOnFocus =
                 getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
+            maxDecimalPlaces =
+                getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
         }
-        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) setLocale(
-            getLocaleFromTag(
-                localeTag!!
+        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) {
+            setLocale(
+                getLocaleFromTag(
+                    localeTag!!
+                )
             )
-        )
+        }
         setNegativeValueAllow(negativeValueAllow)
         if (!text.isNullOrBlank()) setText(text!!)
         if (!decimalSeparator.isNullOrBlank()) setDecimalSeparator(decimalSeparator!!)
         if (groupingSeparator !== null) setGroupingSeparator(groupingSeparator!!)
         setSelectAllOnFocus(selectAllOnFocus)
+        setMaxNumberOfDecimalPlaces(maxDecimalPlaces)
         addView(editText)
     }
 
@@ -108,6 +114,10 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     fun setSelectAllOnFocus(selectOnFocus: Boolean) {
         editText.setSelectAllOnFocus(selectOnFocus)
+    }
+
+    fun setMaxNumberOfDecimalPlaces(maxDecimalPlaces: Int) {
+        editText.setMaxNumberOfDecimalPlaces(maxDecimalPlaces)
     }
 
     fun getNegativeValueAllow(): Boolean {

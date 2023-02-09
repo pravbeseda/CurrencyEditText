@@ -6,7 +6,7 @@
     <attr name="groupingSeparator" format="string" />
     <attr name="useCurrencySymbolAsHint" format="boolean" />
     <attr name="negativeValueAllow" format="boolean" />
-    <attr name="maxNumberOfDecimalDigits" format="integer" />
+    <attr name="maxNumberOfDecimalPlaces" format="integer" />
 
     <declare-styleable name="CurrencyEditText">
         <attr name="currencySymbol" />
@@ -15,7 +15,7 @@
         <attr name="groupingSeparator" />
         <attr name="useCurrencySymbolAsHint" />
         <attr name="negativeValueAllow" />
-        <attr name="maxNumberOfDecimalDigits" />
+        <attr name="maxNumberOfDecimalPlaces" />
     </declare-styleable>
     <declare-styleable name="CurrencyMaterialEditText">
         <attr name="text" format="string" />
@@ -26,6 +26,6 @@
         <attr name="groupingSeparator" />
         <attr name="useCurrencySymbolAsHint" />
         <attr name="negativeValueAllow" />
-        <attr name="maxNumberOfDecimalDigits" />
+        <attr name="maxNumberOfDecimalPlaces" />
     </declare-styleable>
 </resources>

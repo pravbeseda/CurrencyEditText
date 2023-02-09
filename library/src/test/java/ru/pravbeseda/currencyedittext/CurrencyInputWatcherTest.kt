@@ -25,15 +25,14 @@ import ru.pravbeseda.currencyedittext.model.LocaleVars
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 
 class CurrencyInputWatcherTest {
-    private var negativeValueAllow = false
 
     private val locales
         get() = listOf(
-            LocaleVars("en-NG", ".", ",", "$ ", 2, negativeValueAllow),
-            LocaleVars("en-US", ".", ",", "$ ", 2, negativeValueAllow),
-            LocaleVars("da-DK", ",", ".", "$ ", 2, negativeValueAllow),
-            LocaleVars("fr-CA", ".", " ", "$ ", 2, negativeValueAllow),
-            LocaleVars("ru-Ru", ",", " ", "", 2, negativeValueAllow)
+            LocaleVars("en-NG", ".", ",", "$ "),
+            LocaleVars("en-US", ".", ",", "$ "),
+            LocaleVars("da-DK", ",", ".", "$ "),
+            LocaleVars("fr-CA", ".", " ", "$ "),
+            LocaleVars("ru-Ru", ",", " ", "")
         )
 
     @Test
@@ -339,8 +338,7 @@ class CurrencyInputWatcherTest {
                 locale.tag.toLocale(),
                 locale.decimalSeparator,
                 locale.groupingSeparator,
-                locale.maxNumberOfDecimalPlaces,
-                locale.negativeValueAllow
+                2
             )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
@@ -351,10 +349,10 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
-    fun `Should throw an Exception when maximum dp is set to zero`() {
+    fun `Should throw an Exception when maximum dp is bellow zero`() {
         for (locale in locales) {
             try {
-                val (editText, editable, watcher) = setupTestVariables(locale, decimalPlaces = 0)
+                val (editText, editable, watcher) = setupTestVariables(locale, decimalPlaces = -1)
                 Assert.fail("Should have caught an illegalArgumentException at this point")
             } catch (e: IllegalArgumentException) {
             }
@@ -447,7 +445,7 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
-    fun `Should change maximum decimal digits to 3 if setMaxNumberOfDecimalDigits(3) is called after being init with decimal digits 2`() {
+    fun `Should change maximum decimal digits to 3 if setMaxNumberOfDecimalPlaces(3) is called after being init with decimal digits 2`() {
         for (locale in locales) {
             val currentEditTextContent =
                 "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}519923345634"
@@ -516,8 +514,7 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
-    fun `Should change sign by press minus if it's disallowed`() {
-        negativeValueAllow = false
+    fun `Should not change sign by pressing minus if it's disallowed`() {
         for (locale in locales) {
             val currentEditTextContent = "${locale.currencySymbol}100"
             val expectedText = "${locale.currencySymbol}100"
@@ -541,14 +538,13 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
-    fun `Should change sign by press minus if it's allowed`() {
-        negativeValueAllow = true
+    fun `Should change sign by pressing minus if it's allowed`() {
         for (locale in locales) {
             val currentEditTextContent = "${locale.currencySymbol}1"
             val expectedText = "${locale.currencySymbol}-1"
             val expectedCursorPosition = expectedText.length
 
-            val (editText, editable, watcher) = setupTestVariables(locale)
+            val (editText, editable, watcher) = setupTestVariables(locale, 2, true)
             `when`(editable.toString()).thenReturn("$currentEditTextContent-")
 
             watcher.beforeTextChanged(
@@ -566,14 +562,13 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
-    fun `Should remove sign by press minus and don't lost position`() {
-        negativeValueAllow = true
+    fun `Should remove sign by pressing minus and don't lost position`() {
         for (locale in locales) {
             val currentEditTextContent = "${locale.currencySymbol}-12"
             val expectedText = "${locale.currencySymbol}12"
             val expectedCursorPosition = expectedText.length - 1
 
-            val (editText, editable, watcher) = setupTestVariables(locale)
+            val (editText, editable, watcher) = setupTestVariables(locale, 2, true)
             `when`(editable.toString()).thenReturn("${locale.currencySymbol}-1-2")
 
             val start = currentEditTextContent.length - 1
@@ -592,14 +587,13 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
-    fun `Should remove sign by press minus and don't lost position when number is big`() {
-        negativeValueAllow = true
+    fun `Should remove sign by pressing minus and don't lost position when number is big`() {
         for (locale in locales) {
             val currentEditTextContent = "${locale.currencySymbol}-12${locale.groupingSeparator}255"
             val expectedText = "${locale.currencySymbol}12${locale.groupingSeparator}255"
             val expectedCursorPosition = locale.currencySymbol.length + 1 // cursor after 1
 
-            val (editText, editable, watcher) = setupTestVariables(locale)
+            val (editText, editable, watcher) = setupTestVariables(locale, 0, true)
             `when`(editable.toString()).thenReturn(
                 "${locale.currencySymbol}-1-2${locale.groupingSeparator}255"
             )
@@ -621,13 +615,12 @@ class CurrencyInputWatcherTest {
 
     @Test
     fun `should remove any non digit character`() {
-        negativeValueAllow = true
         for (locale in locales) {
             val currentEditTextContent = "- 10006metres"
             val expectedText =
                 "${locale.currencySymbol}-10${locale.groupingSeparator}006"
 
-            val (editText, editable, watcher) = setupTestVariables(locale)
+            val (editText, editable, watcher) = setupTestVariables(locale, 2, true)
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcher.runAllWatcherMethods(editable)
@@ -636,7 +629,51 @@ class CurrencyInputWatcherTest {
         }
     }
 
-    private fun setupTestVariables(locale: LocaleVars, decimalPlaces: Int = 2): TestVars {
+    @Test
+    fun `should remove decimal part if maxNumberOfDecimalPlaces = 0`() {
+        for (locale in locales) {
+            val currentEditTextContent = "100${locale.decimalSeparator}568"
+            val expectedText = "${locale.currencySymbol}100"
+
+            val (editText, editable, watcher) = setupTestVariables(locale, 0)
+            `when`(editable.toString()).thenReturn(currentEditTextContent)
+
+            watcher.runAllWatcherMethods(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+        }
+    }
+
+    @Test
+    fun `should prevent from entering decimal separator when maxNumberOfDecimalPlaces = 0`() {
+        for (locale in locales) {
+            val currentEditTextContent = "568"
+            val expectedText = "${locale.currencySymbol}568"
+            val expectedCursorPosition = locale.currencySymbol.length + 1
+
+            val (editText, editable, watcher) = setupTestVariables(locale, 0)
+            `when`(editable.toString()).thenReturn(
+                "${locale.currencySymbol}5${locale.decimalSeparator}68"
+            )
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                expectedCursorPosition,
+                1,
+                locale.currencySymbol.length + 2
+            )
+            watcher.onTextChanged(editable, locale.currencySymbol.length + 1, 0, 1)
+            watcher.afterTextChanged(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
+        }
+    }
+
+    private fun setupTestVariables(
+        locale: LocaleVars,
+        decimalPlaces: Int = 2,
+        negativeValueAllow: Boolean = false
+    ): TestVars {
         val editText = mock(CurrencyEditText::class.java)
         val editable = mock(Editable::class.java)
         `when`(editText.text).thenReturn(editable)
@@ -646,7 +683,7 @@ class CurrencyInputWatcherTest {
             decimalPlaces,
             locale.decimalSeparator,
             locale.groupingSeparator,
-            locale.negativeValueAllow
+            negativeValueAllow
         )
         return TestVars(editText, editable, watcher)
     }

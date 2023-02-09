@@ -42,7 +42,7 @@ class CurrencyEditText(
     private var decimalSeparator: String? = null
     private var groupingSeparator: String? = null
     private var negativeValueAllow: Boolean = false
-    private var maxDP: Int
+    private var maxDecimalPlaces: Int
 
     private var onValueChanged: OnValueChanged? = null
     private var validator: ((BigDecimal) -> String?)? = null
@@ -66,7 +66,7 @@ class CurrencyEditText(
                 groupingSeparator = getString(R.styleable.CurrencyEditText_groupingSeparator)
                 useCurrencySymbolAsHint =
                     getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
-                maxDP = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalDigits, 2)
+                maxDecimalPlaces = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalPlaces, 2)
                 negativeValueAllow =
                     getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false)
             } finally {
@@ -136,8 +136,8 @@ class CurrencyEditText(
         invalidateTextWatcher()
     }
 
-    fun setMaxNumberOfDecimalDigits(maxDP: Int) {
-        this.maxDP = maxDP
+    fun setMaxNumberOfDecimalPlaces(maxDP: Int) {
+        this.maxDecimalPlaces = maxDP
         invalidateTextWatcher()
     }
 
@@ -154,7 +154,7 @@ class CurrencyEditText(
             locale,
             decimalSeparator,
             groupingSeparator,
-            maxDP,
+            maxDecimalPlaces,
             negativeValueAllow
         ) {
             var state: State = State.OK

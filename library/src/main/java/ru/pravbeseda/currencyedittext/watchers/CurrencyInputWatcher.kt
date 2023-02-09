@@ -32,9 +32,9 @@ class CurrencyInputWatcher(
 ) : EasyTextWatcher() {
 
     init {
-        if (maxNumberOfDecimalPlaces < 1) {
+        if (maxNumberOfDecimalPlaces < 0) {
             throw IllegalArgumentException(
-                "Maximum number of Decimal Digits must be a positive integer"
+                "Maximum number of Decimal Places must be a positive integer"
             )
         }
     }
@@ -69,6 +69,12 @@ class CurrencyInputWatcher(
             resultText = resultText.replaceRange(position - 1, position, decimalSeparator)
         }
 
+        // Remove decimal separator from newPartOfText when maxNumberOfDecimalPlaces is 0
+        if (maxNumberOfDecimalPlaces == 0 && arrayOf(",", ".").contains(newPartOfText)) {
+            resultText = resultText.replaceRange(position - 1, position, "")
+            position--
+        }
+
         // Place sign minus before value
         val numberOfMinus = resultText.count { it == '-' }
         if (negativeValueAllow) {
@@ -77,7 +83,9 @@ class CurrencyInputWatcher(
                 position -= 2
             }
         } else {
-            position -= numberOfMinus
+            if (position >= numberOfMinus) {
+                position -= numberOfMinus
+            }
         }
         resultText = resultText.replace("-", "")
 
@@ -125,7 +133,7 @@ class CurrencyInputWatcher(
         }
 
         resultText = integerPart
-        if (decimalSeparatorPos > -1) {
+        if (decimalSeparatorPos > -1 && maxNumberOfDecimalPlaces > 0) {
             if (resultText == "") {
                 resultText = "0"
                 cursorPosition++
@@ -136,7 +144,7 @@ class CurrencyInputWatcher(
         setText(resultText, cursorPosition, currencySymbol, sign)
     }
 
-    public fun getDecimalSeparator(): String {
+    fun getDecimalSeparator(): String {
         return decimalSeparator
     }
 

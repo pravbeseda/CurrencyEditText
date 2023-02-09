@@ -40,6 +40,7 @@ You can add the `CurrencyEditText` to your layout.
     android:id="@+id/editText"
     android:text="1234.67"
     app:negativeValueAllow="true"
+    app:maxNumberOfDecimalPlaces="2"
 />
 ```
 
@@ -53,6 +54,7 @@ Or you can use the `CurrencyMaterialEditText` component.
     android:id="@+id/editText"
     app:text="1234.67"
     app:negativeValueAllow="true"
+    app:maxNumberOfDecimalPlaces="2"
 />
 ```
 
@@ -62,6 +64,7 @@ After that, you can configure the View parameters separately in the code:
 
 ```Kotlin
 edittext.setNegativeValueAllow(true)
+edittext.setMaxNumberOfDecimalPlaces(2)
 ```
 
 You can set the value via `setValue` method:
@@ -83,7 +86,7 @@ But in the last case the value is needed to be formatted according to CurrencyEd
 The library supports localization. You can set the locale in the layout file:
 
 ```
-    app:localeTag="da-DK"
+app:localeTag="da-DK"
 ```
 
 Or in the code:
@@ -112,7 +115,7 @@ edittext.setGroupingSeparator(" ")
 
 ## CurrencyMaterialEditText Features
 
-Since CurrencyMaterialEditText is not a descendant of EditText, some EditText properties are passed with the prefix app. For example:
+Since CurrencyMaterialEditText is not a descendant of EditText, some EditText properties are passed with the prefix 'app'. For example:
 
 ```
 app:text="1234.67"
