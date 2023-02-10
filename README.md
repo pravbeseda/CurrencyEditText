@@ -161,7 +161,7 @@ Or in the code:
 currencyMaterialEditText.hint = "Account amount"
 ```
 
-As mentioned above in the CurrencyMaterialEditText component, the validation error text is shown automatically.
+As mentioned above, the validation error text in the CurrencyMaterialEditText component is shown automatically.
 
 ## License
 
