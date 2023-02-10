@@ -31,11 +31,11 @@
         android:text="1234"
         android:selectAllOnFocus="true"
         app:currencySymbol="$"
+        app:negativeValueAllow="false"
+        app:maxNumberOfDecimalPlaces="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:maxNumberOfDecimalDigits="2"
-        app:negativeValueAllow="true"
         app:useCurrencySymbolAsHint="true" />
 
     <Button
@@ -63,6 +63,7 @@
         app:decimalSeparator=","
         app:groupingSeparator=" "
         app:selectAllOnFocus="true"
+        app:maxNumberOfDecimalPlaces="2"
         android:importantForAutofill="noExcludeDescendants"
         android:textAlignment="viewStart"
         android:theme="@style/CustomThemeEditText"
