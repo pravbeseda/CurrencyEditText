@@ -113,6 +113,32 @@ edittext.setDecimalSeparator(",")
 edittext.setGroupingSeparator(" ")
 ```
 
+You can set value validation:
+
+```Kotlin
+edittext.setValidator { value ->
+    var error = ""
+    if (value < BigDecimal(1000)) {
+        error = "Value is less than 1000"
+    }
+    error
+}
+```
+
+You can subscribe to a field value change event:
+
+```Kotlin
+edittext.setOnValueChanged { bigDecimal, state: State, textError: String ->
+    if (state !== State.ERROR) {
+        textView.text = bigDecimal.toString()
+    } else {
+        textView.text = textError
+    }
+}
+```
+
+In the CurrencyMaterialEditText component, the validation error text is shown automatically.
+
 ## CurrencyMaterialEditText Features
 
 Since CurrencyMaterialEditText is not a descendant of EditText, some EditText properties are passed with the prefix 'app'. For example:
@@ -133,18 +159,6 @@ Or in the code:
 
 ```Kotlin
 currencyMaterialEditText.hint = "Account amount"
-```
-
-You can set value validation:
-
-```Kotlin
-currencyMaterialEditText.setValidator { value ->
-    var error = ""
-    if (value < BigDecimal(1000)) {
-        error = "Value is less than 1000"
-    }
-    error
-}
 ```
 
 ## License

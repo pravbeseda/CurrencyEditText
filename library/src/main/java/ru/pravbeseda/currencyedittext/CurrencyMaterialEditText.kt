@@ -124,7 +124,9 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         return editText.getNegativeValueAllow()
     }
 
-    fun setOnValueChanged(action: (BigDecimal?, state: CurrencyEditText.Companion.State) -> Unit) {
+    fun setOnValueChanged(
+        action: (BigDecimal?, state: CurrencyEditText.Companion.State, textError: String) -> Unit
+    ) {
         editText.setOnValueChanged(action)
     }
 

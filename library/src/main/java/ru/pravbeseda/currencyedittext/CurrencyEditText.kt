@@ -46,6 +46,7 @@ class CurrencyEditText(
 
     private var onValueChanged: OnValueChanged? = null
     private var validator: ((BigDecimal) -> String?)? = null
+    private var state: State = State.OK
 
     init {
         var useCurrencySymbolAsHint = false
@@ -75,8 +76,10 @@ class CurrencyEditText(
         }
         currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
-        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) locale =
-            getLocaleFromTag(localeTag!!)
+        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) {
+            locale =
+                getLocaleFromTag(localeTag!!)
+        }
         textWatcher = createTextWatcher()
         addTextChangedListener(textWatcher)
         text = this.text // to apply text watcher formatting
@@ -157,13 +160,14 @@ class CurrencyEditText(
             maxDecimalPlaces,
             negativeValueAllow
         ) {
-            var state: State = State.OK
             val value = stringToBigDecimal(it)
             val textError = (validator?.let { it1 -> it1(value) })
-            if (textError !== null) {
-                state = State.ERROR
+            state = if (textError.isNullOrEmpty()) {
+                State.OK
+            } else {
+                State.ERROR
             }
-            onValueChanged?.onValueChanged(value, state)
+            onValueChanged?.onValueChanged(value, state, textError ?: "")
         }
     }
 
@@ -218,10 +222,10 @@ class CurrencyEditText(
         }
     }
 
-    fun setOnValueChanged(action: (BigDecimal?, state: State) -> Unit) {
+    fun setOnValueChanged(action: (BigDecimal?, state: State, textError: String) -> Unit) {
         onValueChanged = object : OnValueChanged {
-            override fun onValueChanged(newValue: BigDecimal?, state: State) {
-                action.invoke(newValue, state)
+            override fun onValueChanged(newValue: BigDecimal?, state: State, textError: String) {
+                action.invoke(newValue, state, textError)
             }
         }
     }
@@ -234,7 +238,7 @@ class CurrencyEditText(
      * Interface for value and state change callback
      */
     interface OnValueChanged {
-        fun onValueChanged(newValue: BigDecimal?, state: State)
+        fun onValueChanged(newValue: BigDecimal?, state: State, textError: String)
     }
 
     companion object {

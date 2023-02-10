@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import java.math.BigDecimal
 import kotlinx.android.synthetic.main.activity_main.*
 import pravbeseda.R
+import ru.pravbeseda.currencyedittext.CurrencyEditText.Companion.State
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,23 +31,24 @@ class MainActivity : AppCompatActivity() {
         currencyEditText.setValue(BigDecimal(1234.76))
         currencyMaterialEditText.setValue(BigDecimal(4321.67))
 
-        currencyEditText.setOnValueChanged { bigDecimal, _ ->
-            textView.text = bigDecimal.toString()
+        currencyEditText.setOnValueChanged { bigDecimal, state: State, textError: String ->
+            if (state !== State.ERROR) {
+                textView.text = bigDecimal.toString()
+            } else {
+                textView.text = textError
+            }
         }
 
         button.setOnClickListener { currencyEditText.text?.clear() }
 
-        currencyMaterialEditText.setValidator(::validator)
-    }
+        currencyMaterialEditText.hint = "Enter value"
 
-    /**
-     * Validator sample
-     */
-    private fun validator(value: BigDecimal): String {
-        var error = ""
-        if (value < BigDecimal(1000)) {
-            error = "Value is less than 1000"
+        currencyEditText.setValidator { value ->
+            var error = ""
+            if (value < BigDecimal(1000)) {
+                error = "Value is less than 1000"
+            }
+            error
         }
-        return error
     }
 }
