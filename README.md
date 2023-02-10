@@ -122,6 +122,31 @@ app:text="1234.67"
 app:selectAllOnFocus="true"
 ```
 
+Some properties are only available for the CurrencyMaterialEditText component.
+
+You can set hint (label):
+```
+app:hint="Account amount"
+```
+
+Or in the code:
+
+```Kotlin
+currencyMaterialEditText.hint = "Account amount"
+```
+
+You can set value validation:
+
+```Kotlin
+currencyMaterialEditText.setValidator { value ->
+    var error = ""
+    if (value < BigDecimal(1000)) {
+        error = "Value is less than 1000"
+    }
+    error
+}
+```
+
 ## License
 
     Copyright (c) 2022-2023 Alexander Ivanov
