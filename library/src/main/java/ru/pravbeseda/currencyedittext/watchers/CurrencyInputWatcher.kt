@@ -100,7 +100,10 @@ class CurrencyInputWatcher(
         if (lastIndex > -1) {
             val firstPart = resultText.substring(0, lastIndex)
             val secondPart = resultText.substring(lastIndex + 1)
+            val decimalSeparatorNumber = firstPart.count { it == decimalSeparator[0] }
             resultText = firstPart.replace(decimalSeparator, "") + decimalSeparator + secondPart
+            position -= decimalSeparatorNumber
+            if (position < 0) position = 0
         }
 
         val newTextWithoutGroupingSeparators =

@@ -732,6 +732,36 @@ class CurrencyInputWatcherTest {
         }
     }
 
+    @Test
+    fun `shouldn't move cursor after click on decimal separator before other decimal separator`() {
+        for (locale in locales) {
+            val currentEditTextContent =
+                "${locale.currencySymbol}1${locale.groupingSeparator}000${locale.decimalSeparator}01"
+            val currentCursorPosition = locale.currencySymbol.length + 3
+            val (editText, editable, watcher) = setupTestVariables(locale, 2)
+            `when`(editable.toString()).thenReturn(
+                "${locale.currencySymbol}1${locale.groupingSeparator}0${locale.decimalSeparator}00${locale.decimalSeparator}01"
+            )
+
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                currentCursorPosition,
+                1,
+                currentCursorPosition
+            )
+            watcher.onTextChanged(
+                editable,
+                currentCursorPosition,
+                0,
+                1
+            )
+            watcher.afterTextChanged(editable)
+
+            verify(editText, times(1)).setText(currentEditTextContent)
+            verify(editText).setSelection(currentCursorPosition)
+        }
+    }
+
     private fun setupTestVariables(
         locale: LocaleVars,
         decimalPlaces: Int = 2,
