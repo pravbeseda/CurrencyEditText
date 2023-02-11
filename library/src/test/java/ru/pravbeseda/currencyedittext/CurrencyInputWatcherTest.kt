@@ -669,6 +669,69 @@ class CurrencyInputWatcherTest {
         }
     }
 
+    @Test
+    fun `should move left cursor after decimal separator input`() {
+        for (locale in locales) {
+            val currentEditTextContent = "100"
+            val currentCursorPosition = 2
+            val expectedText = "${locale.currencySymbol}10${locale.decimalSeparator}0"
+            val expectedCursorPosition = locale.currencySymbol.length + 3
+
+            val (editText, editable, watcher) = setupTestVariables(locale, 2)
+            `when`(editable.toString()).thenReturn(
+                "${locale.currencySymbol}10${locale.decimalSeparator}0"
+            )
+
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                currentCursorPosition,
+                1,
+                expectedCursorPosition
+            )
+            watcher.onTextChanged(
+                editable,
+                locale.currencySymbol.length + currentCursorPosition,
+                0,
+                1
+            )
+            watcher.afterTextChanged(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
+        }
+    }
+
+    @Test
+    fun `should replace dot or comma with decimal separator and move left cursor`() {
+        for (locale in locales) {
+            val currentEditTextContent = "100"
+            val currentCursorPosition = 2
+            val expectedText = "${locale.currencySymbol}10${locale.decimalSeparator}0"
+            val expectedCursorPosition = locale.currencySymbol.length + 3
+
+            val (editText, editable, watcher) = setupTestVariables(locale, 2)
+            val separator = if (locale.decimalSeparator == ".") ',' else '.' // opposite separator
+            `when`(editable.toString()).thenReturn("${locale.currencySymbol}10${separator}0")
+
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                currentCursorPosition,
+                1,
+                expectedCursorPosition
+            )
+            watcher.onTextChanged(
+                editable,
+                locale.currencySymbol.length + currentCursorPosition,
+                0,
+                1
+            )
+            watcher.afterTextChanged(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
+        }
+    }
+
     private fun setupTestVariables(
         locale: LocaleVars,
         decimalPlaces: Int = 2,

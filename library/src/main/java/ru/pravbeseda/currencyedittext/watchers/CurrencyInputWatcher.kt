@@ -111,7 +111,8 @@ class CurrencyInputWatcher(
 
         // Cursor position calculation (in text without separators)
         var cursorPosition = position.let {
-            val text = newText?.substring(0, it)
+            val end = if (it > resultText.length) resultText.length else it
+            val text = resultText.substring(0, end)
             val curSpaceCount = countMatches(text, groupingSeparator)
             val spaceCountInCurrencySymbol = countMatches(currencySymbol, groupingSeparator)
             it - curSpaceCount + spaceCountInCurrencySymbol
