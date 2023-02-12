@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
 import java.util.*
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
+import ru.pravbeseda.currencyedittext.util.isApi26AndAbove
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 
 class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
@@ -73,6 +74,10 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
                     localeTag!!
                 )
             )
+        }
+        if (isApi26AndAbove()) {
+            // bugfix api26
+            importantForAutofill = IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
         }
         setNegativeValueAllow(negativeValueAllow)
         if (!text.isNullOrBlank()) setText(text!!)

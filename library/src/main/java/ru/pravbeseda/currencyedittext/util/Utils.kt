@@ -72,3 +72,4 @@ internal fun getLocaleFromTag(localeTag: String): Locale {
 }
 
 internal fun isLollipopAndAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+internal fun isApi26AndAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
