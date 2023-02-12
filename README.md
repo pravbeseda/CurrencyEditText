@@ -6,7 +6,7 @@ This project is fork of https://github.com/CottaCush/CurrencyEditText
 Also there was used ideas of another project: https://github.com/firmfreez/CurrencyEditText
 Thanks a lot to both authors.
 
-Attention! This is an alpha release of the library, it is under active development.
+Attention! This is an beta release of the library, use it at your own risk.
 
 [![ci](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml/badge.svg)](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/ru.pravbeseda/CurrencyEditText.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22ru.pravbeseda%22%20AND%20a:%22CurrencyEditText%22)
