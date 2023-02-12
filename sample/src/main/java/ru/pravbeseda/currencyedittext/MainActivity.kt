@@ -28,8 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        currencyEditText.setValue(BigDecimal(1234.76))
-        currencyMaterialEditText.setValue(BigDecimal(4321.67))
+        currencyEditText.setValue(BigDecimal(123.476))
+        currencyMaterialEditText.setValue(BigDecimal(432.167))
 
         currencyEditText.setOnValueChanged { bigDecimal, state: State, textError: String ->
             if (state !== State.ERROR) {
@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
                 textView.text = textError
             }
         }
+
+        textView.text = currencyEditText.getValue().toString()
 
         button.setOnClickListener { currencyEditText.text?.clear() }
 

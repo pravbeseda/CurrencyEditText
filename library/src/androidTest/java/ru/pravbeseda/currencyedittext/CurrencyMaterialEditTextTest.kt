@@ -40,8 +40,9 @@ class CurrencyMaterialEditTextTest() {
             arrayOf("4321.76", "4 321.76"),
             arrayOf("0.", "0.")
         )
-        currencyEditText.setGroupingSeparator(" ")
-        currencyEditText.setDecimalSeparator(".")
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setSeparators(" ", ".")
+        }
         samples.forEach {
             testSetText(it[0], it[1])
         }
@@ -49,9 +50,13 @@ class CurrencyMaterialEditTextTest() {
 
     @Test
     fun shouldSetLocale() {
-        currencyEditText.setLocale(Locale.ENGLISH)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setLocale(Locale.ENGLISH)
+        }
         testSetText("1000.45", "1,000.45")
-        currencyEditText.setLocale(Locale("ru", "RU"))
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setLocale(Locale("ru", "RU"))
+        }
         testSetText("1000,45", "1 000,45")
     }
 

@@ -76,8 +76,12 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         }
         setNegativeValueAllow(negativeValueAllow)
         if (!text.isNullOrBlank()) setText(text!!)
-        if (!decimalSeparator.isNullOrBlank()) setDecimalSeparator(decimalSeparator!!)
-        if (groupingSeparator !== null) setGroupingSeparator(groupingSeparator!!)
+        if (!decimalSeparator.isNullOrBlank() && groupingSeparator !== null) {
+            setSeparators(
+                groupingSeparator!!,
+                decimalSeparator!!
+            )
+        }
         setSelectAllOnFocus(selectAllOnFocus)
         setMaxNumberOfDecimalPlaces(maxDecimalPlaces)
         addView(editText)
@@ -85,6 +89,10 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     fun setValue(value: BigDecimal) {
         editText.setValue(value)
+    }
+
+    fun getValue(): BigDecimal {
+        return editText.getValue()
     }
 
     fun setText(text: CharSequence) {
@@ -100,12 +108,8 @@ class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.setLocale(localeTag)
     }
 
-    fun setDecimalSeparator(newSeparator: String) {
-        editText.setDecimalSeparator(newSeparator)
-    }
-
-    fun setGroupingSeparator(newSeparator: String) {
-        editText.setGroupingSeparator(newSeparator)
+    fun setSeparators(newGroupingSeparator: String, newDecimalSeparator: String) {
+        editText.setSeparators(newGroupingSeparator, newDecimalSeparator)
     }
 
     fun setNegativeValueAllow(allow: Boolean) {

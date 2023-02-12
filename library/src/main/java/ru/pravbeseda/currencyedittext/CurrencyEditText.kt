@@ -95,29 +95,45 @@ class CurrencyEditText(
         )
     }
 
+    fun getValue(): BigDecimal {
+        return stringToBigDecimal(text.toString())
+    }
+
     fun setLocale(locale: Locale) {
+        val value = getValue()
+        setText("")
         this.locale = locale
         invalidateTextWatcher()
+        setValue(value)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setLocale(localeTag: String) {
+        val value = getValue()
+        setText("")
         locale = getLocaleFromTag(localeTag)
         invalidateTextWatcher()
+        setValue(value)
     }
 
-    fun setDecimalSeparator(newSeparator: String) {
-        decimalSeparator = newSeparator
+    fun setSeparators(newGroupingSeparator: String, newDecimalSeparator: String) {
+        if (newGroupingSeparator == newDecimalSeparator) {
+            throw IllegalArgumentException(
+                "Separators must not match. " +
+                        "Grouping separator: `$newGroupingSeparator`, " +
+                        "Decimal separator: `$newDecimalSeparator`"
+            )
+        }
+        val value = getValue()
+        setText("")
+        decimalSeparator = newDecimalSeparator
+        groupingSeparator = newGroupingSeparator
         invalidateTextWatcher()
+        setValue(value)
     }
 
     fun getDecimalSeparator(): String {
         return textWatcher.getDecimalSeparator()
-    }
-
-    fun setGroupingSeparator(newSeparator: String) {
-        groupingSeparator = newSeparator
-        invalidateTextWatcher()
     }
 
     fun getGroupingSeparator(): String {
@@ -171,17 +187,13 @@ class CurrencyEditText(
         }
     }
 
-    fun getNumericValue(): Double {
+    fun getDoubleValue(): Double {
         return parseMoneyValueWithLocale(
             text.toString(),
             textWatcher.getGroupingSeparator(),
             textWatcher.getDecimalSeparator(),
             currencySymbolPrefix
         ).toDouble()
-    }
-
-    fun getNumericValueBigDecimal(): BigDecimal {
-        return stringToBigDecimal(text.toString())
     }
 
     private fun stringToBigDecimal(str: String?): BigDecimal {

@@ -48,7 +48,7 @@ class CurrencyEditTextTest {
         // Run all checks
         val valuesAssertEquals = {
             samples().forEach {
-                valueAssertEquals(it[0] as BigDecimal, it[1] as String)
+                setValueAssertEquals(it[0] as BigDecimal, it[1] as String)
             }
         }
 
@@ -61,69 +61,64 @@ class CurrencyEditTextTest {
 
         // Custom separators
         currencyEditText.setLocale(Locale.ENGLISH)
-        currencyEditText.setDecimalSeparator(",")
-        currencyEditText.setGroupingSeparator(" ")
+        currencyEditText.setSeparators(" ", ",")
         valuesAssertEquals()
-        currencyEditText.setDecimalSeparator("_")
-        currencyEditText.setGroupingSeparator("^")
+        currencyEditText.setSeparators("^", "_")
         valuesAssertEquals()
     }
 
     @Test
     fun testSetText() {
-        val samples = listOf(
-            arrayOf("100", "100"),
-            arrayOf("4321.76", "4 321.76"),
-            arrayOf("0.", "0.")
-        )
-        currencyEditText.setGroupingSeparator(" ")
-        currencyEditText.setDecimalSeparator(".")
-        samples.forEach {
-            textAssertEquals(it[0], it[1])
-        }
+        currencyEditText.setSeparators(" ", ".")
+        setText("1 000.45")
+        assertEquals("1 000.45", currencyEditText.text.toString())
     }
 
     @Test
     fun shouldNegativeValueAllow() {
         currencyEditText.setNegativeValueAllow(false)
-        textAssertEquals("-100", "100")
+        setTextAssertEquals("-100", "100")
         currencyEditText.setNegativeValueAllow(true)
-        textAssertEquals("-100", "-100")
+        setTextAssertEquals("-100", "-100")
     }
 
     @Test
     fun shouldSetLocale() {
-        currencyEditText.setLocale(Locale.ENGLISH)
-        textAssertEquals("1000.45", "1,000.45")
+        setValue(BigDecimal(1000.45))
         currencyEditText.setLocale(Locale("ru", "RU"))
-        textAssertEquals("1000,45", "1 000,45")
+        assertEquals("1 000,45", currencyEditText.text.toString())
+        currencyEditText.setLocale(Locale.ENGLISH)
+        assertEquals("1,000.45", currencyEditText.text.toString())
     }
 
     @Test
     fun shouldSetSeparators() {
-        val samples = listOf(
-            arrayOf("100", "100"),
-            arrayOf("4321.76", "4 321.76"),
-            arrayOf("0.", "0.")
-        )
-        currencyEditText.setGroupingSeparator(" ")
-        currencyEditText.setDecimalSeparator(".")
-        samples.forEach {
-            textAssertEquals(it[0], it[1])
-        }
+        setValue(BigDecimal(1000.45))
+        currencyEditText.setSeparators(" ", ",")
+        assertEquals("1 000,45", currencyEditText.text.toString())
+        currencyEditText.setSeparators(",", ".")
+        assertEquals("1,000.45", currencyEditText.text.toString())
     }
 
-    private fun valueAssertEquals(value: BigDecimal, expected: String) {
+    private fun setValue(value: BigDecimal) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setValue(value)
         }
-        assertEquals(expected, currencyEditText.text.toString())
     }
 
-    private fun textAssertEquals(text: String, expected: String) {
+    private fun setText(text: String) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setText(text)
         }
+    }
+
+    private fun setValueAssertEquals(value: BigDecimal, expected: String) {
+        setValue(value)
+        assertEquals(expected, currencyEditText.text.toString())
+    }
+
+    private fun setTextAssertEquals(text: String, expected: String) {
+        setText(text)
         assertEquals(expected, currencyEditText.text.toString())
     }
 }

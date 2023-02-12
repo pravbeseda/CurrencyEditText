@@ -71,6 +71,7 @@ You can set the value via `setValue` method:
 
 ```Kotlin
 edittext.setValue(BigDecimal(4321.76))
+val value = edittext.getValue()
 ```
 
 Or you can set the text value directly:
@@ -135,8 +136,7 @@ app:groupingSeparator=" "
 Or in the code:
 
 ```Kotlin
-edittext.setDecimalSeparator(",")
-edittext.setGroupingSeparator(" ")
+edittext.setSeparators(" ", ",")
 ```
 
 ## CurrencyMaterialEditText Features
