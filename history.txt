@@ -1,3 +1,4 @@
 0.0.1 - initial version
 0.0.5 - Added new component CurrencyMaterialEditText. Many internal changes.
 0.0.9 - Added other properties to both components. It seems both components are ready for use.
+0.1.0 - beta version release
