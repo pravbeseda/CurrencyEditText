@@ -152,7 +152,7 @@ Some properties are only available for the CurrencyMaterialEditText component.
 
 You can set hint (label):
 ```
-app:hint="Account amount"
+android:hint="Account amount"
 ```
 
 Or in the code:
