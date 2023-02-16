@@ -27,7 +27,7 @@ import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isApi26AndAbove
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 
-class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
+open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
     TextInputLayout(context, attrs) {
 
     var text: Editable?

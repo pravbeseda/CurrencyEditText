@@ -32,7 +32,7 @@ import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 import ru.pravbeseda.currencyedittext.util.parseMoneyValueWithLocale
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 
-class CurrencyEditText(
+open class CurrencyEditText(
     context: Context,
     attrs: AttributeSet?
 ) : AppCompatEditText(context, attrs) {
@@ -120,8 +120,8 @@ class CurrencyEditText(
         if (newGroupingSeparator == newDecimalSeparator) {
             throw IllegalArgumentException(
                 "Separators must not match. " +
-                        "Grouping separator: `$newGroupingSeparator`, " +
-                        "Decimal separator: `$newDecimalSeparator`"
+                    "Grouping separator: `$newGroupingSeparator`, " +
+                    "Decimal separator: `$newDecimalSeparator`"
             )
         }
         val value = getValue()
