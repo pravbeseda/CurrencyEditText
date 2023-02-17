@@ -3,3 +3,4 @@
 0.0.9 - Added other properties to both components. It seems both components are ready for use.
 0.1.0 - beta version release
 0.1.2 - Both components CurrencyEditText and CurrencyMaterialEditText are made open
+0.1.3 - Added `isValid` property and `isValidState` method to both components

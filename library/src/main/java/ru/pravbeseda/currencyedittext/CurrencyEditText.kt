@@ -48,6 +48,9 @@ open class CurrencyEditText(
     private var validator: ((BigDecimal) -> String?)? = null
     private var state: State = State.OK
 
+    val isValid: Boolean
+        get() = isValidState()
+
     init {
         var useCurrencySymbolAsHint = false
         inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
@@ -160,6 +163,10 @@ open class CurrencyEditText(
         invalidateTextWatcher()
     }
 
+    fun isValidState(): Boolean {
+        return state == State.OK
+    }
+
     private fun invalidateTextWatcher() {
         removeTextChangedListener(textWatcher)
         textWatcher = createTextWatcher()
@@ -234,9 +241,11 @@ open class CurrencyEditText(
         }
     }
 
-    fun setOnValueChanged(action: (BigDecimal?, state: State, textError: String) -> Unit) {
+    fun onValueChanged(action: (BigDecimal?, state: State, textError: String) -> Unit) {
+        val that = this
         onValueChanged = object : OnValueChanged {
             override fun onValueChanged(newValue: BigDecimal?, state: State, textError: String) {
+                that.state = state
                 action.invoke(newValue, state, textError)
             }
         }
@@ -258,9 +267,8 @@ open class CurrencyEditText(
          * Component's state values
          */
         enum class State {
-            OK, // Valid, not changed
-            ERROR, // Invalid value
-            DIRTY // Valid, not saved
+            OK, // Valid
+            ERROR // Invalid value
         }
     }
 }

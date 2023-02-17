@@ -94,10 +94,18 @@ edittext.setValidator { value ->
 }
 ```
 
+You can check the current state of the field via `isValid` property or `isValidState()` method
+
+```Kotlin
+if (edittext.isValid) {
+    // do something
+}
+```
+
 You can subscribe to a field value change event:
 
 ```Kotlin
-edittext.setOnValueChanged { bigDecimal, state: State, textError: String ->
+edittext.onValueChanged { bigDecimal, state: State, textError: String ->
     if (state !== State.ERROR) {
         textView.text = bigDecimal.toString()
     } else {

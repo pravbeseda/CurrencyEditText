@@ -38,6 +38,9 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
             editText.text = value
         }
 
+    val isValid: Boolean
+        get() = isValidState()
+
     private val editText: CurrencyEditText
 
     init {
@@ -133,14 +136,18 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         return editText.getNegativeValueAllow()
     }
 
-    fun setOnValueChanged(
+    fun onValueChanged(
         action: (BigDecimal?, state: CurrencyEditText.Companion.State, textError: String) -> Unit
     ) {
-        editText.setOnValueChanged(action)
+        editText.onValueChanged(action)
     }
 
     fun setValidator(validator: ((BigDecimal) -> String?)?) {
         editText.setValidator(handleValidator(validator))
+    }
+
+    fun isValidState(): Boolean {
+        return editText.isValidState()
     }
 
     // wrapper fo validate function to add some logic

@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         currencyEditText.setValue(BigDecimal(123.476))
         currencyMaterialEditText.setValue(BigDecimal(432.167))
 
-        currencyEditText.setOnValueChanged { bigDecimal, state: State, textError: String ->
+        currencyEditText.onValueChanged { bigDecimal, state: State, textError: String ->
             if (state !== State.ERROR) {
                 textView.text = bigDecimal.toString()
             } else {
