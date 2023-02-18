@@ -37,6 +37,9 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         set(value) {
             editText.text = value
         }
+
+    @set:JvmName("setValue0")
+    @get:JvmName("getValue0")
     var value: BigDecimal
         set(value) {
             setValue(value)

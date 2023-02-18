@@ -48,6 +48,8 @@ open class CurrencyEditText(
     private var validator: ((BigDecimal) -> String?)? = null
     private var state: State = State.OK
 
+    @set:JvmName("setValue0")
+    @get:JvmName("getValue0")
     var value: BigDecimal
         set(value) {
             setValue(value)
@@ -55,6 +57,7 @@ open class CurrencyEditText(
         get() {
             return getValue()
         }
+
     val isValid: Boolean
         get() = isValidState()
 
