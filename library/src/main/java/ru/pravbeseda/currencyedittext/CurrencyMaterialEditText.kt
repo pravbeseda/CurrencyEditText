@@ -37,7 +37,13 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         set(value) {
             editText.text = value
         }
-
+    var value: BigDecimal
+        set(value) {
+            setValue(value)
+        }
+        get() {
+            return getValue()
+        }
     val isValid: Boolean
         get() = isValidState()
 

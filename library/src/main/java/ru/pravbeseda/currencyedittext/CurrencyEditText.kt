@@ -48,6 +48,13 @@ open class CurrencyEditText(
     private var validator: ((BigDecimal) -> String?)? = null
     private var state: State = State.OK
 
+    var value: BigDecimal
+        set(value) {
+            setValue(value)
+        }
+        get() {
+            return getValue()
+        }
     val isValid: Boolean
         get() = isValidState()
 
