@@ -15,6 +15,7 @@
  */
 package ru.pravbeseda.currencyedittext
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import java.math.BigDecimal
@@ -24,6 +25,7 @@ import ru.pravbeseda.currencyedittext.CurrencyEditText.Companion.State
 
 class MainActivity : AppCompatActivity() {
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,11 +39,14 @@ class MainActivity : AppCompatActivity() {
             } else {
                 textView.text = textError
             }
+            currencyMaterialEditText.validate()
         }
 
         textView.text = currencyEditText.getValue().toString()
 
-        button.setOnClickListener { currencyEditText.text?.clear() }
+        button.setOnClickListener {
+            currencyEditText.text?.clear()
+        }
 
         currencyMaterialEditText.hint = "Enter value"
 
@@ -49,6 +54,14 @@ class MainActivity : AppCompatActivity() {
             var error = ""
             if (value < BigDecimal(1000)) {
                 error = "Value is less than 1000"
+            }
+            error
+        }
+
+        currencyMaterialEditText.setValidator { value ->
+            var error = ""
+            if (value < currencyEditText.value) {
+                error = "Value can't be less than the first field"
             }
             error
         }

@@ -47,6 +47,7 @@ open class CurrencyEditText(
     private var onValueChanged: OnValueChanged? = null
     private var validator: ((BigDecimal) -> String?)? = null
     private var state: State = State.OK
+    private var textError: String = ""
 
     @set:JvmName("setValue0")
     @get:JvmName("getValue0")
@@ -133,8 +134,8 @@ open class CurrencyEditText(
         if (newGroupingSeparator == newDecimalSeparator) {
             throw IllegalArgumentException(
                 "Separators must not match. " +
-                    "Grouping separator: `$newGroupingSeparator`, " +
-                    "Decimal separator: `$newDecimalSeparator`"
+                        "Grouping separator: `$newGroupingSeparator`, " +
+                        "Decimal separator: `$newDecimalSeparator`"
             )
         }
         val value = getValue()
@@ -194,13 +195,18 @@ open class CurrencyEditText(
             negativeValueAllow
         ) {
             val value = stringToBigDecimal(it)
-            val textError = (validator?.let { it1 -> it1(value) })
-            state = if (textError.isNullOrEmpty()) {
-                State.OK
-            } else {
-                State.ERROR
-            }
-            onValueChanged?.onValueChanged(value, state, textError ?: "")
+            validate(value)
+            onValueChanged?.onValueChanged(value, state, textError)
+        }
+    }
+
+    fun validate(value: BigDecimal? = null) {
+        val checkedValue = value ?: getValue()
+        textError = (validator?.let { it1 -> it1(checkedValue) }) ?: ""
+        state = if (textError.isNullOrEmpty()) {
+            State.OK
+        } else {
+            State.ERROR
         }
     }
 

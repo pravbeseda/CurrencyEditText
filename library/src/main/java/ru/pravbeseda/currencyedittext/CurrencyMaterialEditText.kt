@@ -19,6 +19,7 @@ import android.content.Context
 import android.os.Build
 import android.text.Editable
 import android.util.AttributeSet
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
@@ -155,6 +156,10 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.setValidator(handleValidator(validator))
     }
 
+    fun validate() {
+        editText.validate()
+    }
+
     fun isValidState(): Boolean {
         return editText.isValidState()
     }
@@ -162,6 +167,7 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
     // wrapper fo validate function to add some logic
     private fun handleValidator(validate: ((BigDecimal) -> String?)?): (BigDecimal) -> String? {
         return { input: BigDecimal ->
+            Log.d("!!!", "handleValidator")
             val result = if (validate !== null) validate(input) else null
             if (result != null) {
                 // set TextInputLayout property to show error description
