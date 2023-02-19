@@ -5,3 +5,4 @@
 0.1.2 - Both components CurrencyEditText and CurrencyMaterialEditText are made open
 0.1.3 - Added `isValid` property and `isValidState` method to both components
 0.2.0 - Added `value` getter and setter and `validate` method to both components
+0.3.0 - Added `decimalZerosPadding` property with getter and setter to both components

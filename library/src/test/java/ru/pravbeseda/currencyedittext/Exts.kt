@@ -18,10 +18,11 @@ package ru.pravbeseda.currencyedittext
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import ru.pravbeseda.currencyedittext.model.LocaleVars
-import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 import java.lang.ref.WeakReference
 import java.util.*
+import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
+import ru.pravbeseda.currencyedittext.model.LocaleVars
+import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 
 fun TextWatcher.runAllWatcherMethods(
     s: Editable,
@@ -48,13 +49,20 @@ fun LocaleVars.toWatcher(
     decimalPlaces: Int = 2,
     decimalSeparator: String? = null,
     groupingSeparator: String? = null,
-    negativeValueAllow: Boolean
-) = CurrencyInputWatcher(
-    WeakReference(editText),
-    currencySymbol,
-    tag.toLocale(),
-    decimalSeparator,
-    groupingSeparator,
-    decimalPlaces,
-    negativeValueAllow
-)
+    negativeValueAllow: Boolean = false,
+    decimalZerosPadding: Boolean = false
+): CurrencyInputWatcher {
+    val config = CurrencyInputWatcherConfig(
+        currencySymbol = currencySymbol,
+        locale = tag.toLocale(),
+        decimalSeparator = decimalSeparator,
+        groupingSeparator = groupingSeparator,
+        maxNumberOfDecimalPlaces = decimalPlaces,
+        negativeValueAllow = negativeValueAllow,
+        decimalZerosPadding = decimalZerosPadding
+    )
+    return CurrencyInputWatcher(
+        WeakReference(editText),
+        config
+    )
+}

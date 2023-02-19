@@ -21,19 +21,19 @@ import java.lang.ref.WeakReference
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito.*
+import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.model.LocaleVars
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 
 class CurrencyInputWatcherTest {
 
-    private val locales
-        get() = listOf(
-            LocaleVars("en-NG", ".", ",", "$ "),
-            LocaleVars("en-US", ".", ",", "$ "),
-            LocaleVars("da-DK", ",", ".", "$ "),
-            LocaleVars("fr-CA", ".", " ", "$ "),
-            LocaleVars("ru-Ru", ",", " ", "")
-        )
+    private val locales = listOf(
+        LocaleVars("en-NG", ".", ",", "$ "),
+        LocaleVars("en-US", ".", ",", "$ "),
+        LocaleVars("da-DK", ",", ".", "$ "),
+        LocaleVars("fr-CA", ".", " ", "$ "),
+        LocaleVars("ru-Ru", ",", " ", "")
+    )
 
     @Test
     fun `Should keep currency symbol as hint when enabled and move cursor to front when edit text is set to empty string`() {
@@ -332,13 +332,16 @@ class CurrencyInputWatcherTest {
                 "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}50"
 
             val (editText, editable) = setupTestVariables(locale)
+            val config = CurrencyInputWatcherConfig(
+                currencySymbol = locale.currencySymbol,
+                locale = locale.tag.toLocale(),
+                decimalSeparator = locale.decimalSeparator,
+                groupingSeparator = locale.groupingSeparator,
+                maxNumberOfDecimalPlaces = 2
+            )
             val watcherWithDefaultDP = CurrencyInputWatcher(
                 WeakReference(editText),
-                locale.currencySymbol,
-                locale.tag.toLocale(),
-                locale.decimalSeparator,
-                locale.groupingSeparator,
-                2
+                config
             )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
@@ -762,10 +765,49 @@ class CurrencyInputWatcherTest {
         }
     }
 
+    @Test
+    fun `should set text to "$ 900,4" when text is set to "900,4" and decimalZerosPadding if false`() {
+        for (locale in locales) {
+            val currentEditTextContent = "900${locale.decimalSeparator}4"
+            val expectedText = "${locale.currencySymbol}900${locale.decimalSeparator}4"
+
+            val (editText, editable, watcher) = setupTestVariables(
+                locale = locale,
+                decimalZerosPadding = false
+            )
+            `when`(editable.toString()).thenReturn(currentEditTextContent)
+
+            watcher.runAllWatcherMethods(editable)
+
+            // Verify that the EditText's text was set to the expected text
+            verify(editText, times(1)).setText(expectedText)
+        }
+    }
+
+    @Test
+    fun `should set text to "$ 900,40" when text is set to "900,4" and decimalZerosPadding if true`() {
+        for (locale in locales) {
+            val currentEditTextContent = "900${locale.decimalSeparator}4"
+            val expectedText = "${locale.currencySymbol}900${locale.decimalSeparator}40"
+
+            val (editText, editable, watcher) = setupTestVariables(
+                locale = locale,
+                decimalZerosPadding = true
+            )
+            `when`(editable.toString()).thenReturn(currentEditTextContent)
+
+            watcher.runAllWatcherMethods(editable)
+
+            // Verify that the EditText's text was set to the expected text
+            verify(editText, times(1)).setText(expectedText)
+        }
+    }
+
     private fun setupTestVariables(
         locale: LocaleVars,
         decimalPlaces: Int = 2,
-        negativeValueAllow: Boolean = false
+        negativeValueAllow: Boolean = false,
+        decimalZerosPadding: Boolean = false
     ): TestVars {
         val editText = mock(CurrencyEditText::class.java)
         val editable = mock(Editable::class.java)
@@ -776,7 +818,8 @@ class CurrencyInputWatcherTest {
             decimalPlaces,
             locale.decimalSeparator,
             locale.groupingSeparator,
-            negativeValueAllow
+            negativeValueAllow,
+            decimalZerosPadding
         )
         return TestVars(editText, editable, watcher)
     }

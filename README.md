@@ -41,6 +41,7 @@ You can add the `CurrencyEditText` to your layout.
     android:text="1234.67"
     app:negativeValueAllow="true"
     app:maxNumberOfDecimalPlaces="2"
+    app:decimalZerosPadding="false"
 />
 ```
 
@@ -55,6 +56,7 @@ Or you can use the `CurrencyMaterialEditText` component.
     app:text="1234.67"
     app:negativeValueAllow="true"
     app:maxNumberOfDecimalPlaces="2"
+    app:decimalZerosPadding="false"
 />
 ```
 
@@ -65,6 +67,8 @@ After that, you can configure the View parameters separately in the code:
 ```Kotlin
 edittext.setNegativeValueAllow(true)
 edittext.setMaxNumberOfDecimalPlaces(2)
+edittext.setDecimalZerosPadding(true)
+```
 ```
 
 You can set the value via `setValue` method:
@@ -100,6 +104,12 @@ You can check the current state of the field via `isValid` property or `isValidS
 if (edittext.isValid) {
     // do something
 }
+```
+
+If you need to revalidate an unchanged field, call the `validate()` method:
+
+```Kotlin
+edittext.validate()
 ```
 
 You can subscribe to a field value change event:

@@ -18,21 +18,15 @@ package ru.pravbeseda.currencyedittext.watchers
 import android.widget.EditText
 import java.lang.ref.WeakReference
 import java.text.DecimalFormatSymbols
-import java.util.*
+import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 
 class CurrencyInputWatcher(
     private val editTextRef: WeakReference<EditText>,
-    private val currencySymbol: String,
-    locale: Locale,
-    private val paramDecimalSeparator: String? = null,
-    private val paramGroupingSeparator: String? = null,
-    private val maxNumberOfDecimalPlaces: Int = 2,
-    private val negativeValueAllow: Boolean = false,
-    private val onValueChanged: ((String?) -> Unit)? = null
+    private val config: CurrencyInputWatcherConfig
 ) : EasyTextWatcher() {
 
     init {
-        if (maxNumberOfDecimalPlaces < 0) {
+        if (config.maxNumberOfDecimalPlaces < 0) {
             throw IllegalArgumentException(
                 "Maximum number of Decimal Places must be a positive integer"
             )
@@ -41,17 +35,17 @@ class CurrencyInputWatcher(
 
     private val editText: EditText? get() = editTextRef.get()
 
-    private val decimalSeparator =
-        if (paramDecimalSeparator !== null) {
-            paramDecimalSeparator
+    private val decimalSeparator: String =
+        if (config.decimalSeparator !== null) {
+            config.decimalSeparator
         } else {
-            DecimalFormatSymbols.getInstance(locale).decimalSeparator.toString()
+            DecimalFormatSymbols.getInstance(config.locale).decimalSeparator.toString()
         }
     private val groupingSeparator =
-        if (paramGroupingSeparator !== null) {
-            paramGroupingSeparator
+        if (config.groupingSeparator !== null) {
+            config.groupingSeparator
         } else {
-            DecimalFormatSymbols.getInstance(locale).groupingSeparator.toString()
+            DecimalFormatSymbols.getInstance(config.locale).groupingSeparator.toString()
         }
 
     override fun onTextModified(
@@ -62,7 +56,7 @@ class CurrencyInputWatcher(
     ) {
         var resultText: String = newText ?: ""
         var sign = ""
-        var position = editPosition ?: currencySymbol.length
+        var position = editPosition ?: config.currencySymbol.length
 
         // Replace inserted comma or point to decimalSeparator
         if (arrayOf(",", ".").contains(newPartOfText) && newPartOfText != decimalSeparator) {
@@ -70,16 +64,16 @@ class CurrencyInputWatcher(
         }
 
         // Remove decimal separator from newPartOfText when maxNumberOfDecimalPlaces is 0
-        if (maxNumberOfDecimalPlaces == 0 && arrayOf(",", ".").contains(newPartOfText)) {
+        if (config.maxNumberOfDecimalPlaces == 0 && arrayOf(",", ".").contains(newPartOfText)) {
             resultText = resultText.replaceRange(position - 1, position, "")
             position--
         }
 
         // Place sign minus before value
         val numberOfMinus = resultText.count { it == '-' }
-        if (negativeValueAllow) {
+        if (config.negativeValueAllow) {
             sign = if (numberOfMinus == 1) "-" else ""
-            if (numberOfMinus > 1 && position > currencySymbol.length) {
+            if (numberOfMinus > 1 && position > config.currencySymbol.length) {
                 position -= 2
             }
         } else {
@@ -90,9 +84,11 @@ class CurrencyInputWatcher(
         resultText = resultText.replace("-", "")
 
         // Prevent manual removing currency symbol
-        if (!resultText.startsWith(currencySymbol)) {
+        if (!resultText.startsWith(config.currencySymbol)) {
             resultText =
-                currencySymbol + resultText.trimStart { currencySymbol.toCharArray().contains(it) }
+                config.currencySymbol + resultText.trimStart {
+                    config.currencySymbol.toCharArray().contains(it)
+                }
         }
 
         // Leave last decimalSeparator only
@@ -117,7 +113,7 @@ class CurrencyInputWatcher(
             val end = if (it > resultText.length) resultText.length else it
             val text = resultText.substring(0, end)
             val curSpaceCount = countMatches(text, groupingSeparator)
-            val spaceCountInCurrencySymbol = countMatches(currencySymbol, groupingSeparator)
+            val spaceCountInCurrencySymbol = countMatches(config.currencySymbol, groupingSeparator)
             it - curSpaceCount + spaceCountInCurrencySymbol
         }
 
@@ -132,20 +128,26 @@ class CurrencyInputWatcher(
         } else {
             newTextWithoutGroupingSeparators.substring(decimalSeparatorPos + 1)
         }
-        if (fractionalPart.length > maxNumberOfDecimalPlaces) {
-            fractionalPart = fractionalPart.substring(0, maxNumberOfDecimalPlaces)
+        if (fractionalPart.length > config.maxNumberOfDecimalPlaces) {
+            fractionalPart = fractionalPart.substring(0, config.maxNumberOfDecimalPlaces)
         }
 
         resultText = integerPart
-        if (decimalSeparatorPos > -1 && maxNumberOfDecimalPlaces > 0) {
+        if (decimalSeparatorPos > -1 && config.maxNumberOfDecimalPlaces > 0) {
             if (resultText == "") {
                 resultText = "0"
                 cursorPosition++
             }
+            if (config.decimalZerosPadding && fractionalPart.isNotEmpty() &&
+                fractionalPart.length < config.maxNumberOfDecimalPlaces
+            ) {
+                val zeros = "0".repeat(config.maxNumberOfDecimalPlaces - fractionalPart.length)
+                fractionalPart += zeros
+            }
             resultText += decimalSeparator + fractionalPart
         }
 
-        setText(resultText, cursorPosition, currencySymbol, sign)
+        setText(resultText, cursorPosition, config.currencySymbol, sign)
     }
 
     fun getDecimalSeparator(): String {
@@ -183,7 +185,7 @@ class CurrencyInputWatcher(
         // Set cursor
         editText?.setSelection((position as? Int?) ?: 0)
 
-        onValueChanged?.invoke(text.toString())
+        config.onValueChanged?.invoke(text.toString())
     }
 
     private fun calculateSpacing(

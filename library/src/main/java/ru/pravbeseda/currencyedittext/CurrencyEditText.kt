@@ -26,6 +26,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.util.*
+import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.util.formatMoneyValue
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
@@ -42,6 +43,7 @@ open class CurrencyEditText(
     private var decimalSeparator: String? = null
     private var groupingSeparator: String? = null
     private var negativeValueAllow: Boolean = false
+    private var decimalZerosPadding: Boolean = false
     private var maxDecimalPlaces: Int
 
     private var onValueChanged: OnValueChanged? = null
@@ -84,6 +86,8 @@ open class CurrencyEditText(
                 maxDecimalPlaces = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalPlaces, 2)
                 negativeValueAllow =
                     getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false)
+                decimalZerosPadding =
+                    getBoolean(R.styleable.CurrencyEditText_decimalZerosPadding, false)
             } finally {
                 recycle()
             }
@@ -163,6 +167,15 @@ open class CurrencyEditText(
         return negativeValueAllow
     }
 
+    fun setDecimalZerosPadding(newValue: Boolean) {
+        decimalZerosPadding = newValue
+        invalidateTextWatcher()
+    }
+
+    fun getDecimalZerosPadding(): Boolean {
+        return decimalZerosPadding
+    }
+
     fun setCurrencySymbol(currencySymbol: String, useCurrencySymbolAsHint: Boolean = false) {
         currencySymbolPrefix = "$currencySymbol "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
@@ -185,19 +198,24 @@ open class CurrencyEditText(
     }
 
     private fun createTextWatcher(): CurrencyInputWatcher {
+        val config = CurrencyInputWatcherConfig(
+            locale = locale,
+            currencySymbol = currencySymbolPrefix,
+            decimalSeparator = decimalSeparator,
+            groupingSeparator = groupingSeparator,
+            maxNumberOfDecimalPlaces = maxDecimalPlaces,
+            negativeValueAllow = negativeValueAllow,
+            decimalZerosPadding = decimalZerosPadding,
+            onValueChanged = {
+                val value = stringToBigDecimal(it)
+                validate(value)
+                onValueChanged?.onValueChanged(value, state, textError)
+            }
+        )
         return CurrencyInputWatcher(
             WeakReference(this),
-            currencySymbolPrefix,
-            locale,
-            decimalSeparator,
-            groupingSeparator,
-            maxDecimalPlaces,
-            negativeValueAllow
-        ) {
-            val value = stringToBigDecimal(it)
-            validate(value)
-            onValueChanged?.onValueChanged(value, state, textError)
-        }
+            config
+        )
     }
 
     fun validate(value: BigDecimal? = null) {

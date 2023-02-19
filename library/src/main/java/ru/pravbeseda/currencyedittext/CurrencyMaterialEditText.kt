@@ -19,7 +19,6 @@ import android.content.Context
 import android.os.Build
 import android.text.Editable
 import android.util.AttributeSet
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
@@ -62,6 +61,7 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         var decimalSeparator: String?
         var groupingSeparator: String?
         var maxDecimalPlaces: Int
+        var decimalZerosPadding: Boolean = false
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.CurrencyMaterialEditText,
@@ -76,6 +76,8 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
                 R.styleable.CurrencyMaterialEditText_negativeValueAllow,
                 false
             )
+            decimalZerosPadding =
+                getBoolean(R.styleable.CurrencyMaterialEditText_decimalZerosPadding, false)
             selectAllOnFocus =
                 getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
             maxDecimalPlaces =
@@ -130,10 +132,6 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.setSeparators(newGroupingSeparator, newDecimalSeparator)
     }
 
-    fun setNegativeValueAllow(allow: Boolean) {
-        editText.setNegativeValueAllow(allow)
-    }
-
     fun setSelectAllOnFocus(selectOnFocus: Boolean) {
         editText.setSelectAllOnFocus(selectOnFocus)
     }
@@ -144,6 +142,18 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     fun getNegativeValueAllow(): Boolean {
         return editText.getNegativeValueAllow()
+    }
+
+    fun setNegativeValueAllow(allow: Boolean) {
+        editText.setNegativeValueAllow(allow)
+    }
+
+    fun getDecimalZerosPadding(): Boolean {
+        return editText.getDecimalZerosPadding()
+    }
+
+    fun setDecimalZerosPadding(padding: Boolean) {
+        editText.setDecimalZerosPadding(padding)
     }
 
     fun onValueChanged(
@@ -167,7 +177,6 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
     // wrapper fo validate function to add some logic
     private fun handleValidator(validate: ((BigDecimal) -> String?)?): (BigDecimal) -> String? {
         return { input: BigDecimal ->
-            Log.d("!!!", "handleValidator")
             val result = if (validate !== null) validate(input) else null
             if (result != null) {
                 // set TextInputLayout property to show error description
