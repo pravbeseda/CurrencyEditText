@@ -69,7 +69,6 @@ edittext.setNegativeValueAllow(true)
 edittext.setMaxNumberOfDecimalPlaces(2)
 edittext.setDecimalZerosPadding(true)
 ```
-```
 
 You can set the value via `setValue` method:
 
