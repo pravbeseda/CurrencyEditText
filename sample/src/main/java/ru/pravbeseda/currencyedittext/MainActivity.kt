@@ -22,6 +22,8 @@ import java.math.BigDecimal
 import kotlinx.android.synthetic.main.activity_main.*
 import pravbeseda.R
 import ru.pravbeseda.currencyedittext.CurrencyEditText.Companion.State
+import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
+import ru.pravbeseda.currencyedittext.util.Routines.Companion.bigDecimalToString
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,14 +40,14 @@ class MainActivity : AppCompatActivity() {
 
         currencyEditText.onValueChanged { bigDecimal, state: State, textError: String ->
             if (state !== State.ERROR) {
-                textView.text = bigDecimal.toString()
+                textView.text = formatValue(currencyEditText.value)
             } else {
                 textView.text = textError
             }
             currencyMaterialEditText.validate()
         }
 
-        textView.text = currencyEditText.getValue().toString()
+        textView.text = formatValue(currencyEditText.value)
 
         button.setOnClickListener {
             currencyEditText.text?.clear()
@@ -68,5 +70,16 @@ class MainActivity : AppCompatActivity() {
             }
             error
         }
+    }
+
+    private fun formatValue(value: BigDecimal): String {
+        return bigDecimalToString(
+            value,
+            CurrencyFormatConfig(
+                decimalSeparator = '.',
+                groupingSeparator = ' ',
+                decimalLength = 2
+            )
+        )
     }
 }
