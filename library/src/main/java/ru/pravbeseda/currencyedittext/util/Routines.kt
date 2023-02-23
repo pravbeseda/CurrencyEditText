@@ -32,7 +32,14 @@ class Routines {
                 pattern += "." + "0".repeat(config.decimalLength)
             }
             val df = DecimalFormat(pattern, separators)
-            return df.format(value.setScale(config.decimalLength, RoundingMode.FLOOR))
+            val result = df.format(value.setScale(config.decimalLength, RoundingMode.FLOOR))
+            val prefix =
+                if (config.addLTRPrefix) "\u200E" else "" // u200E - LTR mark, need for arabic
+            return if (config.showPlusSign && value > BigDecimal.ZERO) {
+                "$prefix+$result"
+            } else {
+                prefix + result
+            }
         }
     }
 }

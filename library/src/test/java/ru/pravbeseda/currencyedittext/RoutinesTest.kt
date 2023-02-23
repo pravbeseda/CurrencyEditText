@@ -68,13 +68,13 @@ class RoutinesTest {
                 "123.456.789,123"
             ),
             BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
+                BigDecimal("-123456789.123456789"),
                 CurrencyFormatConfig(
                     decimalSeparator = ',',
                     groupingSeparator = ' ',
                     decimalLength = 2
                 ),
-                "123 456 789,12"
+                "-123 456 789,13"
             ),
             BigDecimalToStringTestCase(
                 BigDecimal("123456789.123456789"),
@@ -99,9 +99,10 @@ class RoutinesTest {
                 CurrencyFormatConfig(
                     decimalSeparator = ',',
                     groupingSeparator = ' ',
-                    decimalLength = 1
+                    decimalLength = 1,
+                    showPlusSign = true
                 ),
-                "123 456 789,1"
+                "+123 456 789,1"
             ),
             BigDecimalToStringTestCase(
                 BigDecimal("123456789.123456789"),
@@ -126,14 +127,15 @@ class RoutinesTest {
                 CurrencyFormatConfig(
                     decimalSeparator = ',',
                     groupingSeparator = ' ',
-                    decimalLength = 6
+                    decimalLength = 6,
+                    showPlusSign = true
                 ),
-                "123 456 789,123456"
+                "+123 456 789,123456"
             )
         )
         for (case in cases) {
             val result = bigDecimalToString(case.bigDecimal, case.currencyFormatConfig)
-            Assert.assertEquals(case.result, result)
+            Assert.assertEquals("\u200E" + case.result, result)
         }
     }
 }

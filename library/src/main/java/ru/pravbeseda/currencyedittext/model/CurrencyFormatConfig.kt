@@ -20,5 +20,7 @@ import java.text.DecimalFormatSymbols
 data class CurrencyFormatConfig(
     val decimalSeparator: Char = DecimalFormatSymbols().decimalSeparator,
     val groupingSeparator: Char = DecimalFormatSymbols().groupingSeparator,
-    val decimalLength: Int = 2
+    val decimalLength: Int = 2,
+    val showPlusSign: Boolean = false,
+    val addLTRPrefix: Boolean = true
 )

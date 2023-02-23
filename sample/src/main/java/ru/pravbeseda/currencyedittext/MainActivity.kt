@@ -78,7 +78,8 @@ class MainActivity : AppCompatActivity() {
             CurrencyFormatConfig(
                 decimalSeparator = '.',
                 groupingSeparator = ' ',
-                decimalLength = 2
+                decimalLength = 2,
+                showPlusSign = true
             )
         )
     }
