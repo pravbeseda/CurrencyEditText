@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        currencyEditText.setValue(BigDecimal(123.476))
-        currencyMaterialEditText.setValue(BigDecimal(432.167))
+        currencyEditText.setValue(BigDecimal(1123.476))
+        currencyMaterialEditText.setValue(BigDecimal(1432.167))
 
         currencyEditText.setDecimalZerosPadding(true)
         currencyMaterialEditText.setDecimalZerosPadding(true)

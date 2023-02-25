@@ -43,3 +43,7 @@ class Routines {
         }
     }
 }
+
+fun String?.firstChar(): Char? {
+    return if (!this.isNullOrEmpty()) this[0] else null
+}

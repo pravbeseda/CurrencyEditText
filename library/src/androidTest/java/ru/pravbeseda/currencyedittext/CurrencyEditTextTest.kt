@@ -61,15 +61,15 @@ class CurrencyEditTextTest {
 
         // Custom separators
         currencyEditText.setLocale(Locale.ENGLISH)
-        currencyEditText.setSeparators(" ", ",")
+        currencyEditText.setSeparators(' ', ',')
         valuesAssertEquals()
-        currencyEditText.setSeparators("^", "_")
+        currencyEditText.setSeparators('^', '_')
         valuesAssertEquals()
     }
 
     @Test
     fun testSetText() {
-        currencyEditText.setSeparators(" ", ".")
+        currencyEditText.setSeparators(' ', '.')
         setText("1 000.45")
         assertEquals("1 000.45", currencyEditText.text.toString())
     }
@@ -94,9 +94,9 @@ class CurrencyEditTextTest {
     @Test
     fun shouldSetSeparators() {
         setValue(BigDecimal(1000.45))
-        currencyEditText.setSeparators(" ", ",")
+        currencyEditText.setSeparators(' ', ',')
         assertEquals("1 000,45", currencyEditText.text.toString())
-        currencyEditText.setSeparators(",", ".")
+        currencyEditText.setSeparators(',', '.')
         assertEquals("1,000.45", currencyEditText.text.toString())
     }
 

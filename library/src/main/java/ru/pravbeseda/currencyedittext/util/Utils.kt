@@ -27,18 +27,18 @@ import java.util.Locale
 
 internal fun parseMoneyValue(
     value: String,
-    groupingSeparator: String,
-    decimalSeparator: String,
+    groupingSeparator: Char,
+    decimalSeparator: Char,
     currencySymbol: String
 ): String =
     value.replace(currencySymbol, "")
-        .replace(groupingSeparator, "")
-        .replace(decimalSeparator, ".")
+        .replace(groupingSeparator.toString(), "")
+        .replace(decimalSeparator.toString(), ".")
 
 internal fun parseMoneyValueWithLocale(
     value: String,
-    groupingSeparator: String,
-    decimalSeparator: String,
+    groupingSeparator: Char,
+    decimalSeparator: Char,
     currencySymbol: String
 ): Number {
     val valueWithoutSeparator =
@@ -52,12 +52,12 @@ internal fun parseMoneyValueWithLocale(
 
 internal fun formatMoneyValue(
     value: BigDecimal,
-    groupingSeparator: String,
-    decimalSeparator: String
+    groupingSeparator: Char,
+    decimalSeparator: Char
 ): String {
     val separators = DecimalFormatSymbols()
-    separators.decimalSeparator = decimalSeparator[0]
-    separators.groupingSeparator = groupingSeparator[0]
+    separators.decimalSeparator = decimalSeparator
+    separators.groupingSeparator = groupingSeparator
     val df = DecimalFormat("#,##0.##", separators)
     return df.format(value)
 }

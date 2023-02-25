@@ -47,8 +47,8 @@ fun String.toLocale(): Locale = Locale.Builder().setLanguageTag(this).build()
 fun LocaleVars.toWatcher(
     editText: EditText,
     decimalPlaces: Int = 2,
-    decimalSeparator: String? = null,
-    groupingSeparator: String? = null,
+    decimalSeparator: Char? = null,
+    groupingSeparator: Char? = null,
     negativeValueAllow: Boolean = false,
     decimalZerosPadding: Boolean = false
 ): CurrencyInputWatcher {

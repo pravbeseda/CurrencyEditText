@@ -28,11 +28,11 @@ import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 class CurrencyInputWatcherTest {
 
     private val locales = listOf(
-        LocaleVars("en-NG", ".", ",", "$ "),
-        LocaleVars("en-US", ".", ",", "$ "),
-        LocaleVars("da-DK", ",", ".", "$ "),
-        LocaleVars("fr-CA", ".", " ", "$ "),
-        LocaleVars("ru-Ru", ",", " ", "")
+        LocaleVars("en-NG", '.', ',', "$ "),
+        LocaleVars("en-US", '.', ',', "$ "),
+        LocaleVars("da-DK", ',', '.', "$ "),
+        LocaleVars("fr-CA", '.', ' ', "$ "),
+        LocaleVars("ru-Ru", ',', ' ', "")
     )
 
     @Test
@@ -461,8 +461,8 @@ class CurrencyInputWatcherTest {
             val secondWatcher = locale.toWatcher(
                 editText,
                 3,
-                locale.decimalSeparator.toString(),
-                locale.groupingSeparator.toString(),
+                locale.decimalSeparator,
+                locale.groupingSeparator,
                 false
             )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
@@ -713,7 +713,7 @@ class CurrencyInputWatcherTest {
             val expectedCursorPosition = locale.currencySymbol.length + 3
 
             val (editText, editable, watcher) = setupTestVariables(locale, 2)
-            val separator = if (locale.decimalSeparator == ".") ',' else '.' // opposite separator
+            val separator = if (locale.decimalSeparator == '.') ',' else '.' // opposite separator
             `when`(editable.toString()).thenReturn("${locale.currencySymbol}10${separator}0")
 
             watcher.beforeTextChanged(

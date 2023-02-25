@@ -17,7 +17,7 @@ package ru.pravbeseda.currencyedittext.model
 
 data class LocaleVars(
     val tag: String,
-    val decimalSeparator: String,
-    val groupingSeparator: String,
+    val decimalSeparator: Char,
+    val groupingSeparator: Char,
     val currencySymbol: String
 )

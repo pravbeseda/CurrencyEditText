@@ -20,8 +20,8 @@ import java.util.*
 data class CurrencyInputWatcherConfig(
     val locale: Locale = Locale.getDefault(),
     val currencySymbol: String = "",
-    val decimalSeparator: String? = null,
-    val groupingSeparator: String? = null,
+    val decimalSeparator: Char? = null,
+    val groupingSeparator: Char? = null,
     val maxNumberOfDecimalPlaces: Int = 2,
     val decimalZerosPadding: Boolean = false,
     val negativeValueAllow: Boolean = false,

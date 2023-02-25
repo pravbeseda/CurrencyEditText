@@ -23,6 +23,7 @@ import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
 import java.util.*
+import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isApi26AndAbove
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
@@ -58,8 +59,8 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         var text: String?
         var negativeValueAllow: Boolean
         var selectAllOnFocus: Boolean
-        var decimalSeparator: String?
-        var groupingSeparator: String?
+        var decimalSeparator: Char?
+        var groupingSeparator: Char?
         var maxDecimalPlaces: Int
         var decimalZerosPadding: Boolean = false
         context.theme.obtainStyledAttributes(
@@ -70,8 +71,10 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         ).run {
             localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
             text = getString(R.styleable.CurrencyMaterialEditText_text)
-            decimalSeparator = getString(R.styleable.CurrencyMaterialEditText_decimalSeparator)
-            groupingSeparator = getString(R.styleable.CurrencyMaterialEditText_groupingSeparator)
+            decimalSeparator =
+                getString(R.styleable.CurrencyMaterialEditText_decimalSeparator).firstChar()
+            groupingSeparator =
+                getString(R.styleable.CurrencyMaterialEditText_groupingSeparator).firstChar()
             negativeValueAllow = getBoolean(
                 R.styleable.CurrencyMaterialEditText_negativeValueAllow,
                 false
@@ -96,7 +99,7 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         }
         setNegativeValueAllow(negativeValueAllow)
         if (!text.isNullOrBlank()) setText(text!!)
-        if (!decimalSeparator.isNullOrBlank() && groupingSeparator !== null) {
+        if (decimalSeparator !== null && groupingSeparator !== null) {
             setSeparators(
                 groupingSeparator!!,
                 decimalSeparator!!
@@ -128,7 +131,7 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.setLocale(localeTag)
     }
 
-    fun setSeparators(newGroupingSeparator: String, newDecimalSeparator: String) {
+    fun setSeparators(newGroupingSeparator: Char, newDecimalSeparator: Char) {
         editText.setSeparators(newGroupingSeparator, newDecimalSeparator)
     }
 

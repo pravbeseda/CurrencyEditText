@@ -27,6 +27,7 @@ import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.util.*
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
+import ru.pravbeseda.currencyedittext.util.*
 import ru.pravbeseda.currencyedittext.util.formatMoneyValue
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
@@ -40,8 +41,8 @@ open class CurrencyEditText(
     private lateinit var currencySymbolPrefix: String // lateinit is important!
     private var textWatcher: CurrencyInputWatcher
     private var locale: Locale = Locale.getDefault()
-    private var decimalSeparator: String? = null
-    private var groupingSeparator: String? = null
+    private var decimalSeparator: Char? = null
+    private var groupingSeparator: Char? = null
     private var negativeValueAllow: Boolean = false
     private var decimalZerosPadding: Boolean = false
     private var maxDecimalPlaces: Int
@@ -79,8 +80,10 @@ open class CurrencyEditText(
             try {
                 prefix = getString(R.styleable.CurrencyEditText_currencySymbol).orEmpty()
                 localeTag = getString(R.styleable.CurrencyEditText_localeTag)
-                decimalSeparator = getString(R.styleable.CurrencyEditText_decimalSeparator)
-                groupingSeparator = getString(R.styleable.CurrencyEditText_groupingSeparator)
+                decimalSeparator =
+                    getString(R.styleable.CurrencyEditText_decimalSeparator).firstChar()
+                groupingSeparator =
+                    getString(R.styleable.CurrencyEditText_groupingSeparator).firstChar()
                 useCurrencySymbolAsHint =
                     getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
                 maxDecimalPlaces = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalPlaces, 2)
@@ -134,12 +137,12 @@ open class CurrencyEditText(
         setValue(value)
     }
 
-    fun setSeparators(newGroupingSeparator: String, newDecimalSeparator: String) {
+    fun setSeparators(newGroupingSeparator: Char, newDecimalSeparator: Char) {
         if (newGroupingSeparator == newDecimalSeparator) {
             throw IllegalArgumentException(
                 "Separators must not match. " +
-                        "Grouping separator: `$newGroupingSeparator`, " +
-                        "Decimal separator: `$newDecimalSeparator`"
+                    "Grouping separator: `$newGroupingSeparator`, " +
+                    "Decimal separator: `$newDecimalSeparator`"
             )
         }
         val value = getValue()
@@ -150,11 +153,11 @@ open class CurrencyEditText(
         setValue(value)
     }
 
-    fun getDecimalSeparator(): String {
+    fun getDecimalSeparator(): Char {
         return textWatcher.getDecimalSeparator()
     }
 
-    fun getGroupingSeparator(): String {
+    fun getGroupingSeparator(): Char {
         return textWatcher.getGroupingSeparator()
     }
 

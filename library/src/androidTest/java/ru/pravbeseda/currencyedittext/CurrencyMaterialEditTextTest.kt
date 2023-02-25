@@ -41,7 +41,7 @@ class CurrencyMaterialEditTextTest() {
             arrayOf("0.", "0.")
         )
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            currencyEditText.setSeparators(" ", ".")
+            currencyEditText.setSeparators(' ', '.')
         }
         samples.forEach {
             testSetText(it[0], it[1])
