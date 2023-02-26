@@ -153,7 +153,7 @@ app:groupingSeparator=" "
 Or in the code:
 
 ```Kotlin
-edittext.setSeparators(" ", ",")
+edittext.setSeparators(' ', ',')
 ```
 
 ## CurrencyMaterialEditText Features
