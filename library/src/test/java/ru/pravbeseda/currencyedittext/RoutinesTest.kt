@@ -131,6 +131,16 @@ class RoutinesTest {
                     showPlusSign = true
                 ),
                 "+123 456 789,123456"
+            ),
+            BigDecimalToStringTestCase(
+                BigDecimal("123456789.123456789"),
+                CurrencyFormatConfig(
+                    decimalSeparator = ',',
+                    groupingSeparator = 'n', // from none
+                    decimalLength = 6,
+                    showPlusSign = true
+                ),
+                "+123\u0000456\u0000789,123456"
             )
         )
         for (case in cases) {

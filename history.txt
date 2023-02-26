@@ -8,3 +8,4 @@
 0.3.0 - Added `decimalZerosPadding` property with getter and setter to both components
 0.4.0 - Added `bigDecimalToString`method to format BigDecimal to String
 0.5.0 - Separators have been changed to Char type.
+0.5.1 - Support "empty" groupingSelector ('n')

@@ -803,6 +803,23 @@ class CurrencyInputWatcherTest {
         }
     }
 
+    @Test
+    fun shouldUseNullableGroupingSeparator() {
+        val locale = LocaleVars("en", '.', 'n', "")
+        val currentEditTextContent = "1900${locale.decimalSeparator}4"
+        val expectedText = "1900${locale.decimalSeparator}4"
+
+        val (editText, editable, watcher) = setupTestVariables(
+            locale = locale
+        )
+        `when`(editable.toString()).thenReturn(currentEditTextContent)
+
+        watcher.runAllWatcherMethods(editable)
+
+        // Verify that the EditText's text was set to the expected text
+        verify(editText, times(1)).setText(expectedText)
+    }
+
     private fun setupTestVariables(
         locale: LocaleVars,
         decimalPlaces: Int = 2,

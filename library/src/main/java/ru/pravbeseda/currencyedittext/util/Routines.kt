@@ -21,12 +21,15 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
 
+const val emptyChar = 'n' // from null
+
 class Routines {
     companion object {
         fun bigDecimalToString(value: BigDecimal, config: CurrencyFormatConfig): String {
             val separators = DecimalFormatSymbols()
             separators.decimalSeparator = config.decimalSeparator
-            separators.groupingSeparator = config.groupingSeparator
+            separators.groupingSeparator =
+                if (config.groupingSeparator == emptyChar) '\u0000' else config.groupingSeparator
             var pattern = "#,##0"
             if (config.decimalLength > 0) {
                 pattern += "." + "0".repeat(config.decimalLength)

@@ -19,6 +19,7 @@ import android.widget.EditText
 import java.lang.ref.WeakReference
 import java.text.DecimalFormatSymbols
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
+import ru.pravbeseda.currencyedittext.util.emptyChar
 
 class CurrencyInputWatcher(
     private val editTextRef: WeakReference<EditText>,
@@ -221,14 +222,17 @@ class CurrencyInputWatcher(
         var index = textBeforeDot.length
 
         // Count all group separators and calc cursor position
-        for (i in 1 until spaceCount + 1) {
-            index -= 3
-            if (index > 0) {
-                if (index < resultPosition - sign.length - currencySymbol.length) {
-                    resultPosition++
+        if (groupingSeparator != emptyChar) {
+            for (i in 1 until spaceCount + 1) {
+                index -= 3
+                if (index > 0) {
+                    if (index < resultPosition - sign.length - currencySymbol.length) {
+                        resultPosition++
+                    }
+                    val sb = StringBuilder()
+                    textBeforeDot =
+                        sb.append(textBeforeDot).insert(index, groupingSeparator).toString()
                 }
-                val sb = StringBuilder()
-                textBeforeDot = sb.append(textBeforeDot).insert(index, groupingSeparator).toString()
             }
         }
 
