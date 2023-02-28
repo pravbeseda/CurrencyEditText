@@ -138,16 +138,13 @@ open class CurrencyEditText(
     }
 
     fun setSeparators(newGroupingSeparator: Char, newDecimalSeparator: Char) {
+        var decimal = newDecimalSeparator
         if (newGroupingSeparator == newDecimalSeparator) {
-            throw IllegalArgumentException(
-                "Separators must not match. " +
-                    "Grouping separator: `$newGroupingSeparator`, " +
-                    "Decimal separator: `$newDecimalSeparator`"
-            )
+            decimal = if (newDecimalSeparator == '.') ',' else '.'
         }
         val value = getValue()
         setText("")
-        decimalSeparator = newDecimalSeparator
+        decimalSeparator = decimal
         groupingSeparator = newGroupingSeparator
         invalidateTextWatcher()
         setValue(value)
