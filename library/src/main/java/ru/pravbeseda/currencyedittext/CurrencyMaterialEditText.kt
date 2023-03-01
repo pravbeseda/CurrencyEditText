@@ -51,10 +51,9 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
     val isValid: Boolean
         get() = isValidState()
 
-    private val editText: CurrencyEditText
+    val editText = CurrencyEditText(context, null)
 
     init {
-        editText = CurrencyEditText(context, null)
         var localeTag: String?
         var text: String?
         var negativeValueAllow: Boolean
