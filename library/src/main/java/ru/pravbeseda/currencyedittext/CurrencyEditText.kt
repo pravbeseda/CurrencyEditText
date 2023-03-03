@@ -45,6 +45,7 @@ open class CurrencyEditText(
     private var groupingSeparator: Char? = null
     private var negativeValueAllow: Boolean = false
     private var decimalZerosPadding: Boolean = false
+    private var emptyStringForZero: Boolean = true
     private var maxDecimalPlaces: Int
 
     private var onValueChanged: OnValueChanged? = null
@@ -91,6 +92,8 @@ open class CurrencyEditText(
                     getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false)
                 decimalZerosPadding =
                     getBoolean(R.styleable.CurrencyEditText_decimalZerosPadding, false)
+                emptyStringForZero =
+                    getBoolean(R.styleable.CurrencyEditText_emptyStringForZero, true)
             } finally {
                 recycle()
             }
@@ -102,11 +105,15 @@ open class CurrencyEditText(
                 getLocaleFromTag(localeTag!!)
         }
         textWatcher = createTextWatcher()
-        addTextChangedListener(textWatcher)
+        this.addTextChangedListener(textWatcher)
         text = this.text // to apply text watcher formatting
     }
 
     fun setValue(value: BigDecimal) {
+        if (emptyStringForZero && value == BigDecimal.ZERO) {
+            setText("")
+            return
+        }
         setText(
             formatMoneyValue(
                 value,
@@ -176,6 +183,15 @@ open class CurrencyEditText(
         return decimalZerosPadding
     }
 
+    fun setEmptyStringForZero(newValue: Boolean) {
+        emptyStringForZero = newValue
+        setValue(getValue())
+    }
+
+    fun getEmptyStringForZero(): Boolean {
+        return emptyStringForZero
+    }
+
     fun setCurrencySymbol(currencySymbol: String, useCurrencySymbolAsHint: Boolean = false) {
         currencySymbolPrefix = "$currencySymbol "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
@@ -226,15 +242,6 @@ open class CurrencyEditText(
         } else {
             State.ERROR
         }
-    }
-
-    fun getDoubleValue(): Double {
-        return parseMoneyValueWithLocale(
-            text.toString(),
-            textWatcher.getGroupingSeparator(),
-            textWatcher.getDecimalSeparator(),
-            currencySymbolPrefix
-        ).toDouble()
     }
 
     private fun stringToBigDecimal(str: String?): BigDecimal {

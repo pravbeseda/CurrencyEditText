@@ -61,7 +61,8 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         var decimalSeparator: Char?
         var groupingSeparator: Char?
         var maxDecimalPlaces: Int
-        var decimalZerosPadding: Boolean = false
+        var decimalZerosPadding: Boolean
+        var emptyStringForZero: Boolean
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.CurrencyMaterialEditText,
@@ -84,6 +85,8 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
                 getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
             maxDecimalPlaces =
                 getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
+            emptyStringForZero =
+                getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
         }
         if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) {
             setLocale(
@@ -96,7 +99,6 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
             // bugfix api26
             importantForAutofill = IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
         }
-        setNegativeValueAllow(negativeValueAllow)
         if (!text.isNullOrBlank()) setText(text!!)
         if (decimalSeparator !== null && groupingSeparator !== null) {
             setSeparators(
@@ -104,9 +106,12 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
                 decimalSeparator!!
             )
         }
+        setNegativeValueAllow(negativeValueAllow)
         setSelectAllOnFocus(selectAllOnFocus)
         setMaxNumberOfDecimalPlaces(maxDecimalPlaces)
-        addView(editText)
+        setDecimalZerosPadding(decimalZerosPadding)
+        setEmptyStringForZero(emptyStringForZero)
+        this.addView(editText)
     }
 
     fun setValue(value: BigDecimal) {
@@ -156,6 +161,14 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
 
     fun setDecimalZerosPadding(padding: Boolean) {
         editText.setDecimalZerosPadding(padding)
+    }
+
+    fun getEmptyStringForZero(): Boolean {
+        return editText.getEmptyStringForZero()
+    }
+
+    fun setEmptyStringForZero(newValue: Boolean) {
+        editText.setEmptyStringForZero(newValue)
     }
 
     fun onValueChanged(

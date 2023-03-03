@@ -8,6 +8,7 @@
     <attr name="negativeValueAllow" format="boolean" />
     <attr name="maxNumberOfDecimalPlaces" format="integer" />
     <attr name="decimalZerosPadding" format="boolean" />
+    <attr name="emptyStringForZero" format="boolean" />
 
     <declare-styleable name="CurrencyEditText">
         <attr name="currencySymbol" />
@@ -18,6 +19,7 @@
         <attr name="negativeValueAllow" />
         <attr name="decimalZerosPadding" />
         <attr name="maxNumberOfDecimalPlaces" />
+        <attr name="emptyStringForZero" />
     </declare-styleable>
     <declare-styleable name="CurrencyMaterialEditText">
         <attr name="text" format="string" />
@@ -30,5 +32,6 @@
         <attr name="negativeValueAllow" />
         <attr name="decimalZerosPadding" />
         <attr name="maxNumberOfDecimalPlaces" />
+        <attr name="emptyStringForZero" />
     </declare-styleable>
 </resources>

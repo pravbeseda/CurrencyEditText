@@ -10,3 +10,4 @@
 0.5.0 - Separators have been changed to Char type.
 0.5.1 - Support "empty" groupingSelector ('n')
 0.5.2 - CurrencyMaterialEditText.editText is public now
+0.6.0 - new property `emptyStringForZero`

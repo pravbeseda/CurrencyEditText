@@ -816,8 +816,24 @@ class CurrencyInputWatcherTest {
 
         watcher.runAllWatcherMethods(editable)
 
-        // Verify that the EditText's text was set to the expected text
         verify(editText, times(1)).setText(expectedText)
+    }
+
+    @Test
+    fun shouldNotSetZeroForEmptyString() {
+        for (locale in locales) {
+            val currentEditTextContent = ""
+            val expectedText = locale.currencySymbol
+
+            val (editText, editable, watcher) = setupTestVariables(
+                locale = locale
+            )
+            `when`(editable.toString()).thenReturn(currentEditTextContent)
+
+            watcher.runAllWatcherMethods(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+        }
     }
 
     private fun setupTestVariables(

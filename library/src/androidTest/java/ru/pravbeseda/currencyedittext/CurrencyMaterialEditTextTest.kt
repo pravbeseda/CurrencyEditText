@@ -38,7 +38,8 @@ class CurrencyMaterialEditTextTest() {
         val samples = listOf(
             arrayOf("100", "100"),
             arrayOf("4321.76", "4 321.76"),
-            arrayOf("0.", "0.")
+            arrayOf("0.", "0."),
+            arrayOf("", "")
         )
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setSeparators(' ', '.')
@@ -66,6 +67,14 @@ class CurrencyMaterialEditTextTest() {
         testSetText("-100", "100")
         currencyEditText.setNegativeValueAllow(true)
         testSetText("-100", "-100")
+    }
+
+    @Test
+    fun shouldSetDecimalZerosPadding() {
+        currencyEditText.setDecimalZerosPadding(true)
+        testSetText("100.1", "100.10")
+        currencyEditText.setDecimalZerosPadding(false)
+        testSetText("100.1", "100.1")
     }
 
     private fun testSetText(text: String, expected: String) {

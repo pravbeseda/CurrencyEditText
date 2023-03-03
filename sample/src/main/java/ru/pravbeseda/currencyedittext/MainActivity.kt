@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             currencyEditText.text?.clear()
         }
 
-        currencyMaterialEditText.hint = "Enter value"
+        // currencyMaterialEditText.hint = "Enter value"
 
         currencyEditText.setValidator { value ->
             var error = ""
