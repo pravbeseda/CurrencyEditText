@@ -282,10 +282,10 @@ open class CurrencyEditText(
         }
     }
 
-    fun onValueChanged(action: (BigDecimal?, state: State, textError: String) -> Unit) {
+    fun onValueChanged(action: (BigDecimal, state: State, textError: String) -> Unit) {
         val that = this
         onValueChanged = object : OnValueChanged {
-            override fun onValueChanged(newValue: BigDecimal?, state: State, textError: String) {
+            override fun onValueChanged(newValue: BigDecimal, state: State, textError: String) {
                 that.state = state
                 action.invoke(newValue, state, textError)
             }
@@ -300,7 +300,7 @@ open class CurrencyEditText(
      * Interface for value and state change callback
      */
     interface OnValueChanged {
-        fun onValueChanged(newValue: BigDecimal?, state: State, textError: String)
+        fun onValueChanged(newValue: BigDecimal, state: State, textError: String)
     }
 
     companion object {
