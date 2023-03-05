@@ -1,5 +1,9 @@
 # CurrencyEditText
 
+
+[![ci](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml/badge.svg)](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/ru.pravbeseda/CurrencyEditText.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22ru.pravbeseda%22%20AND%20a:%22CurrencyEditText%22)
+
 This library provides components `CurrencyTextEdit` and `CurrencyMaterialTextEdit` that can replace regular `TextEdit`. With built-in number formatting, these components are useful for entering monetary amounts and other numeric values.
 
 ![CurrencyTextEdit](./demo/CurrencyTextEdit.png) ![CurrencyMaterialTextEdit](./demo/CurrencyMaterialTextEdit.png)
@@ -19,9 +23,6 @@ Also there was used ideas of another project: https://github.com/firmfreez/Curre
 Thanks a lot to both authors.
 
 Attention! This is a beta release of the library, use it at your own risk.
-
-[![ci](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml/badge.svg)](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/ru.pravbeseda/CurrencyEditText.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22ru.pravbeseda%22%20AND%20a:%22CurrencyEditText%22)
 
 ## Gradle Dependency
 
