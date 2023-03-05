@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
         currencyEditText.setDecimalZerosPadding(true)
         currencyMaterialEditText.setDecimalZerosPadding(true)
+        currencyMaterialEditText.setEmptyStringForZero(false)
 
         currencyEditText.onValueChanged { bigDecimal, state: State, textError: String ->
             if (state !== State.ERROR) {

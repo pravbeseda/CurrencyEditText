@@ -125,7 +125,7 @@ class CurrencyInputWatcher(
             it - curSpaceCount + spaceCountInCurrencySymbol
         }
 
-        val integerPart = if (decimalSeparatorPos == -1) {
+        var integerPart = if (decimalSeparatorPos == -1) {
             newTextWithoutGroupingSeparators
         } else {
             newTextWithoutGroupingSeparators.substring(0, decimalSeparatorPos)
@@ -138,6 +138,20 @@ class CurrencyInputWatcher(
         }
         if (fractionalPart.length > config.maxNumberOfDecimalPlaces) {
             fractionalPart = fractionalPart.substring(0, config.maxNumberOfDecimalPlaces)
+        }
+
+        // Remove leading zeros
+        integerPart = integerPart.dropWhile {
+            if (it == '0') {
+                cursorPosition--
+                true
+            } else {
+                false
+            }
+        }
+        if (integerPart.isEmpty() && (newPartOfText == "0" || fractionalPart.isNotEmpty())) {
+            integerPart = "0"
+            cursorPosition++
         }
 
         resultText = integerPart

@@ -836,6 +836,54 @@ class CurrencyInputWatcherTest {
         }
     }
 
+    @Test
+    fun shouldDeleteLeadZeros() {
+        for (locale in locales) {
+            val currentEditTextContent = "0050"
+            val expectedText = "${locale.currencySymbol}50"
+
+            val (editText, editable, watcher) = setupTestVariables(
+                locale = locale
+            )
+            `when`(editable.toString()).thenReturn(currentEditTextContent)
+
+            watcher.runAllWatcherMethods(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+        }
+    }
+
+//    @Test
+//    fun `should replace leading zero when another digit is typed before it`() {
+//        for (locale in locales) {
+//            val currentEditTextContent = "0"
+//            val currentCursorPosition = 0
+//            val expectedText = "${locale.currencySymbol}5"
+//            val expectedCursorPosition = locale.currencySymbol.length + 1
+//
+//            val (editText, editable, watcher) = setupTestVariables(locale, 2)
+//            val separator = if (locale.decimalSeparator == '.') ',' else '.' // opposite separator
+//            `when`(editable.toString()).thenReturn("${locale.currencySymbol}50")
+//
+//            watcher.beforeTextChanged(
+//                currentEditTextContent,
+//                currentCursorPosition,
+//                1,
+//                expectedCursorPosition
+//            )
+//            watcher.onTextChanged(
+//                editable,
+//                locale.currencySymbol.length + currentCursorPosition,
+//                0,
+//                1
+//            )
+//            watcher.afterTextChanged(editable)
+//
+//            verify(editText, times(1)).setText(expectedText)
+//            verify(editText).setSelection(expectedCursorPosition)
+//        }
+//    }
+
     private fun setupTestVariables(
         locale: LocaleVars,
         decimalPlaces: Int = 2,
