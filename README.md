@@ -7,7 +7,7 @@ A library to dynamically format your `EditTexts` to take currency inputs.
 Library Features:
 * Support for formatting both by locale and by setting a separate group separator and decimal separator
 * When entering a decimal point, the dot and comma buttons work the same way.
-* Easily enter positive and negative values
+* Easily enter positive and negative values (just press minus regardless of cursor position)
 * Optional currency symbol prefix
 * Ability to set and get value as BigDecimal
 * A simple way to define a validator and a changes listener
