@@ -1,16 +1,18 @@
 # CurrencyEditText
 
-A library to dynamically format your `EditTexts` to take currency inputs.
+This library provides components `CurrencyTextEdit` and `CurrencyMaterialTextEdit` that can replace regular `TextEdit`. With built-in number formatting, these components are useful for entering monetary amounts and other numeric values.
 
 ![CurrencyTextEdit](./demo/CurrencyTextEdit.png) ![CurrencyMaterialTextEdit](./demo/CurrencyMaterialTextEdit.png)
 
-Library Features:
+**Library Features:**
 * Support for formatting both by locale and by setting a separate group separator and decimal separator
 * When entering a decimal point, the dot and comma buttons work the same way.
 * Easily enter positive and negative values (just press minus regardless of cursor position)
 * Optional currency symbol prefix
 * Ability to set and get value as BigDecimal
 * A simple way to define a validator and a changes listener
+* The library is used in popular applications (see list in below)
+* The author maintains and refines the library and is always happy to receive your comments and suggestions.
 
 This project is fork of https://github.com/CottaCush/CurrencyEditText
 Also there was used ideas of another project: https://github.com/firmfreez/CurrencyEditText
