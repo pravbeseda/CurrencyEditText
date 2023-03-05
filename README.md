@@ -192,7 +192,9 @@ currencyMaterialEditText.hint = "Account amount"
 
 As mentioned above, the validation error text in the CurrencyMaterialEditText component is shown automatically.
 
-## The library is used in projects
+## Usage of the library
+
+The library is used in applications:
 
 1. [How much can I spend?](https://play.google.com/store/apps/details?id=pravbeseda.spendcontrol)
 2. [How much can I spend? Premium](https://play.google.com/store/apps/details?id=pravbeseda.spendcontrol.premium)
