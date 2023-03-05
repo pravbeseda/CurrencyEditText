@@ -2,6 +2,8 @@
 
 A library to dynamically format your `EditTexts` to take currency inputs.
 
+![CurrencyTextEdit](./demo/CurrencyTextEdit.png) ![CurrencyMaterialTextEdit](./demo/CurrencyMaterialTextEdit.png)
+
 This project is fork of https://github.com/CottaCush/CurrencyEditText
 Also there was used ideas of another project: https://github.com/firmfreez/CurrencyEditText
 Thanks a lot to both authors.
@@ -96,6 +98,8 @@ edittext.setValidator { value ->
     error
 }
 ```
+
+![ValidationError](./demo/ValidationError.png)
 
 You can check the current state of the field via `isValid` property or `isValidState()` method
 
