@@ -22,5 +22,5 @@ data class CurrencyFormatConfig(
     val groupingSeparator: Char = DecimalFormatSymbols().groupingSeparator,
     val decimalLength: Int = 2,
     val showPlusSign: Boolean = false,
-    val addLTRPrefix: Boolean = true
+    val addLTRPrefix: Boolean = false
 )
