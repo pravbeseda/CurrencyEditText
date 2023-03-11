@@ -145,7 +145,7 @@ class RoutinesTest {
         )
         for (case in cases) {
             val result = bigDecimalToString(case.bigDecimal, case.currencyFormatConfig)
-            Assert.assertEquals("\u200E" + case.result, result)
+            Assert.assertEquals(case.result, result)
         }
     }
 }
