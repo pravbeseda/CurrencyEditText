@@ -70,6 +70,7 @@ open class CurrencyEditText(
         var useCurrencySymbolAsHint = false
         inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
         keyListener = DigitsKeyListener.getInstance("0123456789.,-")
+        textDirection = TEXT_DIRECTION_LTR
         var localeTag: String?
         val prefix: String
         context.theme.obtainStyledAttributes(

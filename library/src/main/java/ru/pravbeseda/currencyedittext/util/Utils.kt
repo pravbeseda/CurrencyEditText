@@ -55,10 +55,10 @@ internal fun formatMoneyValue(
     groupingSeparator: Char,
     decimalSeparator: Char
 ): String {
-    val separators = DecimalFormatSymbols()
-    separators.decimalSeparator = decimalSeparator
-    separators.groupingSeparator = groupingSeparator
-    val df = DecimalFormat("#,##0.##", separators)
+    val symbols = DecimalFormatSymbols(Locale.ROOT)
+    symbols.decimalSeparator = decimalSeparator
+    symbols.groupingSeparator = groupingSeparator
+    val df = DecimalFormat("#,##0.##", symbols)
     return df.format(value)
 }
 
