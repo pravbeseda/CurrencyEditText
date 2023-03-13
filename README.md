@@ -37,7 +37,7 @@ the [releases page](https://github.com/pravbeseda/CurrencyEditText/releases)
 
 ## Library content
 
-There are 2 components in this library `CurrencyEditText` and `CurrencyMaterialEditText`.
+There are 2 components in this library: `CurrencyEditText` and `CurrencyMaterialEditText`.
 The `CurrencyMaterialEditText` component is inherited from `TextInputLayout` and is a wrapper
 over `CurrencyEditText`.
 
