@@ -11,4 +11,5 @@
 0.5.1 - Support "empty" groupingSelector ('n')
 0.5.2 - CurrencyMaterialEditText.editText is public now
 0.6.0 - new property `emptyStringForZero`
-0.7.0 - components use European digits and LTR direction always
+0.7.0 - components always use European digits and LTR direction
+1.0.0 - release version
