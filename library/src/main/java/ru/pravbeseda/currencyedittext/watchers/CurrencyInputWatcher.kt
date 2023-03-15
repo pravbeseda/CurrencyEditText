@@ -69,6 +69,10 @@ class CurrencyInputWatcher(
                 resultText.replaceRange(position - 1, position, decimalSeparator.toString())
         }
 
+        if (oldText?.removePrefix(config.currencySymbol) == "0" && newPartOfText?.length == 1) {
+            resultText = resultText.replaceFirst("0", "")
+        }
+
         // Remove decimal separator from newPartOfText when maxNumberOfDecimalPlaces is 0
         if (config.maxNumberOfDecimalPlaces == 0 && arrayOf(",", ".").contains(newPartOfText)) {
             resultText = resultText.replaceRange(position - 1, position, "")
