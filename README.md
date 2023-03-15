@@ -22,8 +22,6 @@ This project is fork of https://github.com/CottaCush/CurrencyEditText
 Also there was used ideas of another project: https://github.com/firmfreez/CurrencyEditText
 Thanks a lot to both authors.
 
-Attention! This is a beta release of the library, use it at your own risk.
-
 ## Gradle Dependency
 
 Add the dependency to your app's `build.gradle`:
