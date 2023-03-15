@@ -883,6 +883,36 @@ class CurrencyInputWatcherTest {
         }
     }
 
+    @Test
+    fun `should remove decimal zeros after removing decimal separator`() {
+        for (locale in locales) {
+            val currentEditTextContent = "${locale.currencySymbol}1${locale.decimalSeparator}00"
+            val currentCursorPosition = locale.currencySymbol.length + 2
+            val expectedText = "${locale.currencySymbol}1"
+            val expectedCursorPosition = locale.currencySymbol.length + 1
+
+            val (editText, editable, watcher) = setupTestVariables(locale, 2)
+            `when`(editable.toString()).thenReturn("${locale.currencySymbol}100")
+
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                currentCursorPosition,
+                1,
+                expectedCursorPosition
+            )
+            watcher.onTextChanged(
+                editable,
+                expectedCursorPosition,
+                0,
+                0
+            )
+            watcher.afterTextChanged(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
+        }
+    }
+
     private fun setupTestVariables(
         locale: LocaleVars,
         decimalPlaces: Int = 2,
