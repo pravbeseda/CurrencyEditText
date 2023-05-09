@@ -26,15 +26,17 @@ const val emptyChar = 'n' // from null
 class Routines {
     companion object {
         fun bigDecimalToString(value: BigDecimal, config: CurrencyFormatConfig): String {
-            val separators = DecimalFormatSymbols()
-            separators.decimalSeparator = config.decimalSeparator
-            separators.groupingSeparator =
+            val symbols = DecimalFormatSymbols()
+            symbols.zeroDigit = '0'
+            symbols.digit = '0'
+            symbols.decimalSeparator = config.decimalSeparator
+            symbols.groupingSeparator =
                 if (config.groupingSeparator == emptyChar) '\u0000' else config.groupingSeparator
             var pattern = "#,##0"
             if (config.decimalLength > 0) {
                 pattern += "." + "0".repeat(config.decimalLength)
             }
-            val df = DecimalFormat(pattern, separators)
+            val df = DecimalFormat(pattern, symbols)
             val result = df.format(value.setScale(config.decimalLength, RoundingMode.FLOOR))
             val prefix =
                 if (config.addLTRPrefix) "\u200E" else "" // u200E - LTR mark, need for arabic

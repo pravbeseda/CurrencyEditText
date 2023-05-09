@@ -16,6 +16,7 @@
 package ru.pravbeseda.currencyedittext
 
 import java.math.BigDecimal
+import java.util.Locale
 import org.junit.Assert
 import org.junit.Test
 import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
@@ -24,7 +25,8 @@ import ru.pravbeseda.currencyedittext.util.Routines.Companion.bigDecimalToString
 data class BigDecimalToStringTestCase(
     var bigDecimal: BigDecimal,
     var currencyFormatConfig: CurrencyFormatConfig,
-    var result: String
+    var result: String,
+    var locale: Locale = Locale.getDefault()
 )
 
 class RoutinesTest {
@@ -141,9 +143,20 @@ class RoutinesTest {
                     showPlusSign = true
                 ),
                 "+123\u0000456\u0000789,123456"
+            ),
+            BigDecimalToStringTestCase(
+                BigDecimal("123456789.123456789"),
+                CurrencyFormatConfig(
+                    decimalSeparator = ',',
+                    groupingSeparator = '.',
+                    decimalLength = 3
+                ),
+                "123.456.789,123",
+                Locale.Builder().setLanguage("ar").build()
             )
         )
         for (case in cases) {
+            Locale.setDefault(case.locale)
             val result = bigDecimalToString(case.bigDecimal, case.currencyFormatConfig)
             Assert.assertEquals(case.result, result)
         }

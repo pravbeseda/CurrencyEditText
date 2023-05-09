@@ -1,6 +1,6 @@
 ext.versions = [
         publishGroupID    : 'ru.pravbeseda',
         publishArtifactID : 'CurrencyEditText',
-        publishVersion    : '1.0.0',
-        publishVersionCode: 16,
+        publishVersion    : '1.0.1',
+        publishVersionCode: 17,
 ]
