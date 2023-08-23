@@ -68,7 +68,7 @@ open class CurrencyEditText(
 
     init {
         var useCurrencySymbolAsHint = false
-        inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
         keyListener = DigitsKeyListener.getInstance("0123456789.,-")
         textDirection = TEXT_DIRECTION_LTR
         var localeTag: String?
@@ -238,7 +238,7 @@ open class CurrencyEditText(
     fun validate(value: BigDecimal? = null) {
         val checkedValue = value ?: getValue()
         textError = (validator?.let { it1 -> it1(checkedValue) }) ?: ""
-        state = if (textError.isNullOrEmpty()) {
+        state = if (textError.isEmpty()) {
             State.OK
         } else {
             State.ERROR

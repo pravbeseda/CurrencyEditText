@@ -39,6 +39,7 @@ class CurrencyEditTextTest {
         val samples = {
             val decimalSeparator = currencyEditText.getDecimalSeparator()
             val groupingSeparator = currencyEditText.getGroupingSeparator()
+            currencyEditText.setEmptyStringForZero(false)
             listOf(
                 arrayOf(BigDecimal(4321.76), "4${groupingSeparator}321${decimalSeparator}76"),
                 arrayOf(BigDecimal(100.0), "100"),
