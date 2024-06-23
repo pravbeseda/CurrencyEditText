@@ -15,3 +15,4 @@
 1.0.0 - release version
 1.0.1 - set Western Arabic digits instead of Eastern Arabic digits for the Arabic locale
 1.0.2 - updated dependencies and modified input settings
+1.0.3 - removed deleting lead zeros, updated SDK version to 34

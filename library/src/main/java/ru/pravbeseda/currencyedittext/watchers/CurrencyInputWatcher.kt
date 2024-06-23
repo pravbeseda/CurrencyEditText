@@ -16,10 +16,10 @@
 package ru.pravbeseda.currencyedittext.watchers
 
 import android.widget.EditText
-import java.lang.ref.WeakReference
-import java.text.DecimalFormatSymbols
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.util.emptyChar
+import java.lang.ref.WeakReference
+import java.text.DecimalFormatSymbols
 
 class CurrencyInputWatcher(
     private val editTextRef: WeakReference<EditText>,
@@ -154,14 +154,18 @@ class CurrencyInputWatcher(
         }
 
         // Remove leading zeros
-        integerPart = integerPart.dropWhile {
-            if (it == '0') {
-                cursorPosition--
-                true
-            } else {
-                false
-            }
-        }
+        // removed 23.06.2024 (
+        // was covered with shouldDeleteLeadZeros test
+        // Looks like not convenient
+//        integerPart = integerPart.dropWhile {
+//            if (it == '0') {
+//                cursorPosition--
+//                true
+//            } else {
+//                false
+//            }
+//        }
+
         if (integerPart.isEmpty() && (newPartOfText == "0" || fractionalPart.isNotEmpty())) {
             integerPart = "0"
             cursorPosition++

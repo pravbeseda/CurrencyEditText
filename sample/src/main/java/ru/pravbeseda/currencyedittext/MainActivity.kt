@@ -18,12 +18,15 @@ package ru.pravbeseda.currencyedittext
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import java.math.BigDecimal
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.button
+import kotlinx.android.synthetic.main.activity_main.currencyEditText
+import kotlinx.android.synthetic.main.activity_main.currencyMaterialEditText
+import kotlinx.android.synthetic.main.activity_main.textView
 import pravbeseda.R
 import ru.pravbeseda.currencyedittext.CurrencyEditText.Companion.State
 import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
 import ru.pravbeseda.currencyedittext.util.Routines.Companion.bigDecimalToString
+import java.math.BigDecimal
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         currencyMaterialEditText.setDecimalZerosPadding(true)
         currencyMaterialEditText.setEmptyStringForZero(false)
 
-        currencyEditText.onValueChanged { bigDecimal, state: State, textError: String ->
+        currencyEditText.onValueChanged { _, state: State, textError: String ->
             if (state !== State.ERROR) {
                 textView.text = formatValue(currencyEditText.value)
             } else {
@@ -53,8 +56,6 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             currencyEditText.text?.clear()
         }
-
-        // currencyMaterialEditText.hint = "Enter value"
 
         currencyEditText.setValidator { value ->
             var error = ""
