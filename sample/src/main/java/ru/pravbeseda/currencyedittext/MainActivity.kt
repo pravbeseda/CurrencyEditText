@@ -18,11 +18,7 @@ package ru.pravbeseda.currencyedittext
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.button
-import kotlinx.android.synthetic.main.activity_main.currencyEditText
-import kotlinx.android.synthetic.main.activity_main.currencyMaterialEditText
-import kotlinx.android.synthetic.main.activity_main.textView
-import pravbeseda.R
+import pravbeseda.databinding.ActivityMainBinding
 import ru.pravbeseda.currencyedittext.CurrencyEditText.Companion.State
 import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
 import ru.pravbeseda.currencyedittext.util.Routines.Companion.bigDecimalToString
@@ -30,34 +26,37 @@ import java.math.BigDecimal
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        currencyEditText.setValue(BigDecimal(1123.476))
-        currencyMaterialEditText.setValue(BigDecimal(1432.167))
+        binding.currencyEditText.setValue(BigDecimal(1123.476))
+        binding.currencyMaterialEditText.setValue(BigDecimal(1432.167))
 
-        currencyEditText.setDecimalZerosPadding(true)
-        currencyMaterialEditText.setDecimalZerosPadding(true)
-        currencyMaterialEditText.setEmptyStringForZero(false)
+        binding.currencyEditText.setDecimalZerosPadding(true)
+        binding.currencyMaterialEditText.setDecimalZerosPadding(true)
+        binding.currencyMaterialEditText.setEmptyStringForZero(false)
 
-        currencyEditText.onValueChanged { _, state: State, textError: String ->
+        binding.currencyEditText.onValueChanged { _, state: State, textError: String ->
             if (state !== State.ERROR) {
-                textView.text = formatValue(currencyEditText.value)
+                binding.textView.text = formatValue(binding.currencyEditText.value)
             } else {
-                textView.text = textError
+                binding.textView.text = textError
             }
-            currencyMaterialEditText.validate()
+            binding.currencyMaterialEditText.validate()
         }
 
-        textView.text = formatValue(currencyEditText.value)
+        binding.textView.text = formatValue(binding.currencyEditText.value)
 
-        button.setOnClickListener {
-            currencyEditText.text?.clear()
+        binding.button.setOnClickListener {
+            binding.currencyEditText.text?.clear()
         }
 
-        currencyEditText.setValidator { value ->
+        binding.currencyEditText.setValidator { value ->
             var error = ""
             if (value < BigDecimal(1000)) {
                 error = "Value is less than 1000"
@@ -65,9 +64,9 @@ class MainActivity : AppCompatActivity() {
             error
         }
 
-        currencyMaterialEditText.setValidator { value ->
+        binding.currencyMaterialEditText.setValidator { value ->
             var error = ""
-            if (value < currencyEditText.value) {
+            if (value < binding.currencyEditText.value) {
                 error = "Value can't be less than the first field"
             }
             error

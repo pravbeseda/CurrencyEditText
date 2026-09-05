@@ -15,7 +15,7 @@
  */
 package ru.pravbeseda.currencyedittext.model
 
-import java.util.*
+import java.util.Locale
 
 data class CurrencyInputWatcherConfig(
     val locale: Locale = Locale.getDefault(),

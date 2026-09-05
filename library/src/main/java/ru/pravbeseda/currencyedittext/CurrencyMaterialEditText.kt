@@ -22,7 +22,7 @@ import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
-import java.util.*
+import java.util.Locale
 import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isApi26AndAbove

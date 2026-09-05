@@ -19,7 +19,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Locale
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.model.LocaleVars
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher

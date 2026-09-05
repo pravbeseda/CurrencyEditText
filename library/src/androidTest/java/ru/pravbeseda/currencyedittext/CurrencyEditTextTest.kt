@@ -18,7 +18,7 @@ package ru.pravbeseda.currencyedittext
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import java.math.BigDecimal
-import java.util.*
+import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

@@ -21,6 +21,8 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
 
+// Public API since 1.0: renaming it to EMPTY_CHAR would break consumers.
+@Suppress("ktlint:standard:property-naming")
 const val emptyChar = 'n' // from null
 
 class Routines {

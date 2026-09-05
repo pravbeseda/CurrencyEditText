@@ -25,9 +25,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
-import java.util.*
+import java.util.Locale
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
-import ru.pravbeseda.currencyedittext.util.*
+import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.formatMoneyValue
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove

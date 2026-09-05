@@ -2,15 +2,18 @@ apply from: '../dependencies.gradle'
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-
 
 android {
+    namespace 'pravbeseda'
     compileSdk 34
 
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     defaultConfig {
@@ -22,13 +25,18 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+    }
+}
+
 dependencies {
     implementation project(':library')
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
 
 apply from: '../spotless.gradle'
