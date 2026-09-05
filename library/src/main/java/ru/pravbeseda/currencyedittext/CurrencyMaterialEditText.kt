@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,16 +21,17 @@ import android.text.Editable
 import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
-import java.math.BigDecimal
-import java.util.Locale
 import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isApi26AndAbove
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
+import java.math.BigDecimal
+import java.util.Locale
 
-open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
-    TextInputLayout(context, attrs) {
-
+open class CurrencyMaterialEditText(
+    context: Context,
+    attrs: AttributeSet?,
+) : TextInputLayout(context, attrs) {
     var text: Editable?
         get() {
             return editText.text
@@ -63,36 +64,38 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         var maxDecimalPlaces: Int
         var decimalZerosPadding: Boolean
         var emptyStringForZero: Boolean
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.CurrencyMaterialEditText,
-            0,
-            0
-        ).run {
-            localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
-            text = getString(R.styleable.CurrencyMaterialEditText_text)
-            decimalSeparator =
-                getString(R.styleable.CurrencyMaterialEditText_decimalSeparator).firstChar()
-            groupingSeparator =
-                getString(R.styleable.CurrencyMaterialEditText_groupingSeparator).firstChar()
-            negativeValueAllow = getBoolean(
-                R.styleable.CurrencyMaterialEditText_negativeValueAllow,
-                false
-            )
-            decimalZerosPadding =
-                getBoolean(R.styleable.CurrencyMaterialEditText_decimalZerosPadding, false)
-            selectAllOnFocus =
-                getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
-            maxDecimalPlaces =
-                getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
-            emptyStringForZero =
-                getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
-        }
+        context.theme
+            .obtainStyledAttributes(
+                attrs,
+                R.styleable.CurrencyMaterialEditText,
+                0,
+                0,
+            ).run {
+                localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
+                text = getString(R.styleable.CurrencyMaterialEditText_text)
+                decimalSeparator =
+                    getString(R.styleable.CurrencyMaterialEditText_decimalSeparator).firstChar()
+                groupingSeparator =
+                    getString(R.styleable.CurrencyMaterialEditText_groupingSeparator).firstChar()
+                negativeValueAllow =
+                    getBoolean(
+                        R.styleable.CurrencyMaterialEditText_negativeValueAllow,
+                        false,
+                    )
+                decimalZerosPadding =
+                    getBoolean(R.styleable.CurrencyMaterialEditText_decimalZerosPadding, false)
+                selectAllOnFocus =
+                    getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
+                maxDecimalPlaces =
+                    getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
+                emptyStringForZero =
+                    getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
+            }
         if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) {
             setLocale(
                 getLocaleFromTag(
-                    localeTag!!
-                )
+                    localeTag!!,
+                ),
             )
         }
         if (isApi26AndAbove()) {
@@ -103,7 +106,7 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         if (decimalSeparator !== null && groupingSeparator !== null) {
             setSeparators(
                 groupingSeparator!!,
-                decimalSeparator!!
+                decimalSeparator!!,
             )
         }
         setNegativeValueAllow(negativeValueAllow)
@@ -118,9 +121,7 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.setValue(value)
     }
 
-    fun getValue(): BigDecimal {
-        return editText.getValue()
-    }
+    fun getValue(): BigDecimal = editText.getValue()
 
     fun setText(text: CharSequence) {
         editText.setText(text)
@@ -135,7 +136,10 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.setLocale(localeTag)
     }
 
-    fun setSeparators(newGroupingSeparator: Char, newDecimalSeparator: Char) {
+    fun setSeparators(
+        newGroupingSeparator: Char,
+        newDecimalSeparator: Char,
+    ) {
         editText.setSeparators(newGroupingSeparator, newDecimalSeparator)
     }
 
@@ -147,33 +151,25 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.setMaxNumberOfDecimalPlaces(maxDecimalPlaces)
     }
 
-    fun getNegativeValueAllow(): Boolean {
-        return editText.getNegativeValueAllow()
-    }
+    fun getNegativeValueAllow(): Boolean = editText.getNegativeValueAllow()
 
     fun setNegativeValueAllow(allow: Boolean) {
         editText.setNegativeValueAllow(allow)
     }
 
-    fun getDecimalZerosPadding(): Boolean {
-        return editText.getDecimalZerosPadding()
-    }
+    fun getDecimalZerosPadding(): Boolean = editText.getDecimalZerosPadding()
 
     fun setDecimalZerosPadding(padding: Boolean) {
         editText.setDecimalZerosPadding(padding)
     }
 
-    fun getEmptyStringForZero(): Boolean {
-        return editText.getEmptyStringForZero()
-    }
+    fun getEmptyStringForZero(): Boolean = editText.getEmptyStringForZero()
 
     fun setEmptyStringForZero(newValue: Boolean) {
         editText.setEmptyStringForZero(newValue)
     }
 
-    fun onValueChanged(
-        action: (BigDecimal?, state: CurrencyEditText.Companion.State, textError: String) -> Unit
-    ) {
+    fun onValueChanged(action: (BigDecimal?, state: CurrencyEditText.Companion.State, textError: String) -> Unit) {
         editText.onValueChanged(action)
     }
 
@@ -185,13 +181,11 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
         editText.validate()
     }
 
-    fun isValidState(): Boolean {
-        return editText.isValidState()
-    }
+    fun isValidState(): Boolean = editText.isValidState()
 
     // wrapper fo validate function to add some logic
-    private fun handleValidator(validate: ((BigDecimal) -> String?)?): (BigDecimal) -> String? {
-        return { input: BigDecimal ->
+    private fun handleValidator(validate: ((BigDecimal) -> String?)?): (BigDecimal) -> String? =
+        { input: BigDecimal ->
             val result = if (validate !== null) validate(input) else null
             if (result != null) {
                 // set TextInputLayout property to show error description
@@ -199,5 +193,4 @@ open class CurrencyMaterialEditText(context: Context, attrs: AttributeSet?) :
             }
             result
         }
-    }
 }

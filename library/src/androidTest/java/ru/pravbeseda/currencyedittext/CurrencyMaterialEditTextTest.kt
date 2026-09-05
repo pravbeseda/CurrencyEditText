@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,12 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import java.util.Locale
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import java.util.Locale
 
-class CurrencyMaterialEditTextTest() {
+class CurrencyMaterialEditTextTest {
     private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private lateinit var currencyEditText: CurrencyMaterialEditText
@@ -35,12 +35,13 @@ class CurrencyMaterialEditTextTest() {
 
     @Test
     fun shouldSetText() {
-        val samples = listOf(
-            arrayOf("100", "100"),
-            arrayOf("4321.76", "4 321.76"),
-            arrayOf("0.", "0."),
-            arrayOf("", "")
-        )
+        val samples =
+            listOf(
+                arrayOf("100", "100"),
+                arrayOf("4321.76", "4 321.76"),
+                arrayOf("0.", "0."),
+                arrayOf("", ""),
+            )
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setSeparators(' ', '.')
         }
@@ -77,7 +78,10 @@ class CurrencyMaterialEditTextTest() {
         testSetText("100.1", "100.1")
     }
 
-    private fun testSetText(text: String, expected: String) {
+    private fun testSetText(
+        text: String,
+        expected: String,
+    ) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setText(text)
         }

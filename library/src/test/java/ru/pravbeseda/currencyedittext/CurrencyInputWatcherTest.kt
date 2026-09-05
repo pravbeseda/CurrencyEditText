@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,14 +29,14 @@ import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 import java.lang.ref.WeakReference
 
 class CurrencyInputWatcherTest {
-
-    private val locales = listOf(
-        LocaleVars("en-NG", '.', ',', "$ "),
-        LocaleVars("en-US", '.', ',', "$ "),
-        LocaleVars("da-DK", ',', '.', "$ "),
-        LocaleVars("fr-CA", '.', ' ', "$ "),
-        LocaleVars("ru-Ru", ',', ' ', "")
-    )
+    private val locales =
+        listOf(
+            LocaleVars("en-NG", '.', ',', "$ "),
+            LocaleVars("en-US", '.', ',', "$ "),
+            LocaleVars("da-DK", ',', '.', "$ "),
+            LocaleVars("fr-CA", '.', ' ', "$ "),
+            LocaleVars("ru-Ru", ',', ' ', ""),
+        )
 
     @Test
     fun `Should keep currency symbol as hint when enabled and move cursor to front when edit text is set to empty string`() {
@@ -184,7 +184,7 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 start,
                 1,
-                start + 1
+                start + 1,
             )
             watcher.onTextChanged(editable, start, 0, 1)
             watcher.afterTextChanged(editable)
@@ -244,7 +244,7 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 currentEditTextContent.length,
                 1,
-                currentEditTextContent.length + 1
+                currentEditTextContent.length + 1,
             )
             watcher.onTextChanged(editable, currentEditTextContent.length, 0, 1)
             watcher.afterTextChanged(editable)
@@ -335,17 +335,19 @@ class CurrencyInputWatcherTest {
                 "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}50"
 
             val (editText, editable) = setupTestVariables(locale)
-            val config = CurrencyInputWatcherConfig(
-                currencySymbol = locale.currencySymbol,
-                locale = locale.tag.toLocale(),
-                decimalSeparator = locale.decimalSeparator,
-                groupingSeparator = locale.groupingSeparator,
-                maxNumberOfDecimalPlaces = 2
-            )
-            val watcherWithDefaultDP = CurrencyInputWatcher(
-                WeakReference(editText),
-                config
-            )
+            val config =
+                CurrencyInputWatcherConfig(
+                    currencySymbol = locale.currencySymbol,
+                    locale = locale.tag.toLocale(),
+                    decimalSeparator = locale.decimalSeparator,
+                    groupingSeparator = locale.groupingSeparator,
+                    maxNumberOfDecimalPlaces = 2,
+                )
+            val watcherWithDefaultDP =
+                CurrencyInputWatcher(
+                    WeakReference(editText),
+                    config,
+                )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcherWithDefaultDP.runAllWatcherMethods(editable)
@@ -461,13 +463,14 @@ class CurrencyInputWatcherTest {
                 "${locale.currencySymbol}1${locale.groupingSeparator}320${locale.decimalSeparator}519"
 
             val (editText, editable, watcher) = setupTestVariables(locale, decimalPlaces = 2)
-            val secondWatcher = locale.toWatcher(
-                editText,
-                3,
-                locale.decimalSeparator,
-                locale.groupingSeparator,
-                false
-            )
+            val secondWatcher =
+                locale.toWatcher(
+                    editText,
+                    3,
+                    locale.decimalSeparator,
+                    locale.groupingSeparator,
+                    false,
+                )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcher.runAllWatcherMethods(editable)
@@ -509,7 +512,7 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 locale.currencySymbol.length + 1,
                 1,
-                locale.currencySymbol.length + 2
+                locale.currencySymbol.length + 2,
             )
             watcher.onTextChanged(editable, locale.currencySymbol.length + 1, 0, 1)
             watcher.afterTextChanged(editable)
@@ -533,7 +536,7 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 currentEditTextContent.length,
                 0,
-                1
+                1,
             )
             watcher.onTextChanged(editable, currentEditTextContent.length - 1, 0, 1)
             watcher.afterTextChanged(editable)
@@ -557,7 +560,7 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 currentEditTextContent.length,
                 1,
-                currentEditTextContent.length + 1
+                currentEditTextContent.length + 1,
             )
             watcher.onTextChanged(editable, locale.currencySymbol.length + 1, 0, 1)
             watcher.afterTextChanged(editable)
@@ -582,7 +585,7 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 start,
                 1,
-                currentEditTextContent.length
+                currentEditTextContent.length,
             )
             watcher.onTextChanged(editable, start, 0, 1)
             watcher.afterTextChanged(editable)
@@ -601,7 +604,7 @@ class CurrencyInputWatcherTest {
 
             val (editText, editable, watcher) = setupTestVariables(locale, 0, true)
             `when`(editable.toString()).thenReturn(
-                "${locale.currencySymbol}-1-2${locale.groupingSeparator}255"
+                "${locale.currencySymbol}-1-2${locale.groupingSeparator}255",
             )
 
             val start = expectedCursorPosition + 1 // cursor after -1
@@ -609,7 +612,7 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 start,
                 1,
-                currentEditTextContent.length
+                currentEditTextContent.length,
             )
             watcher.onTextChanged(editable, start, 0, 1)
             watcher.afterTextChanged(editable)
@@ -659,13 +662,13 @@ class CurrencyInputWatcherTest {
 
             val (editText, editable, watcher) = setupTestVariables(locale, 0)
             `when`(editable.toString()).thenReturn(
-                "${locale.currencySymbol}5${locale.decimalSeparator}68"
+                "${locale.currencySymbol}5${locale.decimalSeparator}68",
             )
             watcher.beforeTextChanged(
                 currentEditTextContent,
                 expectedCursorPosition,
                 1,
-                locale.currencySymbol.length + 2
+                locale.currencySymbol.length + 2,
             )
             watcher.onTextChanged(editable, locale.currencySymbol.length + 1, 0, 1)
             watcher.afterTextChanged(editable)
@@ -685,20 +688,20 @@ class CurrencyInputWatcherTest {
 
             val (editText, editable, watcher) = setupTestVariables(locale, 2)
             `when`(editable.toString()).thenReturn(
-                "${locale.currencySymbol}10${locale.decimalSeparator}0"
+                "${locale.currencySymbol}10${locale.decimalSeparator}0",
             )
 
             watcher.beforeTextChanged(
                 currentEditTextContent,
                 currentCursorPosition,
                 1,
-                expectedCursorPosition
+                expectedCursorPosition,
             )
             watcher.onTextChanged(
                 editable,
                 locale.currencySymbol.length + currentCursorPosition,
                 0,
-                1
+                1,
             )
             watcher.afterTextChanged(editable)
 
@@ -723,13 +726,13 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 currentCursorPosition,
                 1,
-                expectedCursorPosition
+                expectedCursorPosition,
             )
             watcher.onTextChanged(
                 editable,
                 locale.currencySymbol.length + currentCursorPosition,
                 0,
-                1
+                1,
             )
             watcher.afterTextChanged(editable)
 
@@ -746,20 +749,20 @@ class CurrencyInputWatcherTest {
             val currentCursorPosition = locale.currencySymbol.length + 3
             val (editText, editable, watcher) = setupTestVariables(locale, 2)
             `when`(editable.toString()).thenReturn(
-                "${locale.currencySymbol}1${locale.groupingSeparator}0${locale.decimalSeparator}00${locale.decimalSeparator}01"
+                "${locale.currencySymbol}1${locale.groupingSeparator}0${locale.decimalSeparator}00${locale.decimalSeparator}01",
             )
 
             watcher.beforeTextChanged(
                 currentEditTextContent,
                 currentCursorPosition,
                 1,
-                currentCursorPosition
+                currentCursorPosition,
             )
             watcher.onTextChanged(
                 editable,
                 currentCursorPosition,
                 0,
-                1
+                1,
             )
             watcher.afterTextChanged(editable)
 
@@ -774,10 +777,11 @@ class CurrencyInputWatcherTest {
             val currentEditTextContent = "900${locale.decimalSeparator}4"
             val expectedText = "${locale.currencySymbol}900${locale.decimalSeparator}4"
 
-            val (editText, editable, watcher) = setupTestVariables(
-                locale = locale,
-                decimalZerosPadding = false
-            )
+            val (editText, editable, watcher) =
+                setupTestVariables(
+                    locale = locale,
+                    decimalZerosPadding = false,
+                )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcher.runAllWatcherMethods(editable)
@@ -793,10 +797,11 @@ class CurrencyInputWatcherTest {
             val currentEditTextContent = "900${locale.decimalSeparator}4"
             val expectedText = "${locale.currencySymbol}900${locale.decimalSeparator}40"
 
-            val (editText, editable, watcher) = setupTestVariables(
-                locale = locale,
-                decimalZerosPadding = true
-            )
+            val (editText, editable, watcher) =
+                setupTestVariables(
+                    locale = locale,
+                    decimalZerosPadding = true,
+                )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcher.runAllWatcherMethods(editable)
@@ -812,9 +817,10 @@ class CurrencyInputWatcherTest {
         val currentEditTextContent = "1900${locale.decimalSeparator}4"
         val expectedText = "1900${locale.decimalSeparator}4"
 
-        val (editText, editable, watcher) = setupTestVariables(
-            locale = locale
-        )
+        val (editText, editable, watcher) =
+            setupTestVariables(
+                locale = locale,
+            )
         `when`(editable.toString()).thenReturn(currentEditTextContent)
 
         watcher.runAllWatcherMethods(editable)
@@ -828,9 +834,10 @@ class CurrencyInputWatcherTest {
             val currentEditTextContent = ""
             val expectedText = locale.currencySymbol
 
-            val (editText, editable, watcher) = setupTestVariables(
-                locale = locale
-            )
+            val (editText, editable, watcher) =
+                setupTestVariables(
+                    locale = locale,
+                )
             `when`(editable.toString()).thenReturn(currentEditTextContent)
 
             watcher.runAllWatcherMethods(editable)
@@ -871,13 +878,13 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 currentCursorPosition,
                 1,
-                expectedCursorPosition
+                expectedCursorPosition,
             )
             watcher.onTextChanged(
                 editable,
                 locale.currencySymbol.length + currentCursorPosition,
                 0,
-                1
+                1,
             )
             watcher.afterTextChanged(editable)
 
@@ -901,13 +908,13 @@ class CurrencyInputWatcherTest {
                 currentEditTextContent,
                 currentCursorPosition,
                 1,
-                expectedCursorPosition
+                expectedCursorPosition,
             )
             watcher.onTextChanged(
                 editable,
                 expectedCursorPosition,
                 0,
-                0
+                0,
             )
             watcher.afterTextChanged(editable)
 
@@ -920,20 +927,21 @@ class CurrencyInputWatcherTest {
         locale: LocaleVars,
         decimalPlaces: Int = 2,
         negativeValueAllow: Boolean = false,
-        decimalZerosPadding: Boolean = false
+        decimalZerosPadding: Boolean = false,
     ): TestVars {
         val editText = mock(CurrencyEditText::class.java)
         val editable = mock(Editable::class.java)
         `when`(editText.text).thenReturn(editable)
         `when`(editable.append(isA(String::class.java))).thenReturn(editable)
-        val watcher = locale.toWatcher(
-            editText,
-            decimalPlaces,
-            locale.decimalSeparator,
-            locale.groupingSeparator,
-            negativeValueAllow,
-            decimalZerosPadding
-        )
+        val watcher =
+            locale.toWatcher(
+                editText,
+                decimalPlaces,
+                locale.decimalSeparator,
+                locale.groupingSeparator,
+                negativeValueAllow,
+                decimalZerosPadding,
+            )
         return TestVars(editText, editable, watcher)
     }
 }
@@ -941,5 +949,5 @@ class CurrencyInputWatcherTest {
 data class TestVars(
     val editText: CurrencyEditText,
     val editable: Editable,
-    val watcher: CurrencyInputWatcher
+    val watcher: CurrencyInputWatcher,
 )

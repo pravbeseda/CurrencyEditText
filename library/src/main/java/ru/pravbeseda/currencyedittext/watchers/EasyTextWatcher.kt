@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,11 +34,21 @@ abstract class EasyTextWatcher : TextWatcher {
     // Cursor position after changing text
     private var editPosition: Int? = null
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    override fun beforeTextChanged(
+        s: CharSequence?,
+        start: Int,
+        count: Int,
+        after: Int,
+    ) {
         oldText = s.toString()
     }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+    override fun onTextChanged(
+        s: CharSequence?,
+        start: Int,
+        before: Int,
+        count: Int,
+    ) {
         modifiedText = s.toString()
         newPartOfText = modifiedText!!.substring(start, start + count)
         editPosition = start + count
@@ -51,7 +61,7 @@ abstract class EasyTextWatcher : TextWatcher {
                 newPartOfText = newPartOfText,
                 newText = modifiedText,
                 oldText = oldText,
-                editPosition = editPosition
+                editPosition = editPosition,
             )
             endEditing()
         }
@@ -76,6 +86,6 @@ abstract class EasyTextWatcher : TextWatcher {
         newPartOfText: String?,
         newText: String?,
         oldText: String?,
-        editPosition: Int?
+        editPosition: Int?,
     )
 }

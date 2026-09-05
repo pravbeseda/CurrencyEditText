@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +17,11 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import java.math.BigDecimal
-import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
+import java.util.Locale
 
 class CurrencyEditTextTest {
     // Alternative getting context: private val context: Context = ApplicationProvider.getApplicationContext()
@@ -43,7 +43,7 @@ class CurrencyEditTextTest {
             listOf(
                 arrayOf(BigDecimal(4321.76), "4${groupingSeparator}321${decimalSeparator}76"),
                 arrayOf(BigDecimal(100.0), "100"),
-                arrayOf(BigDecimal(0.0), "0")
+                arrayOf(BigDecimal(0.0), "0"),
             )
         }
         // Run all checks
@@ -113,12 +113,18 @@ class CurrencyEditTextTest {
         }
     }
 
-    private fun setValueAssertEquals(value: BigDecimal, expected: String) {
+    private fun setValueAssertEquals(
+        value: BigDecimal,
+        expected: String,
+    ) {
         setValue(value)
         assertEquals(expected, currencyEditText.text.toString())
     }
 
-    private fun setTextAssertEquals(text: String, expected: String) {
+    private fun setTextAssertEquals(
+        text: String,
+        expected: String,
+    ) {
         setText(text)
         assertEquals(expected, currencyEditText.text.toString())
     }

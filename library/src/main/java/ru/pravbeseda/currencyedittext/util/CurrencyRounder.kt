@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,12 +31,13 @@ package ru.pravbeseda.currencyedittext.util
 fun truncateNumberToMaxDecimalDigits(
     number: String,
     maxDecimalDigits: Int,
-    decimalSeparator: Char
+    decimalSeparator: Char,
 ): String {
     // Split number into whole and decimal part
-    val arr = number
-        .split(decimalSeparator)
-        .toMutableList()
+    val arr =
+        number
+            .split(decimalSeparator)
+            .toMutableList()
 
     // We should have exactly 2 elements in our string;
     // the whole part and the decimal part

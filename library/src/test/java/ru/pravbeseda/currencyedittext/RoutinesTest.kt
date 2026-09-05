@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,146 +15,147 @@
  */
 package ru.pravbeseda.currencyedittext
 
-import java.math.BigDecimal
-import java.util.Locale
 import org.junit.Assert
 import org.junit.Test
 import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
 import ru.pravbeseda.currencyedittext.util.Routines.Companion.bigDecimalToString
+import java.math.BigDecimal
+import java.util.Locale
 
 data class BigDecimalToStringTestCase(
     var bigDecimal: BigDecimal,
     var currencyFormatConfig: CurrencyFormatConfig,
     var result: String,
-    var locale: Locale = Locale.getDefault()
+    var locale: Locale = Locale.getDefault(),
 )
 
 class RoutinesTest {
     @Test
     fun testBigDecimalToString() {
-        val cases = listOf(
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.129456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = '.',
-                    groupingSeparator = ',',
-                    decimalLength = 2
+        val cases =
+            listOf(
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.129456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = '.',
+                        groupingSeparator = ',',
+                        decimalLength = 2,
+                    ),
+                    "123,456,789.12",
                 ),
-                "123,456,789.12"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = '.',
-                    groupingSeparator = ',',
-                    decimalLength = 3
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = '.',
+                        groupingSeparator = ',',
+                        decimalLength = 3,
+                    ),
+                    "123,456,789.123",
                 ),
-                "123,456,789.123"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = '.',
-                    decimalLength = 2
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = '.',
+                        decimalLength = 2,
+                    ),
+                    "123.456.789,12",
                 ),
-                "123.456.789,12"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = '.',
-                    decimalLength = 3
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = '.',
+                        decimalLength = 3,
+                    ),
+                    "123.456.789,123",
                 ),
-                "123.456.789,123"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("-123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = ' ',
-                    decimalLength = 2
+                BigDecimalToStringTestCase(
+                    BigDecimal("-123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = ' ',
+                        decimalLength = 2,
+                    ),
+                    "-123 456 789,13",
                 ),
-                "-123 456 789,13"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = ' ',
-                    decimalLength = 3
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = ' ',
+                        decimalLength = 3,
+                    ),
+                    "123 456 789,123",
                 ),
-                "123 456 789,123"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = ' ',
-                    decimalLength = 0
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = ' ',
+                        decimalLength = 0,
+                    ),
+                    "123 456 789",
                 ),
-                "123 456 789"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = ' ',
-                    decimalLength = 1,
-                    showPlusSign = true
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = ' ',
+                        decimalLength = 1,
+                        showPlusSign = true,
+                    ),
+                    "+123 456 789,1",
                 ),
-                "+123 456 789,1"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = ' ',
-                    decimalLength = 4
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = ' ',
+                        decimalLength = 4,
+                    ),
+                    "123 456 789,1234",
                 ),
-                "123 456 789,1234"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = ' ',
-                    decimalLength = 5
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = ' ',
+                        decimalLength = 5,
+                    ),
+                    "123 456 789,12345",
                 ),
-                "123 456 789,12345"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = ' ',
-                    decimalLength = 6,
-                    showPlusSign = true
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = ' ',
+                        decimalLength = 6,
+                        showPlusSign = true,
+                    ),
+                    "+123 456 789,123456",
                 ),
-                "+123 456 789,123456"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = 'n', // from none
-                    decimalLength = 6,
-                    showPlusSign = true
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = 'n', // from none
+                        decimalLength = 6,
+                        showPlusSign = true,
+                    ),
+                    "+123\u0000456\u0000789,123456",
                 ),
-                "+123\u0000456\u0000789,123456"
-            ),
-            BigDecimalToStringTestCase(
-                BigDecimal("123456789.123456789"),
-                CurrencyFormatConfig(
-                    decimalSeparator = ',',
-                    groupingSeparator = '.',
-                    decimalLength = 3
+                BigDecimalToStringTestCase(
+                    BigDecimal("123456789.123456789"),
+                    CurrencyFormatConfig(
+                        decimalSeparator = ',',
+                        groupingSeparator = '.',
+                        decimalLength = 3,
+                    ),
+                    "123.456.789,123",
+                    Locale.Builder().setLanguage("ar").build(),
                 ),
-                "123.456.789,123",
-                Locale.Builder().setLanguage("ar").build()
             )
-        )
         for (case in cases) {
             Locale.setDefault(case.locale)
             val result = bigDecimalToString(case.bigDecimal, case.currencyFormatConfig)

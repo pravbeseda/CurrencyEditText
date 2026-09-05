@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,5 +19,5 @@ data class LocaleVars(
     val tag: String,
     val decimalSeparator: Char,
     val groupingSeparator: Char,
-    val currencySymbol: String
+    val currencySymbol: String,
 )

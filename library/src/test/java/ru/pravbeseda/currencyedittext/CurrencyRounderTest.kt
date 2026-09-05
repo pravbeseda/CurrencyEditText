@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,9 +26,8 @@ class CurrencyRounderTest(
     private val current: String,
     private val expected: String,
     private val decimalDigits: Int,
-    private val decimalSeparator: Char
+    private val decimalSeparator: Char,
 ) {
-
     companion object {
         private const val POINT_DECIMAL_SEPARATOR = '.'
         private const val COMMA_DECIMAL_SEPARATOR = ','
@@ -57,41 +56,43 @@ class CurrencyRounderTest(
             arrayOf("515.809", "515.809", THREE, POINT_DECIMAL_SEPARATOR)
         private val noDecimalTestCase = arrayOf("5 809", "5 809", THREE, POINT_DECIMAL_SEPARATOR)
         private val noDecimalTestCase2 = arrayOf("5", "5", THREE, POINT_DECIMAL_SEPARATOR)
-        private val noDecimalTestCase3 = arrayOf(
-            "5,452,635,242,242,423,434,333",
-            "5,452,635,242,242,423,434,333",
-            THREE,
-            POINT_DECIMAL_SEPARATOR
-        )
+        private val noDecimalTestCase3 =
+            arrayOf(
+                "5,452,635,242,242,423,434,333",
+                "5,452,635,242,242,423,434,333",
+                THREE,
+                POINT_DECIMAL_SEPARATOR,
+            )
         private val multipleDecimalTestCase =
             arrayOf("343,432,242,342", "343,432,242,342", TWO, COMMA_DECIMAL_SEPARATOR)
 
         @JvmStatic
         @Parameterized.Parameters
-        fun data(): Iterable<Array<out Any>> = listOf(
-            emptyStringTestCase,
-            extraDecimalTestCase1,
-            extraDecimalTestCaseThreeDpVersion,
-            extraDecimalTestCase2,
-            extraDecimalTestCaseWhiteSpaceGrouping,
-            extraDecimalTestCaseCommaDecimal,
-            emptyWholeTestCase,
-            emptyDecimalTestCase,
-            shorterDecimalTestCase,
-            shorterDecimalTestCase2,
-            exactDecimalTestCase,
-            noDecimalTestCase,
-            noDecimalTestCase2,
-            noDecimalTestCase3,
-            multipleDecimalTestCase
-        )
+        fun data(): Iterable<Array<out Any>> =
+            listOf(
+                emptyStringTestCase,
+                extraDecimalTestCase1,
+                extraDecimalTestCaseThreeDpVersion,
+                extraDecimalTestCase2,
+                extraDecimalTestCaseWhiteSpaceGrouping,
+                extraDecimalTestCaseCommaDecimal,
+                emptyWholeTestCase,
+                emptyDecimalTestCase,
+                shorterDecimalTestCase,
+                shorterDecimalTestCase2,
+                exactDecimalTestCase,
+                noDecimalTestCase,
+                noDecimalTestCase2,
+                noDecimalTestCase3,
+                multipleDecimalTestCase,
+            )
     }
 
     @Test
     fun `should return expected value for set of valid inputs`() {
         Assert.assertEquals(
             expected,
-            truncateNumberToMaxDecimalDigits(current, decimalDigits, decimalSeparator)
+            truncateNumberToMaxDecimalDigits(current, decimalDigits, decimalSeparator),
         )
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ import ru.pravbeseda.currencyedittext.util.Routines.Companion.bigDecimalToString
 import java.math.BigDecimal
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
 
     @SuppressLint("SetTextI18n")
@@ -73,15 +72,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun formatValue(value: BigDecimal): String {
-        return bigDecimalToString(
+    private fun formatValue(value: BigDecimal): String =
+        bigDecimalToString(
             value,
             CurrencyFormatConfig(
                 decimalSeparator = '.',
                 groupingSeparator = ' ',
                 decimalLength = 2,
-                showPlusSign = true
-            )
+                showPlusSign = true,
+            ),
         )
-    }
 }

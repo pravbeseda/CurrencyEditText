@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,11 @@
  */
 package ru.pravbeseda.currencyedittext.util
 
+import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
 
 // Public API since 1.0: renaming it to EMPTY_CHAR would break consumers.
 @Suppress("ktlint:standard:property-naming")
@@ -27,7 +27,10 @@ const val emptyChar = 'n' // from null
 
 class Routines {
     companion object {
-        fun bigDecimalToString(value: BigDecimal, config: CurrencyFormatConfig): String {
+        fun bigDecimalToString(
+            value: BigDecimal,
+            config: CurrencyFormatConfig,
+        ): String {
             val symbols = DecimalFormatSymbols()
             symbols.zeroDigit = '0'
             symbols.digit = '0'
@@ -51,6 +54,4 @@ class Routines {
     }
 }
 
-fun String?.firstChar(): Char? {
-    return if (!this.isNullOrEmpty()) this[0] else null
-}
+fun String?.firstChar(): Char? = if (!this.isNullOrEmpty()) this[0] else null

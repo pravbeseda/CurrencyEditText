@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,13 +23,12 @@ import java.text.DecimalFormatSymbols
 
 class CurrencyInputWatcher(
     private val editTextRef: WeakReference<EditText>,
-    private val config: CurrencyInputWatcherConfig
+    private val config: CurrencyInputWatcherConfig,
 ) : EasyTextWatcher() {
-
     init {
         if (config.maxNumberOfDecimalPlaces < 0) {
             throw IllegalArgumentException(
-                "Maximum number of Decimal Places must be a positive integer"
+                "Maximum number of Decimal Places must be a positive integer",
             )
         }
     }
@@ -53,7 +52,7 @@ class CurrencyInputWatcher(
         newPartOfText: String?,
         newText: String?,
         oldText: String?,
-        editPosition: Int?
+        editPosition: Int?,
     ) {
         var resultText: String = newText ?: ""
         var sign = ""
@@ -62,7 +61,7 @@ class CurrencyInputWatcher(
         // Replace inserted comma or point to decimalSeparator
         if (arrayOf(
                 ",",
-                "."
+                ".",
             ).contains(newPartOfText) && newPartOfText != decimalSeparator.toString()
         ) {
             resultText =
@@ -105,7 +104,8 @@ class CurrencyInputWatcher(
         // Prevent manual removing currency symbol
         if (!resultText.startsWith(config.currencySymbol)) {
             resultText =
-                config.currencySymbol + resultText.trimStart {
+                config.currencySymbol +
+                resultText.trimStart {
                     config.currencySymbol.toCharArray().contains(it)
                 }
         }
@@ -129,26 +129,29 @@ class CurrencyInputWatcher(
         val decimalSeparatorPos = newTextWithoutGroupingSeparators.indexOf(decimalSeparator)
 
         // Cursor position calculation (in text without separators)
-        var cursorPosition = position.let {
-            val end = if (it > resultText.length) resultText.length else it
-            val text = resultText.substring(0, end)
-            val curSpaceCount = countMatches(text, groupingSeparator.toString())
-            val spaceCountInCurrencySymbol =
-                countMatches(config.currencySymbol, groupingSeparator.toString())
-            it - curSpaceCount + spaceCountInCurrencySymbol
-        }
+        var cursorPosition =
+            position.let {
+                val end = if (it > resultText.length) resultText.length else it
+                val text = resultText.substring(0, end)
+                val curSpaceCount = countMatches(text, groupingSeparator.toString())
+                val spaceCountInCurrencySymbol =
+                    countMatches(config.currencySymbol, groupingSeparator.toString())
+                it - curSpaceCount + spaceCountInCurrencySymbol
+            }
 
-        var integerPart = if (decimalSeparatorPos == -1) {
-            newTextWithoutGroupingSeparators
-        } else {
-            newTextWithoutGroupingSeparators.substring(0, decimalSeparatorPos)
-        }
+        var integerPart =
+            if (decimalSeparatorPos == -1) {
+                newTextWithoutGroupingSeparators
+            } else {
+                newTextWithoutGroupingSeparators.substring(0, decimalSeparatorPos)
+            }
 
-        var fractionalPart = if (decimalSeparatorPos == -1) {
-            ""
-        } else {
-            newTextWithoutGroupingSeparators.substring(decimalSeparatorPos + 1)
-        }
+        var fractionalPart =
+            if (decimalSeparatorPos == -1) {
+                ""
+            } else {
+                newTextWithoutGroupingSeparators.substring(decimalSeparatorPos + 1)
+            }
         if (fractionalPart.length > config.maxNumberOfDecimalPlaces) {
             fractionalPart = fractionalPart.substring(0, config.maxNumberOfDecimalPlaces)
         }
@@ -189,15 +192,14 @@ class CurrencyInputWatcher(
         setText(resultText, cursorPosition, config.currencySymbol, sign)
     }
 
-    fun getDecimalSeparator(): Char {
-        return decimalSeparator
-    }
+    fun getDecimalSeparator(): Char = decimalSeparator
 
-    fun getGroupingSeparator(): Char {
-        return groupingSeparator
-    }
+    fun getGroupingSeparator(): Char = groupingSeparator
 
-    private fun countMatches(string: String?, pattern: String): Int {
+    private fun countMatches(
+        string: String?,
+        pattern: String,
+    ): Int {
         if (string.isNullOrEmpty()) {
             return 0
         }
@@ -209,15 +211,16 @@ class CurrencyInputWatcher(
         resultText: String?,
         resultEditPosition: Int?,
         currencySymbol: String,
-        sign: String
+        sign: String,
     ) {
         // Format text
-        val (text, position) = calculateSpacing(
-            resultText = resultText,
-            resultEditPosition = resultEditPosition,
-            currencySymbol,
-            sign
-        )
+        val (text, position) =
+            calculateSpacing(
+                resultText = resultText,
+                resultEditPosition = resultEditPosition,
+                currencySymbol,
+                sign,
+            )
 
         editText?.setText((text as? String?) ?: "")
 
@@ -231,22 +234,24 @@ class CurrencyInputWatcher(
         resultText: String?,
         resultEditPosition: Int?,
         currencySymbol: String,
-        sign: String
+        sign: String,
     ): Array<Any?> {
         var resultPosition = resultEditPosition ?: currencySymbol.length
         val dotPos = resultText?.indexOf(decimalSeparator) ?: -1
 
-        var textBeforeDot = if (dotPos == -1) {
-            resultText ?: ""
-        } else {
-            resultText?.substring(0, dotPos) ?: ""
-        }
+        var textBeforeDot =
+            if (dotPos == -1) {
+                resultText ?: ""
+            } else {
+                resultText?.substring(0, dotPos) ?: ""
+            }
 
-        var textAfterDot = if (dotPos == -1) {
-            null
-        } else {
-            resultText?.substring(dotPos + 1, resultText.length) ?: ""
-        }
+        var textAfterDot =
+            if (dotPos == -1) {
+                null
+            } else {
+                resultText?.substring(dotPos + 1, resultText.length) ?: ""
+            }
 
         val spaceCount = textBeforeDot.length / 3
 
@@ -267,11 +272,12 @@ class CurrencyInputWatcher(
             }
         }
 
-        textAfterDot = if (textAfterDot != null) {
-            "$decimalSeparator$textAfterDot"
-        } else {
-            ""
-        }
+        textAfterDot =
+            if (textAfterDot != null) {
+                "$decimalSeparator$textAfterDot"
+            } else {
+                ""
+            }
 
         // Final result
         val result = currencySymbol + sign + textBeforeDot + textAfterDot

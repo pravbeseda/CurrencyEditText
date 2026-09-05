@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,18 @@ package ru.pravbeseda.currencyedittext
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import java.lang.ref.WeakReference
-import java.util.Locale
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.model.LocaleVars
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
+import java.lang.ref.WeakReference
+import java.util.Locale
 
 fun TextWatcher.runAllWatcherMethods(
     s: Editable,
     start: Int = 0,
     count: Int = 0,
     before: Int = 0,
-    after: Int = 0
+    after: Int = 0,
 ) {
     beforeTextChanged(s, start, count, after)
     onTextChanged(s, start, before, count)
@@ -50,19 +50,20 @@ fun LocaleVars.toWatcher(
     decimalSeparator: Char? = null,
     groupingSeparator: Char? = null,
     negativeValueAllow: Boolean = false,
-    decimalZerosPadding: Boolean = false
+    decimalZerosPadding: Boolean = false,
 ): CurrencyInputWatcher {
-    val config = CurrencyInputWatcherConfig(
-        currencySymbol = currencySymbol,
-        locale = tag.toLocale(),
-        decimalSeparator = decimalSeparator,
-        groupingSeparator = groupingSeparator,
-        maxNumberOfDecimalPlaces = decimalPlaces,
-        negativeValueAllow = negativeValueAllow,
-        decimalZerosPadding = decimalZerosPadding
-    )
+    val config =
+        CurrencyInputWatcherConfig(
+            currencySymbol = currencySymbol,
+            locale = tag.toLocale(),
+            decimalSeparator = decimalSeparator,
+            groupingSeparator = groupingSeparator,
+            maxNumberOfDecimalPlaces = decimalPlaces,
+            negativeValueAllow = negativeValueAllow,
+            decimalZerosPadding = decimalZerosPadding,
+        )
     return CurrencyInputWatcher(
         WeakReference(editText),
-        config
+        config,
     )
 }

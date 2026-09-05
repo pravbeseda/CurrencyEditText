@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,5 +22,5 @@ data class CurrencyFormatConfig(
     val groupingSeparator: Char = DecimalFormatSymbols().groupingSeparator,
     val decimalLength: Int = 2,
     val showPlusSign: Boolean = false,
-    val addLTRPrefix: Boolean = false
+    val addLTRPrefix: Boolean = false,
 )
