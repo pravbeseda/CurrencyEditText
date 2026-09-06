@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: 'Version increment'
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+    if: github.repository == 'pravbeseda/CurrencyEditText'
+
+    steps:
+      # workflow_dispatch can be started from any ref, and the job pushes to main.
+      - name: Refuse to release from a branch other than main
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo 'Releases are cut from main only.' >&2
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history: the push below rebases the bump commit onto main.
+          fetch-depth: 0
+
+      - name: Install JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Bump version
+        id: bump
+        env:
+          INCREMENT: ${{ inputs.increment }}
+        run: scripts/bump-version.sh "$INCREMENT" >> "$GITHUB_OUTPUT"
+
+      - name: Build and run tests
+        run: ./gradlew build
+
+      # Publishing to Maven Central is irreversible, so it runs before anything is pushed: a
+      # failure here leaves the repository untouched. The check refuses to release a build that
+      # already misses something merged into main since this run started.
+      - name: Check that main has not moved
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$GITHUB_SHA" ]; then
+            echo 'main moved since this run started; re-run the release.' >&2
+            exit 1
+          fi
+
+      - name: Publish to Maven Central
+        run: ./gradlew publishAndReleaseToMavenCentral --no-daemon --no-parallel
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_IN_MEMORY_KEY_PASSWORD }}
+
+      - name: Commit and tag
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -m "chore: release $VERSION" gradle.properties
+          git tag "$VERSION"
+          # main can have moved while Central was publishing. Rebasing lands the bump anyway, and
+          # leaves the tag on the commit the published artifact was actually built from.
+          git fetch origin main
+          git rebase origin/main
+          git push --atomic origin HEAD:main "$VERSION"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: gh release create "$VERSION" --title "$VERSION" --generate-notes
