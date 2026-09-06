@@ -73,14 +73,20 @@ CI runs it as its own step because that job runs the gate tasks one by one, not 
 
 Formatting is not done by the views. It lives in one place:
 
-`CurrencyInputWatcher.onTextModified()` (`library/src/main/java/.../watchers/CurrencyInputWatcher.kt`)
-receives the old text, the new text, the inserted fragment and the cursor position, rebuilds the
-whole string (sign → currency prefix → integer part → decimal separator → fractional part) and
-writes it back together with a recalculated cursor position. Nearly every bug and feature in this
-repo is a change to that single function.
+`CurrencyTextFormatter.format()` (`library/src/main/java/.../watchers/CurrencyTextFormatter.kt`)
+receives the old text, the new text, the inserted fragment and the cursor position, and returns the
+text the field should show together with the position the cursor should end up at. It is a pipeline
+of named steps, each taking and returning a `TextWithCursor`: `normalizeInput` (fixes that depend on
+what was just typed) → `extractSign` → `restoreCurrencyPrefix` → `keepLastDecimalSeparator` →
+`buildNumber` (integer and fractional parts) → `composeResult` (currency symbol, sign, grouping
+separators, cursor clamped to the result). The class is `internal` and holds no reference to a view,
+so it is unit-testable on its own. Nearly every bug and feature in this repo is a change to one of
+those steps.
 
 Supporting pieces:
 
+- `CurrencyInputWatcher` — the `EditText` adapter: resolves the separators once, calls the formatter
+  from `onTextModified`, writes the result back and fires `onValueChanged`.
 - `EasyTextWatcher` — `TextWatcher` with an `ignore` flag so that writing back into the `EditText`
   does not re-enter the watcher. Subclasses override `onTextModified` only.
 - `CurrencyInputWatcherConfig` — immutable config (locale, separators, currency symbol, max decimal
@@ -141,12 +147,13 @@ Each rule carries its reason, because a rule without one gets optimised away.
 coverage bound, no `@Ignore` — without explicit permission. Baselines only ever shrink: an entry
 goes when its finding is fixed.
 
-**Do not grow `onTextModified`.** A new formatting rule is a separate step with a speaking name, not
-another `if` in the middle. Reason: the function is already ~145 lines and is the single point
-almost every change in this project touches.
+**Do not grow the formatter's steps.** A new formatting rule is a new step of
+`CurrencyTextFormatter.format()` with a speaking name, not another `if` in the middle of an existing
+one. Reason: this pipeline is the single point almost every change in this project touches, and it
+has already been ~145 lines in one function once.
 
 **No `Array<Any?>` and no casting the result back out** — a composite result is returned as a data
-class. Reason: `calculateSpacing` is already written that way and the pattern gets copied.
+class, the way every step of the formatter returns a `TextWithCursor`.
 
 **No silently swallowed exceptions.** A `catch` that returns a default needs a comment saying why
 losing the information is safe (`util/Utils.kt` `parseMoneyValue` is the example of how not to).
