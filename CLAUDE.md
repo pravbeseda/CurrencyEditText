@@ -89,9 +89,10 @@ read by the publish plugin and by `sample/build.gradle` alike; then builds and t
 Maven Central, pushes the bump commit and the tag to `main`, and creates a GitHub release with
 auto-generated notes. Tags carry no `v` prefix (`1.0.4`), matching every tag since 0.4.0.
 
-The workflow refuses to run from any branch but `main`, and checks that `main` has not moved before
-it publishes: it pushes only after the irreversible step, so a stale checkout would otherwise burn a
-version number.
+The workflow refuses to run from any branch but `main`. Before publishing it checks that `main` has
+not moved, so a release cannot silently omit something merged while it was building; and after
+publishing it rebases the bump commit onto `main` before pushing, so a merge landing during the
+publish itself cannot leave the released version without its commit and tag.
 
 Publishing goes through the Central Portal (`SONATYPE_HOST=CENTRAL_PORTAL`) and is irreversible, so
 it runs before anything is pushed — a failure there leaves the repository untouched. Credentials
