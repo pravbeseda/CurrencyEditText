@@ -2,11 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>CyclomaticComplexMethod:CurrencyInputWatcher.kt$CurrencyInputWatcher$override fun onTextModified( newPartOfText: String?, newText: String?, oldText: String?, editPosition: Int?, )</ID>
-    <ID>CyclomaticComplexMethod:CurrencyInputWatcher.kt$CurrencyInputWatcher$private fun calculateSpacing( resultText: String?, resultEditPosition: Int?, currencySymbol: String, sign: String, ): Array&lt;Any?&gt;</ID>
-    <ID>LongMethod:CurrencyInputWatcher.kt$CurrencyInputWatcher$override fun onTextModified( newPartOfText: String?, newText: String?, oldText: String?, editPosition: Int?, )</ID>
-    <ID>MagicNumber:CurrencyInputWatcher.kt$CurrencyInputWatcher$3</ID>
-    <ID>NestedBlockDepth:CurrencyInputWatcher.kt$CurrencyInputWatcher$private fun calculateSpacing( resultText: String?, resultEditPosition: Int?, currencySymbol: String, sign: String, ): Array&lt;Any?&gt;</ID>
     <ID>SwallowedException:Utils.kt$e: IllformedLocaleException</ID>
     <ID>TooManyFunctions:CurrencyEditText.kt$CurrencyEditText : AppCompatEditText</ID>
     <ID>TooManyFunctions:CurrencyMaterialEditText.kt$CurrencyMaterialEditText : TextInputLayout</ID>
@@ -17,14 +12,8 @@
     <ID>UnsafeCallOnNullableType:CurrencyMaterialEditText.kt$CurrencyMaterialEditText$localeTag!!</ID>
     <ID>UnsafeCallOnNullableType:CurrencyMaterialEditText.kt$CurrencyMaterialEditText$text!!</ID>
     <ID>UnsafeCallOnNullableType:EasyTextWatcher.kt$EasyTextWatcher$modifiedText!!</ID>
-    <ID>UnusedPrivateProperty:CurrencyInputWatcher.kt$CurrencyInputWatcher$i</ID>
     <ID>UseOrEmpty:CurrencyEditText.kt$CurrencyEditText$(validator?.let { it1 -&gt; it1(checkedValue) }) ?: ""</ID>
     <ID>UseOrEmpty:CurrencyEditText.kt$CurrencyEditText$str ?: ""</ID>
-    <ID>UseOrEmpty:CurrencyInputWatcher.kt$CurrencyInputWatcher$(text as? String?) ?: ""</ID>
-    <ID>UseOrEmpty:CurrencyInputWatcher.kt$CurrencyInputWatcher$newText ?: ""</ID>
-    <ID>UseOrEmpty:CurrencyInputWatcher.kt$CurrencyInputWatcher$resultText ?: ""</ID>
-    <ID>UseOrEmpty:CurrencyInputWatcher.kt$CurrencyInputWatcher$resultText?.substring(0, dotPos) ?: ""</ID>
-    <ID>UseOrEmpty:CurrencyInputWatcher.kt$CurrencyInputWatcher$resultText?.substring(dotPos + 1, resultText.length) ?: ""</ID>
     <ID>UseRequire:CurrencyInputWatcher.kt$CurrencyInputWatcher$throw IllegalArgumentException( "Maximum number of Decimal Places must be a positive integer", )</ID>
     <ID>UtilityClassWithPublicConstructor:Routines.kt$Routines</ID>
   </CurrentIssues>
