@@ -103,7 +103,7 @@ internal class CurrencyTextFormatter(
             position -= numberOfMinus
         }
 
-        return SignedText(sign, TextWithCursor(input.text.replace("-", ""), position))
+        return SignedText(sign, TextWithCursor(input.text.replace("-", ""), maxOf(0, position)))
     }
 
     /** Puts the currency symbol back when the user has deleted part of it. */
