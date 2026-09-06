@@ -4,7 +4,6 @@ git stash -q --keep-index
 
 echo "Running git pre-commit hook"
 
-./gradlew :library:spotlessApply
 ./gradlew :library:spotlessCheck
 
 RESULT=$?

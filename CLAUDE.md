@@ -88,6 +88,7 @@ A version lives in three files and all of them must be bumped together:
 2. `gradle.properties` — `VERSION_NAME`
 3. `history.txt` — one changelog line
 
-Publishing runs from `.github/workflows/publish.yml` on a GitHub release
-(`publishAllPublicationsToMavenCentralRepository`, then `closeAndReleaseRepository`); credentials
-come from repository secrets.
+Publishing runs from `.github/workflows/publish.yml` on a GitHub release; credentials come from
+repository secrets. **The workflow is currently broken**: it still calls the two Gradle tasks the
+maven-publish plugin dropped before 0.34.0, and `SONATYPE_HOST=S01` points at the retired OSSRH
+host. Migrating it to the Central Portal is tracked in issue #9.
