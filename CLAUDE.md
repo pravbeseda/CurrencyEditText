@@ -82,13 +82,14 @@ Add a failing test to that suite before changing formatting behaviour.
 
 ## Releasing
 
-A version lives in three files and all of them must be bumped together:
+Releases are cut by the `Release` workflow (`.github/workflows/release.yml`), started by hand from
+the Actions tab with a `patch` / `minor` / `major` choice. It runs `scripts/bump-version.sh`, which
+raises the version in `dependencies.gradle` (`publishVersion`, `publishVersionCode`) and
+`gradle.properties` (`VERSION_NAME`); then builds and tests, publishes to Maven Central, pushes the
+bump commit and the tag to `main`, and creates a GitHub release with auto-generated notes. Tags
+carry no `v` prefix (`1.0.4`), matching every tag since 0.4.0.
 
-1. `dependencies.gradle` — `publishVersion`, `publishVersionCode`
-2. `gradle.properties` — `VERSION_NAME`
-3. `history.txt` — one changelog line
-
-Publishing runs from `.github/workflows/publish.yml` on a GitHub release; credentials come from
-repository secrets. **The workflow is currently broken**: it still calls the two Gradle tasks the
-maven-publish plugin dropped before 0.34.0, and `SONATYPE_HOST=S01` points at the retired OSSRH
-host. Migrating it to the Central Portal is tracked in issue #9.
+Publishing goes through the Central Portal (`SONATYPE_HOST=CENTRAL_PORTAL`) and is irreversible, so
+it runs before anything is pushed — a failure there leaves the repository untouched. Credentials
+come from the repository secrets `OSSRH_USERNAME` / `OSSRH_PASSWORD`, which must hold a Central
+Portal user token, and `SIGNING_IN_MEMORY_KEY` / `SIGNING_IN_MEMORY_KEY_PASSWORD`.
