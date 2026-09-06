@@ -97,6 +97,16 @@ jobs:
             sample/build/reports/lint-results-debug.*
           if-no-files-found: ignore
 
+      - name: Check binary compatibility
+        # The artifact goes to Maven Central and a release cannot be withdrawn,
+        # so an accidental signature change has to be caught before the merge,
+        # not by the people whose build stops compiling. library/api/library.api
+        # is the dump of the public API; a mismatch prints the diff. An intended
+        # change is made reviewable by running `./gradlew :library:apiDump` and
+        # committing the result.
+        if: always()
+        run: ./gradlew :library:apiCheck --stacktrace
+
       - name: Assemble
         # The instrumented tests are compiled but not run: there is no emulator
         # in this job, and a source set that never compiles is a source set that

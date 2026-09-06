@@ -1,0 +1,157 @@
+public class ru/pravbeseda/currencyedittext/CurrencyEditText : androidx/appcompat/widget/AppCompatEditText {
+	public static final field Companion Lru/pravbeseda/currencyedittext/CurrencyEditText$Companion;
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
+	public final fun getDecimalSeparator ()C
+	public final fun getDecimalZerosPadding ()Z
+	public final fun getEmptyStringForZero ()Z
+	public final fun getGroupingSeparator ()C
+	public final fun getNegativeValueAllow ()Z
+	public final fun getValue ()Ljava/math/BigDecimal;
+	public final fun getValue0 ()Ljava/math/BigDecimal;
+	public final fun isValid ()Z
+	public final fun isValidState ()Z
+	protected fun onFocusChanged (ZILandroid/graphics/Rect;)V
+	protected fun onSelectionChanged (II)V
+	public final fun onValueChanged (Lkotlin/jvm/functions/Function3;)V
+	public final fun setCurrencySymbol (Ljava/lang/String;Z)V
+	public static synthetic fun setCurrencySymbol$default (Lru/pravbeseda/currencyedittext/CurrencyEditText;Ljava/lang/String;ZILjava/lang/Object;)V
+	public final fun setDecimalZerosPadding (Z)V
+	public final fun setEmptyStringForZero (Z)V
+	public final fun setLocale (Ljava/lang/String;)V
+	public final fun setLocale (Ljava/util/Locale;)V
+	public final fun setMaxNumberOfDecimalPlaces (I)V
+	public final fun setNegativeValueAllow (Z)V
+	public final fun setSeparators (CC)V
+	public fun setText (Ljava/lang/CharSequence;Landroid/widget/TextView$BufferType;)V
+	public final fun setValidator (Lkotlin/jvm/functions/Function1;)V
+	public final fun setValue (Ljava/math/BigDecimal;)V
+	public final fun setValue0 (Ljava/math/BigDecimal;)V
+	public final fun validate (Ljava/math/BigDecimal;)V
+	public static synthetic fun validate$default (Lru/pravbeseda/currencyedittext/CurrencyEditText;Ljava/math/BigDecimal;ILjava/lang/Object;)V
+}
+
+public final class ru/pravbeseda/currencyedittext/CurrencyEditText$Companion {
+}
+
+public final class ru/pravbeseda/currencyedittext/CurrencyEditText$Companion$State : java/lang/Enum {
+	public static final field ERROR Lru/pravbeseda/currencyedittext/CurrencyEditText$Companion$State;
+	public static final field OK Lru/pravbeseda/currencyedittext/CurrencyEditText$Companion$State;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lru/pravbeseda/currencyedittext/CurrencyEditText$Companion$State;
+	public static fun values ()[Lru/pravbeseda/currencyedittext/CurrencyEditText$Companion$State;
+}
+
+public abstract interface class ru/pravbeseda/currencyedittext/CurrencyEditText$OnValueChanged {
+	public abstract fun onValueChanged (Ljava/math/BigDecimal;Lru/pravbeseda/currencyedittext/CurrencyEditText$Companion$State;Ljava/lang/String;)V
+}
+
+public class ru/pravbeseda/currencyedittext/CurrencyMaterialEditText : com/google/android/material/textfield/TextInputLayout {
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
+	public final fun getDecimalZerosPadding ()Z
+	public final fun getEmptyStringForZero ()Z
+	public final fun getNegativeValueAllow ()Z
+	public final fun getText ()Landroid/text/Editable;
+	public final fun getValue ()Ljava/math/BigDecimal;
+	public final fun getValue0 ()Ljava/math/BigDecimal;
+	public final fun isValid ()Z
+	public final fun isValidState ()Z
+	public final fun onValueChanged (Lkotlin/jvm/functions/Function3;)V
+	public final fun setDecimalZerosPadding (Z)V
+	public final fun setEmptyStringForZero (Z)V
+	public final fun setLocale (Ljava/lang/String;)V
+	public final fun setLocale (Ljava/util/Locale;)V
+	public final fun setMaxNumberOfDecimalPlaces (I)V
+	public final fun setNegativeValueAllow (Z)V
+	public final fun setSelectAllOnFocus (Z)V
+	public final fun setSeparators (CC)V
+	public final fun setText (Landroid/text/Editable;)V
+	public final fun setText (Ljava/lang/CharSequence;)V
+	public final fun setValidator (Lkotlin/jvm/functions/Function1;)V
+	public final fun setValue (Ljava/math/BigDecimal;)V
+	public final fun setValue0 (Ljava/math/BigDecimal;)V
+	public final fun validate ()V
+}
+
+public final class ru/pravbeseda/currencyedittext/model/CurrencyFormatConfig {
+	public fun <init> ()V
+	public fun <init> (CCIZZ)V
+	public synthetic fun <init> (CCIZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()C
+	public final fun component2 ()C
+	public final fun component3 ()I
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun copy (CCIZZ)Lru/pravbeseda/currencyedittext/model/CurrencyFormatConfig;
+	public static synthetic fun copy$default (Lru/pravbeseda/currencyedittext/model/CurrencyFormatConfig;CCIZZILjava/lang/Object;)Lru/pravbeseda/currencyedittext/model/CurrencyFormatConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAddLTRPrefix ()Z
+	public final fun getDecimalLength ()I
+	public final fun getDecimalSeparator ()C
+	public final fun getGroupingSeparator ()C
+	public final fun getShowPlusSign ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/pravbeseda/currencyedittext/model/CurrencyInputWatcherConfig {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Locale;Ljava/lang/String;Ljava/lang/Character;Ljava/lang/Character;IZZLkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/util/Locale;Ljava/lang/String;Ljava/lang/Character;Ljava/lang/Character;IZZLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/Locale;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/Character;
+	public final fun component4 ()Ljava/lang/Character;
+	public final fun component5 ()I
+	public final fun component6 ()Z
+	public final fun component7 ()Z
+	public final fun component8 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Ljava/util/Locale;Ljava/lang/String;Ljava/lang/Character;Ljava/lang/Character;IZZLkotlin/jvm/functions/Function1;)Lru/pravbeseda/currencyedittext/model/CurrencyInputWatcherConfig;
+	public static synthetic fun copy$default (Lru/pravbeseda/currencyedittext/model/CurrencyInputWatcherConfig;Ljava/util/Locale;Ljava/lang/String;Ljava/lang/Character;Ljava/lang/Character;IZZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lru/pravbeseda/currencyedittext/model/CurrencyInputWatcherConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCurrencySymbol ()Ljava/lang/String;
+	public final fun getDecimalSeparator ()Ljava/lang/Character;
+	public final fun getDecimalZerosPadding ()Z
+	public final fun getGroupingSeparator ()Ljava/lang/Character;
+	public final fun getLocale ()Ljava/util/Locale;
+	public final fun getMaxNumberOfDecimalPlaces ()I
+	public final fun getNegativeValueAllow ()Z
+	public final fun getOnValueChanged ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/pravbeseda/currencyedittext/util/CurrencyRounderKt {
+	public static final fun truncateNumberToMaxDecimalDigits (Ljava/lang/String;IC)Ljava/lang/String;
+}
+
+public final class ru/pravbeseda/currencyedittext/util/Routines {
+	public static final field Companion Lru/pravbeseda/currencyedittext/util/Routines$Companion;
+	public fun <init> ()V
+}
+
+public final class ru/pravbeseda/currencyedittext/util/Routines$Companion {
+	public final fun bigDecimalToString (Ljava/math/BigDecimal;Lru/pravbeseda/currencyedittext/model/CurrencyFormatConfig;)Ljava/lang/String;
+}
+
+public final class ru/pravbeseda/currencyedittext/util/RoutinesKt {
+	public static final field emptyChar C
+	public static final fun firstChar (Ljava/lang/String;)Ljava/lang/Character;
+}
+
+public final class ru/pravbeseda/currencyedittext/watchers/CurrencyInputWatcher : ru/pravbeseda/currencyedittext/watchers/EasyTextWatcher {
+	public fun <init> (Ljava/lang/ref/WeakReference;Lru/pravbeseda/currencyedittext/model/CurrencyInputWatcherConfig;)V
+	public final fun getDecimalSeparator ()C
+	public final fun getGroupingSeparator ()C
+	public fun onTextModified (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)V
+}
+
+public abstract class ru/pravbeseda/currencyedittext/watchers/EasyTextWatcher : android/text/TextWatcher {
+	public fun <init> ()V
+	public fun afterTextChanged (Landroid/text/Editable;)V
+	public fun beforeTextChanged (Ljava/lang/CharSequence;III)V
+	public fun endEditing ()V
+	public fun onTextChanged (Ljava/lang/CharSequence;III)V
+	public abstract fun onTextModified (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)V
+	public fun startEditing ()V
+}
+

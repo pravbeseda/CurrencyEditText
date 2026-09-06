@@ -25,6 +25,8 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ./gradlew :library:koverVerifyDebug :library:koverLogDebug  # coverage + the bound
 ./gradlew detektAll                    # detekt with type resolution, both modules
 ./gradlew :library:lintDebug :sample:lintDebug              # Android Lint
+./gradlew :library:apiCheck            # public API against library/api/library.api
+./gradlew :library:apiDump             # rewrite that file after an intended API change
 ```
 
 Toolchain: Gradle 8.13, AGP 8.13.0, Kotlin 2.1.10, JDK 17 (JDK 21 also works), minSdk 19,
@@ -40,7 +42,7 @@ has to be run by hand on a fresh clone.
 
 ## Quality gates
 
-All five block the build, and `./gradlew build` runs all five:
+All six block the build, and `./gradlew build` runs all six:
 
 | Gate | Where it is configured | What is frozen |
 |---|---|---|
@@ -49,6 +51,7 @@ All five block the build, and `./gradlew build` runs all five:
 | Kover 0.9.9, `minBound(80)` | `library/build.gradle` | — the bound is a floor, not a baseline |
 | Android Lint, `warningsAsErrors` | root `build.gradle` | `*/lint-baseline.xml` |
 | Unit tests | `library/src/test` | — |
+| binary-compatibility-validator 0.18.2 | `library/build.gradle` | `library/api/library.api` — the public API, not a debt list |
 
 Coverage is measured on `:library` only and filtered to
 `ru.pravbeseda.currencyedittext.watchers.*` and `…util.*`. The two Views cannot be reached from
@@ -58,6 +61,13 @@ the quality of the tests.
 The plain `detekt` task is disabled on purpose: it analyses without type resolution and would offer
 a green run that checks a fraction of what the gate checks. Use `detektAll`, which is the same list
 of tasks each module's `check` is wired from.
+
+`library/api/library.api` is a dump of the published artifact's public signatures, and `apiCheck`
+is the only gate here that looks at the library's outward boundary rather than at the code inside
+it. It is not a baseline: an intended API change is made by running `./gradlew :library:apiDump`
+and committing the rewritten file, so the change arrives in the diff as a reviewable line instead
+of reaching Maven Central unnoticed — where it cannot be taken back. It is wired into `check`, and
+CI runs it as its own step because that job runs the gate tasks one by one, not `check`.
 
 ## Architecture
 
@@ -141,8 +151,9 @@ class. Reason: `calculateSpacing` is already written that way and the pattern ge
 **No silently swallowed exceptions.** A `catch` that returns a default needs a comment saying why
 losing the information is safe (`util/Utils.kt` `parseMoneyValue` is the example of how not to).
 
-**Public API changes get their own bullet in the PR description**, headed "Public API change".
-Reason: the artifact goes to Maven Central and a release cannot be taken back.
+**Public API changes get their own bullet in the PR description**, headed "Public API change",
+and the `apiDump` diff in the same commit. Reason: the artifact goes to Maven Central and a
+release cannot be taken back.
 
 **Test libraries belong in `testImplementation` / `androidTestImplementation`, never in
 `implementation`.** Reason: this repository has already shipped that bug — `androidx.test:monitor`
