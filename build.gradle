@@ -122,6 +122,20 @@ subprojects {
     }
 }
 
+// The list is written out rather than derived, so what the gate analyses is
+// readable at a glance — but a module missing from it would get a `check` that
+// depends on no detekt task and passes having analysed nothing, silently. This
+// makes that loud instead: a new module fails configuration until its typed
+// tasks are added above.
+subprojects.each { module ->
+    if (!typedDetektTasks.any { it.startsWith(":${module.name}:") }) {
+        throw new GradleException(
+            "${module.path} contributes no task to the detekt gate. Add its typed detekt " +
+                'tasks to typedDetektTasks in the root build script.'
+        )
+    }
+}
+
 // One entry point for the whole tree, because detekt's typed tasks are per module
 // and per variant. Same list the modules' `check` tasks are wired from.
 tasks.register('detektAll') {

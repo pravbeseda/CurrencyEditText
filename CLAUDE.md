@@ -47,7 +47,7 @@ All five block the build, and `./gradlew build` runs all five:
 | Spotless (ktlint + license header) | `spotless.gradle` | nothing — formatting is fixed, not frozen |
 | detekt 1.23.8, type resolution | `config/detekt/detekt.yml`, root `build.gradle` | `*/detekt-baseline-*.xml` |
 | Kover 0.9.9, `minBound(80)` | `library/build.gradle` | — the bound is a floor, not a baseline |
-| Android Lint, `warningsAsErrors` | `library/build.gradle`, `sample/build.gradle` | `*/lint-baseline.xml` |
+| Android Lint, `warningsAsErrors` | root `build.gradle` | `*/lint-baseline.xml` |
 | Unit tests | `library/src/test` | — |
 
 Coverage is measured on `:library` only and filtered to

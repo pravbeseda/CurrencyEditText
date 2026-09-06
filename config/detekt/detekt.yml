@@ -11,16 +11,14 @@ style:
     # 120 already disagrees with the 122-character line Spotless accepts today.
     active: false
   ForbiddenComment:
-    # A TODO with no ticket is a comment that nobody will ever come back to.
+    # Only the reason text deviates from the default: a marker with no ticket is
+    # a comment that nobody will ever come back to. The three values are the
+    # default's own, restated because a list-valued key is replaced rather than
+    # merged — dropping one here would quietly stop forbidding it.
     comments:
       - reason: 'Reference an issue instead, so the debt is tracked outside the code.'
         value: 'TODO:'
       - reason: 'Reference an issue instead, so the debt is tracked outside the code.'
         value: 'FIXME:'
-  MagicNumber:
-    # Off in tests: an expected value written as a literal is the point of the test.
-    excludes: ['**/test/**', '**/androidTest/**']
-
-exceptions:
-  TooGenericExceptionCaught:
-    excludes: ['**/test/**', '**/androidTest/**']
+      - reason: 'Reference an issue instead, so the debt is tracked outside the code.'
+        value: 'STOPSHIP:'

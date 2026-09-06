@@ -12,15 +12,4 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="GradleDependency"
-        message="A newer version of `compileSdkVersion` than 34 is available: 36"
-        errorLine1="    compileSdk 34"
-        errorLine2="    ~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="10"
-            column="5"/>
-    </issue>
-
 </issues>
