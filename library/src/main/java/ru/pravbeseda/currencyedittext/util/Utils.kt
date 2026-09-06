@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,9 +29,10 @@ internal fun parseMoneyValue(
     value: String,
     groupingSeparator: Char,
     decimalSeparator: Char,
-    currencySymbol: String
+    currencySymbol: String,
 ): String =
-    value.replace(currencySymbol, "")
+    value
+        .replace(currencySymbol, "")
         .replace(groupingSeparator.toString(), "")
         .replace(decimalSeparator.toString(), ".")
 
@@ -39,7 +40,7 @@ internal fun parseMoneyValueWithLocale(
     value: String,
     groupingSeparator: Char,
     decimalSeparator: Char,
-    currencySymbol: String
+    currencySymbol: String,
 ): Number {
     val valueWithoutSeparator =
         parseMoneyValue(value, groupingSeparator, decimalSeparator, currencySymbol)
@@ -53,7 +54,7 @@ internal fun parseMoneyValueWithLocale(
 internal fun formatMoneyValue(
     value: BigDecimal,
     groupingSeparator: Char,
-    decimalSeparator: Char
+    decimalSeparator: Char,
 ): String {
     val symbols = DecimalFormatSymbols(Locale.ROOT)
     symbols.decimalSeparator = decimalSeparator
@@ -63,13 +64,13 @@ internal fun formatMoneyValue(
 }
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-internal fun getLocaleFromTag(localeTag: String): Locale {
-    return try {
+internal fun getLocaleFromTag(localeTag: String): Locale =
+    try {
         Locale.Builder().setLanguageTag(localeTag).build()
     } catch (e: IllformedLocaleException) {
         Locale.getDefault()
     }
-}
 
 internal fun isLollipopAndAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+
 internal fun isApi26AndAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O

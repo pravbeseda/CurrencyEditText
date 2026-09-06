@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,20 +23,20 @@ import android.text.method.DigitsKeyListener
 import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
-import java.lang.ref.WeakReference
-import java.math.BigDecimal
-import java.util.*
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
-import ru.pravbeseda.currencyedittext.util.*
+import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.formatMoneyValue
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 import ru.pravbeseda.currencyedittext.util.parseMoneyValueWithLocale
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
+import java.lang.ref.WeakReference
+import java.math.BigDecimal
+import java.util.Locale
 
 open class CurrencyEditText(
     context: Context,
-    attrs: AttributeSet?
+    attrs: AttributeSet?,
 ) : AppCompatEditText(context, attrs) {
     private lateinit var currencySymbolPrefix: String // lateinit is important!
     private var textWatcher: CurrencyInputWatcher
@@ -73,32 +73,33 @@ open class CurrencyEditText(
         textDirection = TEXT_DIRECTION_LTR
         var localeTag: String?
         val prefix: String
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.CurrencyEditText,
-            0,
-            0
-        ).run {
-            try {
-                prefix = getString(R.styleable.CurrencyEditText_currencySymbol).orEmpty()
-                localeTag = getString(R.styleable.CurrencyEditText_localeTag)
-                decimalSeparator =
-                    getString(R.styleable.CurrencyEditText_decimalSeparator).firstChar()
-                groupingSeparator =
-                    getString(R.styleable.CurrencyEditText_groupingSeparator).firstChar()
-                useCurrencySymbolAsHint =
-                    getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
-                maxDecimalPlaces = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalPlaces, 2)
-                negativeValueAllow =
-                    getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false)
-                decimalZerosPadding =
-                    getBoolean(R.styleable.CurrencyEditText_decimalZerosPadding, false)
-                emptyStringForZero =
-                    getBoolean(R.styleable.CurrencyEditText_emptyStringForZero, true)
-            } finally {
-                recycle()
+        context.theme
+            .obtainStyledAttributes(
+                attrs,
+                R.styleable.CurrencyEditText,
+                0,
+                0,
+            ).run {
+                try {
+                    prefix = getString(R.styleable.CurrencyEditText_currencySymbol).orEmpty()
+                    localeTag = getString(R.styleable.CurrencyEditText_localeTag)
+                    decimalSeparator =
+                        getString(R.styleable.CurrencyEditText_decimalSeparator).firstChar()
+                    groupingSeparator =
+                        getString(R.styleable.CurrencyEditText_groupingSeparator).firstChar()
+                    useCurrencySymbolAsHint =
+                        getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
+                    maxDecimalPlaces = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalPlaces, 2)
+                    negativeValueAllow =
+                        getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false)
+                    decimalZerosPadding =
+                        getBoolean(R.styleable.CurrencyEditText_decimalZerosPadding, false)
+                    emptyStringForZero =
+                        getBoolean(R.styleable.CurrencyEditText_emptyStringForZero, true)
+                } finally {
+                    recycle()
+                }
             }
-        }
         currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
         if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) {
@@ -119,14 +120,12 @@ open class CurrencyEditText(
             formatMoneyValue(
                 value,
                 textWatcher.getGroupingSeparator(),
-                textWatcher.getDecimalSeparator()
-            )
+                textWatcher.getDecimalSeparator(),
+            ),
         )
     }
 
-    fun getValue(): BigDecimal {
-        return stringToBigDecimal(text.toString())
-    }
+    fun getValue(): BigDecimal = stringToBigDecimal(text.toString())
 
     fun setLocale(locale: Locale) {
         val value = getValue()
@@ -145,7 +144,10 @@ open class CurrencyEditText(
         setValue(value)
     }
 
-    fun setSeparators(newGroupingSeparator: Char, newDecimalSeparator: Char) {
+    fun setSeparators(
+        newGroupingSeparator: Char,
+        newDecimalSeparator: Char,
+    ) {
         var decimal = newDecimalSeparator
         if (newGroupingSeparator == newDecimalSeparator) {
             decimal = if (newDecimalSeparator == '.') ',' else '.'
@@ -158,42 +160,35 @@ open class CurrencyEditText(
         setValue(value)
     }
 
-    fun getDecimalSeparator(): Char {
-        return textWatcher.getDecimalSeparator()
-    }
+    fun getDecimalSeparator(): Char = textWatcher.getDecimalSeparator()
 
-    fun getGroupingSeparator(): Char {
-        return textWatcher.getGroupingSeparator()
-    }
+    fun getGroupingSeparator(): Char = textWatcher.getGroupingSeparator()
 
     fun setNegativeValueAllow(newValue: Boolean) {
         negativeValueAllow = newValue
         invalidateTextWatcher()
     }
 
-    fun getNegativeValueAllow(): Boolean {
-        return negativeValueAllow
-    }
+    fun getNegativeValueAllow(): Boolean = negativeValueAllow
 
     fun setDecimalZerosPadding(newValue: Boolean) {
         decimalZerosPadding = newValue
         invalidateTextWatcher()
     }
 
-    fun getDecimalZerosPadding(): Boolean {
-        return decimalZerosPadding
-    }
+    fun getDecimalZerosPadding(): Boolean = decimalZerosPadding
 
     fun setEmptyStringForZero(newValue: Boolean) {
         emptyStringForZero = newValue
         setValue(getValue())
     }
 
-    fun getEmptyStringForZero(): Boolean {
-        return emptyStringForZero
-    }
+    fun getEmptyStringForZero(): Boolean = emptyStringForZero
 
-    fun setCurrencySymbol(currencySymbol: String, useCurrencySymbolAsHint: Boolean = false) {
+    fun setCurrencySymbol(
+        currencySymbol: String,
+        useCurrencySymbolAsHint: Boolean = false,
+    ) {
         currencySymbolPrefix = "$currencySymbol "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
         invalidateTextWatcher()
@@ -204,9 +199,7 @@ open class CurrencyEditText(
         invalidateTextWatcher()
     }
 
-    fun isValidState(): Boolean {
-        return state == State.OK
-    }
+    fun isValidState(): Boolean = state == State.OK
 
     private fun invalidateTextWatcher() {
         removeTextChangedListener(textWatcher)
@@ -215,53 +208,61 @@ open class CurrencyEditText(
     }
 
     private fun createTextWatcher(): CurrencyInputWatcher {
-        val config = CurrencyInputWatcherConfig(
-            locale = locale,
-            currencySymbol = currencySymbolPrefix,
-            decimalSeparator = decimalSeparator,
-            groupingSeparator = groupingSeparator,
-            maxNumberOfDecimalPlaces = maxDecimalPlaces,
-            negativeValueAllow = negativeValueAllow,
-            decimalZerosPadding = decimalZerosPadding,
-            onValueChanged = {
-                val value = stringToBigDecimal(it)
-                validate(value)
-                onValueChanged?.onValueChanged(value, state, textError)
-            }
-        )
+        val config =
+            CurrencyInputWatcherConfig(
+                locale = locale,
+                currencySymbol = currencySymbolPrefix,
+                decimalSeparator = decimalSeparator,
+                groupingSeparator = groupingSeparator,
+                maxNumberOfDecimalPlaces = maxDecimalPlaces,
+                negativeValueAllow = negativeValueAllow,
+                decimalZerosPadding = decimalZerosPadding,
+                onValueChanged = {
+                    val value = stringToBigDecimal(it)
+                    validate(value)
+                    onValueChanged?.onValueChanged(value, state, textError)
+                },
+            )
         return CurrencyInputWatcher(
             WeakReference(this),
-            config
+            config,
         )
     }
 
     fun validate(value: BigDecimal? = null) {
         val checkedValue = value ?: getValue()
         textError = (validator?.let { it1 -> it1(checkedValue) }) ?: ""
-        state = if (textError.isEmpty()) {
-            State.OK
-        } else {
-            State.ERROR
-        }
+        state =
+            if (textError.isEmpty()) {
+                State.OK
+            } else {
+                State.ERROR
+            }
     }
 
-    private fun stringToBigDecimal(str: String?): BigDecimal {
-        return BigDecimal(
+    private fun stringToBigDecimal(str: String?): BigDecimal =
+        BigDecimal(
             parseMoneyValueWithLocale(
                 str ?: "",
                 textWatcher.getGroupingSeparator(),
                 textWatcher.getDecimalSeparator(),
-                currencySymbolPrefix
-            ).toString()
+                currencySymbolPrefix,
+            ).toString(),
         )
-    }
 
-    override fun setText(text: CharSequence?, type: BufferType?) {
+    override fun setText(
+        text: CharSequence?,
+        type: BufferType?,
+    ) {
         super.setText(text, type)
         getText()?.length?.let { setSelection(it) }
     }
 
-    override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+    override fun onFocusChanged(
+        focused: Boolean,
+        direction: Int,
+        previouslyFocusedRect: Rect?,
+    ) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect)
         if (focused) {
             removeTextChangedListener(textWatcher)
@@ -273,7 +274,10 @@ open class CurrencyEditText(
         }
     }
 
-    override fun onSelectionChanged(selStart: Int, selEnd: Int) {
+    override fun onSelectionChanged(
+        selStart: Int,
+        selEnd: Int,
+    ) {
         if (::currencySymbolPrefix.isInitialized.not()) return
         val symbolLength = currencySymbolPrefix.length
         if (selEnd < symbolLength && text.toString().length >= symbolLength) {
@@ -285,12 +289,17 @@ open class CurrencyEditText(
 
     fun onValueChanged(action: (BigDecimal, state: State, textError: String) -> Unit) {
         val that = this
-        onValueChanged = object : OnValueChanged {
-            override fun onValueChanged(newValue: BigDecimal, state: State, textError: String) {
-                that.state = state
-                action.invoke(newValue, state, textError)
+        onValueChanged =
+            object : OnValueChanged {
+                override fun onValueChanged(
+                    newValue: BigDecimal,
+                    state: State,
+                    textError: String,
+                ) {
+                    that.state = state
+                    action.invoke(newValue, state, textError)
+                }
             }
-        }
     }
 
     fun setValidator(newValidator: ((BigDecimal) -> String?)?) {
@@ -301,7 +310,11 @@ open class CurrencyEditText(
      * Interface for value and state change callback
      */
     interface OnValueChanged {
-        fun onValueChanged(newValue: BigDecimal, state: State, textError: String)
+        fun onValueChanged(
+            newValue: BigDecimal,
+            state: State,
+            textError: String,
+        )
     }
 
     companion object {
@@ -310,7 +323,7 @@ open class CurrencyEditText(
          */
         enum class State {
             OK, // Valid
-            ERROR // Invalid value
+            ERROR, // Invalid value
         }
     }
 }

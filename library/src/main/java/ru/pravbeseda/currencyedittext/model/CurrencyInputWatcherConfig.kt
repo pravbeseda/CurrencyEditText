@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2022-2023 Alexander Ivanov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  */
 package ru.pravbeseda.currencyedittext.model
 
-import java.util.*
+import java.util.Locale
 
 data class CurrencyInputWatcherConfig(
     val locale: Locale = Locale.getDefault(),
@@ -25,5 +25,5 @@ data class CurrencyInputWatcherConfig(
     val maxNumberOfDecimalPlaces: Int = 2,
     val decimalZerosPadding: Boolean = false,
     val negativeValueAllow: Boolean = false,
-    val onValueChanged: ((String?) -> Unit)? = null
+    val onValueChanged: ((String?) -> Unit)? = null,
 )
