@@ -21,6 +21,8 @@ import ru.pravbeseda.currencyedittext.util.emptyChar
 import java.lang.ref.WeakReference
 import java.text.DecimalFormatSymbols
 
+private const val GROUP_SIZE = 3
+
 class CurrencyInputWatcher(
     private val editTextRef: WeakReference<EditText>,
     private val config: CurrencyInputWatcherConfig,
@@ -195,13 +197,12 @@ class CurrencyInputWatcher(
     }
 
     private fun setText(
-        resultText: String?,
-        resultEditPosition: Int?,
+        resultText: String,
+        resultEditPosition: Int,
         currencySymbol: String,
         sign: String,
     ) {
-        // Format text
-        val (text, position) =
+        val formatted =
             calculateSpacing(
                 resultText = resultText,
                 resultEditPosition = resultEditPosition,
@@ -209,69 +210,80 @@ class CurrencyInputWatcher(
                 sign,
             )
 
-        editText?.setText((text as? String?) ?: "")
+        editText?.setText(formatted.text)
+        editText?.setSelection(formatted.cursorPosition)
 
-        // Set cursor
-        editText?.setSelection((position as? Int?) ?: 0)
-
-        config.onValueChanged?.invoke(text.toString())
+        config.onValueChanged?.invoke(formatted.text)
     }
 
     private fun calculateSpacing(
-        resultText: String?,
-        resultEditPosition: Int?,
+        resultText: String,
+        resultEditPosition: Int,
         currencySymbol: String,
         sign: String,
-    ): Array<Any?> {
-        var resultPosition = resultEditPosition ?: currencySymbol.length
-        val dotPos = resultText?.indexOf(decimalSeparator) ?: -1
+    ): TextWithCursor {
+        val dotPos = resultText.indexOf(decimalSeparator)
 
-        var textBeforeDot =
+        val textBeforeDot =
             if (dotPos == -1) {
-                resultText ?: ""
+                resultText
             } else {
-                resultText?.substring(0, dotPos) ?: ""
+                resultText.substring(0, dotPos)
             }
 
-        var textAfterDot =
+        val textAfterDot =
             if (dotPos == -1) {
-                null
-            } else {
-                resultText?.substring(dotPos + 1, resultText.length) ?: ""
-            }
-
-        val spaceCount = textBeforeDot.length / 3
-
-        var index = textBeforeDot.length
-
-        // Count all group separators and calc cursor position
-        if (groupingSeparator != emptyChar) {
-            for (i in 1 until spaceCount + 1) {
-                index -= 3
-                if (index > 0) {
-                    if (index < resultPosition - sign.length - currencySymbol.length) {
-                        resultPosition++
-                    }
-                    val sb = StringBuilder()
-                    textBeforeDot =
-                        sb.append(textBeforeDot).insert(index, groupingSeparator).toString()
-                }
-            }
-        }
-
-        textAfterDot =
-            if (textAfterDot != null) {
-                "$decimalSeparator$textAfterDot"
-            } else {
                 ""
+            } else {
+                decimalSeparator + resultText.substring(dotPos + 1)
             }
 
-        // Final result
-        val result = currencySymbol + sign + textBeforeDot + textAfterDot
+        val grouped =
+            insertGroupingSeparators(
+                integerText = textBeforeDot,
+                cursorPosition = resultEditPosition,
+                prefixLength = currencySymbol.length + sign.length,
+            )
 
+        val result = currencySymbol + sign + grouped.text + textAfterDot
+
+        var resultPosition = grouped.cursorPosition
         if (resultPosition < currencySymbol.length) resultPosition = currencySymbol.length
         if (resultPosition > result.length) resultPosition = result.length
 
-        return arrayOf(result, resultPosition)
+        return TextWithCursor(result, resultPosition)
     }
+
+    /**
+     * Inserts a grouping separator every three digits of [integerText], moving the cursor
+     * along with the digits it stands after.
+     */
+    private fun insertGroupingSeparators(
+        integerText: String,
+        cursorPosition: Int,
+        prefixLength: Int,
+    ): TextWithCursor {
+        if (groupingSeparator == emptyChar) {
+            return TextWithCursor(integerText, cursorPosition)
+        }
+
+        var text = integerText
+        var position = cursorPosition
+        var index = integerText.length
+        repeat(integerText.length / GROUP_SIZE) {
+            index -= GROUP_SIZE
+            if (index > 0) {
+                if (index < position - prefixLength) {
+                    position++
+                }
+                text = StringBuilder(text).insert(index, groupingSeparator).toString()
+            }
+        }
+        return TextWithCursor(text, position)
+    }
+
+    private data class TextWithCursor(
+        val text: String,
+        val cursorPosition: Int,
+    )
 }
