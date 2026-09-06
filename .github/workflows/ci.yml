@@ -24,16 +24,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        # Held at v5 on purpose: v6 moved the caching this step relies on into
+        # gradle-actions-caching, a proprietary component under Gradle's own
+        # Terms of Use rather than the MIT licence. v5 is the last release that
+        # runs on Node 24 without that decision attached.
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Check formatting
         # First, and blocking: ktlint is deterministic, needs no Android SDK and
@@ -49,7 +53,7 @@ jobs:
 
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unit-test-report
           path: library/build/reports/tests
@@ -72,7 +76,7 @@ jobs:
 
       - name: Upload detekt report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: detekt-report
           path: |
@@ -89,7 +93,7 @@ jobs:
 
       - name: Upload lint report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lint-report
           path: |
