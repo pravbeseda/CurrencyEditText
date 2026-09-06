@@ -1,9 +1,25 @@
 name: ci
 
-on: [push]
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+# Keyed by ref so branches never cancel each other, and pull requests only: a
+# `push` run is the record of what landed on main, and cancelling it leaves that
+# commit with no verdict.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
+    name: Build and check
     runs-on: ubuntu-latest
 
     steps:
@@ -16,5 +32,74 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build and Run Tests with Gradle
-        run: ./gradlew build :library:compileDebugAndroidTestSources
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Check formatting
+        # First, and blocking: ktlint is deterministic, needs no Android SDK and
+        # cannot flake, so a failure here always means the diff is genuinely
+        # unformatted. `./gradlew spotlessApply` fixes it.
+        run: ./gradlew spotlessCheck --stacktrace
+
+      # Every step below runs even when an earlier one failed, so one red gate
+      # never hides the verdict of the others.
+      - name: Run unit tests
+        if: always()
+        run: ./gradlew :library:test --stacktrace
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: library/build/reports/tests
+          if-no-files-found: ignore
+
+      - name: Verify coverage
+        # The 80% bound is configured in library/build.gradle, filtered to the
+        # watcher and the utilities. koverLog prints the figure next to the
+        # verdict — a red run should say what the number was, not only that it
+        # was too low.
+        if: always()
+        run: ./gradlew :library:koverVerifyDebug :library:koverLogDebug --stacktrace
+
+      - name: Run detekt
+        # Everything detekt finds today is frozen in the detekt-baseline-*.xml
+        # files, so a failure means the diff added a smell. Regenerate a baseline
+        # only with a reason — see CLAUDE.md.
+        if: always()
+        run: ./gradlew detektAll --stacktrace
+
+      - name: Upload detekt report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-report
+          path: |
+            library/build/reports/detekt
+            sample/build/reports/detekt
+          if-no-files-found: ignore
+
+      - name: Run Android Lint
+        # Blocking now that `lint { abortOnError true; warningsAsErrors true }`
+        # and the two lint-baseline.xml files are in place: what existed is
+        # frozen, so a failure here means the diff added a finding.
+        if: always()
+        run: ./gradlew :library:lintDebug :sample:lintDebug --stacktrace
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: |
+            library/build/reports/lint-results-debug.*
+            sample/build/reports/lint-results-debug.*
+          if-no-files-found: ignore
+
+      - name: Assemble
+        # The instrumented tests are compiled but not run: there is no emulator
+        # in this job, and a source set that never compiles is a source set that
+        # silently rots.
+        if: always()
+        run: ./gradlew assemble :library:compileDebugAndroidTestSources --stacktrace

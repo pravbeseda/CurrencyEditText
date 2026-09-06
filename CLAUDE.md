@@ -17,17 +17,47 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ## Build & test
 
 ```bash
-./gradlew build                        # what CI runs (JDK 17)
+./gradlew build                        # everything CI runs (JDK 17)
 ./gradlew :library:test                # JVM unit tests — the main suite
 ./gradlew :library:connectedAndroidTest # instrumented tests, needs a device/emulator
-./gradlew :library:spotlessApply       # format Kotlin (ktlint 1.8.0 + license header)
-./gradlew :library:spotlessCheck
-./gradlew installGitHook               # copies scripts/pre-commit into .git/hooks
+./gradlew spotlessApply                # format Kotlin (ktlint + license header)
+./gradlew spotlessCheck
+./gradlew :library:koverVerifyDebug :library:koverLogDebug  # coverage + the bound
+./gradlew detektAll                    # detekt with type resolution, both modules
+./gradlew :library:lintDebug :sample:lintDebug              # Android Lint
 ```
 
 Toolchain: Gradle 8.13, AGP 8.13.0, Kotlin 2.1.10, JDK 17 (JDK 21 also works), minSdk 19,
 compileSdk/targetSdk 34. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
 = JVM_1_8 } }` is set in both modules to keep the two compilers in step.
+
+Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script
+instead is a bug, not a shortcut.
+
+Git hooks live in `.githooks/` and are installed by `settings.gradle`, which points
+`core.hooksPath` at that directory on every Gradle invocation (skipped when `CI` is set). Nothing
+has to be run by hand on a fresh clone.
+
+## Quality gates
+
+All five block the build, and `./gradlew build` runs all five:
+
+| Gate | Where it is configured | What is frozen |
+|---|---|---|
+| Spotless (ktlint + license header) | `spotless.gradle` | nothing — formatting is fixed, not frozen |
+| detekt 1.23.8, type resolution | `config/detekt/detekt.yml`, root `build.gradle` | `*/detekt-baseline-*.xml` |
+| Kover 0.9.9, `minBound(80)` | `library/build.gradle` | — the bound is a floor, not a baseline |
+| Android Lint, `warningsAsErrors` | `library/build.gradle`, `sample/build.gradle` | `*/lint-baseline.xml` |
+| Unit tests | `library/src/test` | — |
+
+Coverage is measured on `:library` only and filtered to
+`ru.pravbeseda.currencyedittext.watchers.*` and `…util.*`. The two Views cannot be reached from
+`src/test`, so an unfiltered figure would report the share of View code in the module rather than
+the quality of the tests.
+
+The plain `detekt` task is disabled on purpose: it analyses without type resolution and would offer
+a green run that checks a fraction of what the gate checks. Use `detektAll`, which is the same list
+of tasks each module's `check` is wired from.
 
 ## Architecture
 
@@ -70,9 +100,56 @@ the resulting string and the resulting cursor position. Helpers live in `Exts.kt
 (`runAllWatcherMethods`, `LocaleVars.toWatcher`) and most tests loop over a fixed list of
 `LocaleVars` so behaviour is checked against several separator combinations at once.
 
-Instrumented tests (`src/androidTest`) cover the real views and need a device.
+Instrumented tests (`src/androidTest`) cover the real views and need a device. CI compiles them but
+does not run them.
 
-Add a failing test to that suite before changing formatting behaviour.
+### Testing and Definition of Done
+
+**Tests are written first. This is a rule, not a preference.**
+
+A change is done only when all of the following hold:
+
+1. `./gradlew build` passes locally and you have seen the output.
+2. New or changed logic in `library/src/main` is covered by a test written **before** the
+   implementation (red → green → refactor). Watch the test fail for the expected reason first, and
+   report that red run in the summary.
+3. A bug fix starts with a test that reproduces the bug and fails before the fix. Name the issue in
+   the test: `` `Issue #42 — cursor jumps after deleting the grouping separator` ``.
+4. Behaviour changes are reflected in tests, not only in the code.
+5. Logic that cannot be tested from `src/test` is a signal to move it out of the View into the
+   watcher or into `util/` — not a licence to skip the test.
+
+The only exceptions are pure renames, comment/doc edits and build-script changes. If a test could
+not be written, say so in the PR description: "No tests, because …". A stated reason is acceptable;
+silence is not.
+
+## Rules for new code
+
+Each rule carries its reason, because a rule without one gets optimised away.
+
+**Never weaken a check to make it pass.** No `@Suppress`, no new baseline entries, no lowered
+coverage bound, no `@Ignore` — without explicit permission. Baselines only ever shrink: an entry
+goes when its finding is fixed.
+
+**Do not grow `onTextModified`.** A new formatting rule is a separate step with a speaking name, not
+another `if` in the middle. Reason: the function is already ~145 lines and is the single point
+almost every change in this project touches.
+
+**No `Array<Any?>` and no casting the result back out** — a composite result is returned as a data
+class. Reason: `calculateSpacing` is already written that way and the pattern gets copied.
+
+**No silently swallowed exceptions.** A `catch` that returns a default needs a comment saying why
+losing the information is safe (`util/Utils.kt` `parseMoneyValue` is the example of how not to).
+
+**Public API changes get their own bullet in the PR description**, headed "Public API change".
+Reason: the artifact goes to Maven Central and a release cannot be taken back.
+
+**Test libraries belong in `testImplementation` / `androidTestImplementation`, never in
+`implementation`.** Reason: this repository has already shipped that bug — `androidx.test:monitor`
+leaked into the published library's runtime dependencies (`6b75231`).
+
+A new XML attribute goes in three places (see Architecture above) and gets a test for its default
+value in both components.
 
 ## Style
 

@@ -5,7 +5,7 @@ spotless {
     target 'src/**/*.kt'
     targetExclude '**/build/**'
     licenseHeaderFile rootProject.file('spotless.license.kt')
-    ktlint('1.8.0')
+    ktlint(libs.versions.ktlint.get())
     trimTrailingWhitespace()
     endWithNewline()
   }

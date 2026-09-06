@@ -1,5 +1,7 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+}
 
 android {
     namespace 'pravbeseda'
@@ -31,10 +33,10 @@ kotlin {
 
 dependencies {
     implementation project(':library')
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation libs.androidx.core.ktx
+    implementation libs.material
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
 }
 
 apply from: '../spotless.gradle'

@@ -1,1 +1,41 @@
+// Plugin resolution has to be declared here now that the root build script
+// applies AGP through the `plugins` block instead of a `buildscript` classpath:
+// AGP lives on Google's Maven repository, which the plugin portal does not
+// mirror. Gradle requires this block to be the first statement in the file.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+// Git hooks live in .githooks/ so they are versioned; .git/hooks is not, so a
+// fresh clone would otherwise have none. Pointing git at them by hand is the
+// step that gets forgotten — that is the debt this replaced (the old
+// `installGitHook` copy task) — so it happens here, at settings evaluation,
+// before any task graph exists. A task hooked to one module's preBuild would
+// miss the entry points that never build that module.
+//
+// Idempotent (setting the same value twice is a no-op), and skipped where there
+// is nothing to install into or no point: CI checks out, builds and never
+// commits.
+//
+// Nothing here is allowed to fail the build. Not installing the hooks is a
+// nuisance; failing settings evaluation over it stops every task from
+// configuring, IDE sync included. Both ways it can go wrong — git rejecting the
+// write, git not being on PATH at all — end at the same warning.
+def gitDir = new File(rootDir, '.git')
+if (gitDir.exists() && System.getenv('CI') == null) {
+    try {
+        def install = ['git', 'config', 'core.hooksPath', '.githooks'].execute(null, rootDir)
+        install.waitFor()
+        if (install.exitValue() != 0) {
+            println "warning: could not point core.hooksPath at .githooks — ${install.err.text.trim()}"
+        }
+    } catch (IOException e) {
+        println "warning: could not point core.hooksPath at .githooks — ${e.message}"
+    }
+}
+
 include ':sample', ':library'

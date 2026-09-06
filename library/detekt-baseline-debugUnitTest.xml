@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>EmptyCatchBlock:CurrencyInputWatcherTest.kt$CurrencyInputWatcherTest${ }</ID>
+    <ID>LargeClass:CurrencyInputWatcherTest.kt$CurrencyInputWatcherTest</ID>
+    <ID>LongMethod:RoutinesTest.kt$RoutinesTest$@Test fun testBigDecimalToString()</ID>
+    <ID>LongParameterList:Exts.kt$( editText: EditText, decimalPlaces: Int = 2, decimalSeparator: Char? = null, groupingSeparator: Char? = null, negativeValueAllow: Boolean = false, decimalZerosPadding: Boolean = false, )</ID>
+    <ID>SwallowedException:CurrencyInputWatcherTest.kt$CurrencyInputWatcherTest$e: IllegalArgumentException</ID>
+  </CurrentIssues>
+</SmellBaseline>

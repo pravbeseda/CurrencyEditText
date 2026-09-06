@@ -1,16 +1,24 @@
-buildscript {
-
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.13.0'
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:8.9.0"
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.10'
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.34.0'
-    }
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+//
+// Every version lives in gradle/libs.versions.toml. The buildscript block that
+// used to carry AGP, Kotlin, Spotless and the publish plugin as `classpath`
+// entries is gone: the catalog's `libs` accessor is not visible inside
+// `buildscript`, and plugin ids declared here work in both places anyway.
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.maven.publish) apply false
+    alias(libs.plugins.spotless) apply false
+    // Applied in :library only — see library/build.gradle for why the sample app
+    // is left out.
+    alias(libs.plugins.kover) apply false
+    // detekt 1.23.8 is the last stable line: detekt 2.x has been in alpha since
+    // 2025 and wants Gradle 8.14.3+, while this project builds on 8.13. It is
+    // compiled against Kotlin 2.0.21, so it prints a version-mismatch warning on
+    // our 2.1.10; the typed run below was checked rather than assumed, and it
+    // completes and reports.
+    alias(libs.plugins.detekt) apply false
 }
 
 allprojects {
@@ -24,13 +32,104 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+// The one list of tasks that constitutes the detekt gate. `detektAll` and every
+// module's `check` are both wired from it below, so the two can never drift into
+// checking different things. The release variant is left out: neither module has
+// release-specific Kotlin, so it shares its sources with debug.
+def typedDetektTasks = [
+    ':library:detektDebug',
+    ':library:detektDebugUnitTest',
+    ':library:detektDebugAndroidTest',
+    ':sample:detektDebug',
+    ':sample:detektDebugUnitTest',
+    ':sample:detektDebugAndroidTest',
+]
+
+subprojects {
+    apply plugin: 'io.gitlab.arturbosch.detekt'
+
+    // Both modules get the same lint gate; `com.android.base` is what the
+    // application and library plugins have in common. Configured here rather
+    // than twice over, so the two can never be tightened by different amounts.
+    //
+    // Lint already ran inside `check`, but advisory: its findings blocked
+    // nothing and so accumulated unread. The baseline freezes everything that
+    // exists today, so a failure means the diff added a finding, and it only
+    // ever shrinks — see CLAUDE.md.
+    // `moduleDir` is captured on purpose: inside the two nested closures below
+    // Groovy resolves an unqualified file() against the root project, which
+    // would point the baseline at a file that does not exist.
+    def moduleDir = projectDir
+    plugins.withId('com.android.base') {
+        android {
+            lint {
+                abortOnError true
+                // abortOnError alone only fails on error-severity findings, and
+                // almost everything lint has to say here is a warning. Without
+                // this the gate would wave through a new unused resource or a
+                // hardcoded string.
+                warningsAsErrors true
+                // AndroidGradlePluginVersion fires when a newer AGP exists in
+                // the world, not when anything in the diff is wrong, and it
+                // cannot be frozen: it reports against
+                // gradle/wrapper/gradle-wrapper.properties, outside the module,
+                // so the baseline records a path no other checkout resolves.
+                disable += 'AndroidGradlePluginVersion'
+                // GradleDependency and NewerVersionAvailable are the same idea
+                // one step wider. Their findings are in no diff — the versions
+                // are the same as yesterday, judged against what exists in the
+                // world today — and their messages carry the newer version
+                // number, so every frozen entry stops matching the day that
+                // number changes and a branch that changed nothing goes red.
+                // Demoted rather than disabled: they stay in the lint report CI
+                // uploads, so an ageing dependency is still visible, it just
+                // cannot fail a build on the calendar's say-so. Both ids are
+                // named because NewerVersionAvailable covers what
+                // GradleDependency does not.
+                informational += ['GradleDependency', 'NewerVersionAvailable']
+                baseline = new File(moduleDir, 'lint-baseline.xml')
+            }
+        }
+    }
+
+    // Smells, not style: the `formatting` ruleset is deliberately absent, since
+    // Spotless already owns formatting through the same ktlint engine.
+    detekt {
+        buildUponDefaultConfig = true
+        config.setFrom(rootProject.file('config/detekt/detekt.yml'))
+        // Per-variant baseline: the typed tasks append the variant name, giving
+        // detekt-baseline-debug.xml and friends. Everything that exists today is
+        // frozen; only new findings fail the build, and the files shrink as the
+        // code they cover gets touched.
+        baseline = file('detekt-baseline.xml')
+        parallel = true
+    }
+
+    // The plain `detekt` task runs on the PSI alone, and the rules that matter
+    // most here — UnsafeCallOnNullableType, UseOrEmpty — need type resolution to
+    // fire at all. Leaving it enabled would offer a green run that checks a
+    // fraction of what the gate checks.
+    tasks.matching { it.name == 'detekt' }.configureEach {
+        enabled = false
+    }
+
+    // Disabling it is not enough on its own: `check` depends on that one task and
+    // on none of the typed ones, so `./gradlew check` and `./gradlew build` would
+    // otherwise pass having analysed nothing at all. Wire this module's share of
+    // the gate into its own `check`.
+    tasks.matching { it.name == 'check' }.configureEach {
+        dependsOn typedDetektTasks.findAll { it.startsWith(":${project.name}:") }
+    }
 }
 
-task installGitHook(type: Copy) {
-    from new File(rootProject.rootDir, 'scripts/pre-commit')
-    into { new File(rootProject.rootDir, '.git/hooks') }
-    fileMode 0777
+// One entry point for the whole tree, because detekt's typed tasks are per module
+// and per variant. Same list the modules' `check` tasks are wired from.
+tasks.register('detektAll') {
+    group = 'verification'
+    description = 'Runs detekt with type resolution over :library and :sample.'
+    dependsOn typedDetektTasks
 }
-// tasks.getByPath(':app:preBuild').dependsOn installGitHook
+
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
+}
