@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>VarCouldBeVal:CurrencyEditTextTest.kt$CurrencyEditTextTest$// Alternative getting context: private val context: Context = ApplicationProvider.getApplicationContext() private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext</ID>
+    <ID>VarCouldBeVal:CurrencyMaterialEditTextTest.kt$CurrencyMaterialEditTextTest$private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext</ID>
+  </CurrentIssues>
+</SmellBaseline>

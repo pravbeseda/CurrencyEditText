@@ -1,0 +1,27 @@
+#!/bin/sh
+# Formatting is not a matter of taste here (see CLAUDE.md): spotless owns it and
+# spotlessCheck is a blocking step in CI. A few seconds now, or a red PR later.
+#
+# detekt is deliberately not run: it needs type resolution, which means a full
+# compile of both modules — minutes, on every commit. CI is the right place for
+# it, and `./gradlew detektAll` the right place before opening the PR.
+#
+# Intentional bypass: git commit --no-verify
+
+# Warn, do not block: skipping a test has to be a visible act rather than an
+# unnoticed one, but a legitimate main-only change (a rename, a comment) must
+# not need --no-verify to get through.
+changed=$(git diff --cached --name-only --diff-filter=ACMR)
+case "$changed" in
+    *library/src/main/*)
+        case "$changed" in
+            *library/src/test/*) ;;
+            *)
+                echo 'warning: library/src/main changed without a change under library/src/test.'
+                echo '         Tests are written first (CLAUDE.md). If that is deliberate, say so in the PR.'
+                ;;
+        esac
+        ;;
+esac
+
+exec ./gradlew spotlessCheck

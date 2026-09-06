@@ -1,0 +1,24 @@
+# Overrides on top of detekt's default config (`buildUponDefaultConfig = true`),
+# so only the deviations live here. The full default set is at
+# https://github.com/detekt/detekt/blob/v1.23.8/detekt-core/src/main/resources/default-detekt-config.yml
+# The default `build.maxIssues: 0` is kept: with a baseline in place, any finding
+# that is not already frozen must fail the build.
+
+style:
+  MaxLineLength:
+    # ktlint owns line length, through Spotless. Two tools with two different
+    # limits would contradict each other on the same line — detekt's default of
+    # 120 already disagrees with the 122-character line Spotless accepts today.
+    active: false
+  ForbiddenComment:
+    # Only the reason text deviates from the default: a marker with no ticket is
+    # a comment that nobody will ever come back to. The three values are the
+    # default's own, restated because a list-valued key is replaced rather than
+    # merged — dropping one here would quietly stop forbidding it.
+    comments:
+      - reason: 'Reference an issue instead, so the debt is tracked outside the code.'
+        value: 'TODO:'
+      - reason: 'Reference an issue instead, so the debt is tracked outside the code.'
+        value: 'FIXME:'
+      - reason: 'Reference an issue instead, so the debt is tracked outside the code.'
+        value: 'STOPSHIP:'

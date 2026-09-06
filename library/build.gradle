@@ -1,6 +1,9 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.vanniktech.maven.publish'
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.maven.publish)
+    alias(libs.plugins.kover)
+}
 
 android {
     namespace 'ru.pravbeseda.currencyedittext'
@@ -37,20 +40,58 @@ kotlin {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation libs.androidx.appcompat
 
-    api 'com.google.android.material:material:1.9.0'
+    api libs.material
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'androidx.test:core-ktx:1.5.0'
-    testImplementation 'androidx.test.ext:junit-ktx:1.1.5'
-    testImplementation 'org.mockito:mockito-core:5.20.0'
+    testImplementation libs.junit
+    testImplementation libs.androidx.test.core.ktx
+    testImplementation libs.androidx.test.ext.junit.ktx
+    testImplementation libs.mockito.core
 
-    androidTestImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test:core-ktx:1.5.0'
-    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
-    androidTestImplementation "androidx.test:runner:1.5.2"
-    androidTestImplementation "androidx.test:rules:1.5.0"
+    androidTestImplementation libs.junit
+    androidTestImplementation libs.androidx.test.core.ktx
+    androidTestImplementation libs.androidx.test.ext.junit.ktx
+    androidTestImplementation libs.androidx.test.runner
+    androidTestImplementation libs.androidx.test.rules
+}
+
+// Coverage is measured on :library only, and filtered by class. The two Views
+// cannot be reached from src/test — they need a real Android runtime — so an
+// unfiltered figure would report the share of View code in the module rather
+// than the quality of the tests, and would sink whenever a View grew. The
+// filter leaves the code the JVM tests actually exercise: the watcher and the
+// utilities. :sample is left out entirely; it is a demo with no tests.
+kover {
+    reports {
+        filters {
+            includes {
+                classes(
+                        'ru.pravbeseda.currencyedittext.watchers.*',
+                        'ru.pravbeseda.currencyedittext.util.*'
+                )
+            }
+        }
+        variant('debug') {
+            // Coverage lands in the build log of every `check`, so the number is
+            // visible without generating and opening a report.
+            log {
+                onCheck = true
+            }
+            verify {
+                onCheck = true
+                rule {
+                    // 80, against the 86% the filtered classes sit at today: the
+                    // floor has to leave room for a branch landing with its edge
+                    // cases covered a commit later, or it stops being a floor and
+                    // becomes a reason to argue with the build. It rises when the
+                    // margin turns out to be unused, never as a reaction to a red
+                    // run.
+                    minBound(80)
+                }
+            }
+        }
+    }
 }
 
 apply from: '../spotless.gradle'
