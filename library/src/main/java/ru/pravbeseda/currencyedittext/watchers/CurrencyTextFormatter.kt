@@ -67,7 +67,9 @@ internal class CurrencyTextFormatter(
         }
 
         // Replace single zero to inserted digit
-        if (oldText?.removePrefix(config.currencySymbol) == "0" && newPartOfText?.length == 1) {
+        if (oldText?.removePrefix(config.currencySymbol) == "0" &&
+            newPartOfText?.singleOrNull()?.isDigit() == true
+        ) {
             text = text.replaceFirst("0", "")
         }
 

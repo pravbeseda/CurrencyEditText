@@ -648,6 +648,31 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
+    fun `Issue #27 - typing a decimal separator over a single zero must not crash when no decimal places are allowed`() {
+        for (locale in locales) {
+            val currentEditTextContent = "${locale.currencySymbol}0"
+            val expectedText = "${locale.currencySymbol}0"
+            val expectedCursorPosition = expectedText.length
+
+            val (editText, editable, watcher) = setupTestVariables(locale, 0)
+            `when`(editable.toString()).thenReturn("$currentEditTextContent${locale.decimalSeparator}")
+
+            val start = currentEditTextContent.length
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                start,
+                0,
+                1,
+            )
+            watcher.onTextChanged(editable, start, 0, 1)
+            watcher.afterTextChanged(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
+        }
+    }
+
+    @Test
     fun `should remove any non digit character`() {
         for (locale in locales) {
             val currentEditTextContent = "- 10006metres"
