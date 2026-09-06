@@ -1,4 +1,0 @@
-ext.versions = [
-        publishVersion    : '1.0.3',
-        publishVersionCode: 19,
-]

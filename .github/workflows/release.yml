@@ -16,6 +16,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
 
@@ -23,6 +27,13 @@ jobs:
     if: github.repository == 'pravbeseda/CurrencyEditText'
 
     steps:
+      # workflow_dispatch can be started from any ref, and the job pushes to main.
+      - name: Refuse to release from a branch other than main
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo 'Releases are cut from main only.' >&2
+          exit 1
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -41,8 +52,17 @@ jobs:
       - name: Build and run tests
         run: ./gradlew build
 
-      # Publishing to Maven Central is irreversible, so it runs before anything
-      # is pushed: a failure here leaves the repository untouched.
+      # Publishing to Maven Central is irreversible, so it runs before anything is pushed: a
+      # failure here leaves the repository untouched. The check keeps that order safe — if main
+      # moved meanwhile, the push after publishing would be rejected and the version burnt.
+      - name: Check that main has not moved
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$GITHUB_SHA" ]; then
+            echo 'main moved since this run started; re-run the release.' >&2
+            exit 1
+          fi
+
       - name: Publish to Maven Central
         run: ./gradlew publishAndReleaseToMavenCentral --no-daemon --no-parallel
         env:
@@ -57,9 +77,9 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -m "chore: release $VERSION" gradle.properties dependencies.gradle
+          git commit -m "chore: release $VERSION" gradle.properties
           git tag "$VERSION"
-          git push origin HEAD:main "$VERSION"
+          git push --atomic origin HEAD:main "$VERSION"
 
       - name: Create GitHub release
         env:

@@ -84,10 +84,14 @@ Add a failing test to that suite before changing formatting behaviour.
 
 Releases are cut by the `Release` workflow (`.github/workflows/release.yml`), started by hand from
 the Actions tab with a `patch` / `minor` / `major` choice. It runs `scripts/bump-version.sh`, which
-raises the version in `dependencies.gradle` (`publishVersion`, `publishVersionCode`) and
-`gradle.properties` (`VERSION_NAME`); then builds and tests, publishes to Maven Central, pushes the
-bump commit and the tag to `main`, and creates a GitHub release with auto-generated notes. Tags
-carry no `v` prefix (`1.0.4`), matching every tag since 0.4.0.
+raises `VERSION_NAME` and `VERSION_CODE` in `gradle.properties` — the single place a version lives,
+read by the publish plugin and by `sample/build.gradle` alike; then builds and tests, publishes to
+Maven Central, pushes the bump commit and the tag to `main`, and creates a GitHub release with
+auto-generated notes. Tags carry no `v` prefix (`1.0.4`), matching every tag since 0.4.0.
+
+The workflow refuses to run from any branch but `main`, and checks that `main` has not moved before
+it publishes: it pushes only after the irreversible step, so a stale checkout would otherwise burn a
+version number.
 
 Publishing goes through the Central Portal (`SONATYPE_HOST=CENTRAL_PORTAL`) and is irreversible, so
 it runs before anything is pushed — a failure there leaves the repository untouched. Credentials
