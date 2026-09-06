@@ -2,8 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>CyclomaticComplexMethod:CurrencyInputWatcher.kt$CurrencyInputWatcher$override fun onTextModified( newPartOfText: String?, newText: String?, oldText: String?, editPosition: Int?, )</ID>
-    <ID>LongMethod:CurrencyInputWatcher.kt$CurrencyInputWatcher$override fun onTextModified( newPartOfText: String?, newText: String?, oldText: String?, editPosition: Int?, )</ID>
     <ID>SwallowedException:Utils.kt$e: IllformedLocaleException</ID>
     <ID>TooManyFunctions:CurrencyEditText.kt$CurrencyEditText : AppCompatEditText</ID>
     <ID>TooManyFunctions:CurrencyMaterialEditText.kt$CurrencyMaterialEditText : TextInputLayout</ID>
@@ -16,7 +14,6 @@
     <ID>UnsafeCallOnNullableType:EasyTextWatcher.kt$EasyTextWatcher$modifiedText!!</ID>
     <ID>UseOrEmpty:CurrencyEditText.kt$CurrencyEditText$(validator?.let { it1 -&gt; it1(checkedValue) }) ?: ""</ID>
     <ID>UseOrEmpty:CurrencyEditText.kt$CurrencyEditText$str ?: ""</ID>
-    <ID>UseOrEmpty:CurrencyInputWatcher.kt$CurrencyInputWatcher$newText ?: ""</ID>
     <ID>UseRequire:CurrencyInputWatcher.kt$CurrencyInputWatcher$throw IllegalArgumentException( "Maximum number of Decimal Places must be a positive integer", )</ID>
     <ID>UtilityClassWithPublicConstructor:Routines.kt$Routines</ID>
   </CurrentIssues>
