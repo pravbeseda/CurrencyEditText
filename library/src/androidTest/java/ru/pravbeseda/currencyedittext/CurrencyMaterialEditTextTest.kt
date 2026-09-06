@@ -29,7 +29,7 @@ class CurrencyMaterialEditTextTest {
 
     @Before
     fun init() {
-        context.setTheme(R.style.Theme_AppCompat)
+        context.setTheme(com.google.android.material.R.style.Theme_MaterialComponents_Light)
         currencyEditText = CurrencyMaterialEditText(context, null)
     }
 

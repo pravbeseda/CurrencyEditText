@@ -17,4 +17,4 @@ jobs:
           java-version: '17'
 
       - name: Build and Run Tests with Gradle
-        run: ./gradlew build
+        run: ./gradlew build :library:compileDebugAndroidTestSources
