@@ -66,9 +66,11 @@ internal class CurrencyTextFormatter(
             text = text.replaceRange(position - 1, position, decimalSeparator.toString())
         }
 
-        // Replace single zero to inserted digit
+        // Replace the single zero with what was typed over it, unless that is a decimal separator:
+        // then the zero is the integer part of the number being entered
         if (oldText?.removePrefix(config.currencySymbol) == "0" &&
-            newPartOfText?.singleOrNull()?.isDigit() == true
+            newPartOfText?.length == 1 &&
+            !separatorTyped
         ) {
             text = text.replaceFirst("0", "")
         }

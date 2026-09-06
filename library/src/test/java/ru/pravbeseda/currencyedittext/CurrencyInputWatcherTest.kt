@@ -673,6 +673,31 @@ class CurrencyInputWatcherTest {
     }
 
     @Test
+    fun `Issue #27 - typing a minus over a single zero must replace the zero`() {
+        for (locale in locales) {
+            val currentEditTextContent = "${locale.currencySymbol}0"
+            val expectedText = "${locale.currencySymbol}-"
+            val expectedCursorPosition = expectedText.length
+
+            val (editText, editable, watcher) = setupTestVariables(locale, 2, true)
+            `when`(editable.toString()).thenReturn("$currentEditTextContent-")
+
+            val start = currentEditTextContent.length
+            watcher.beforeTextChanged(
+                currentEditTextContent,
+                start,
+                0,
+                1,
+            )
+            watcher.onTextChanged(editable, start, 0, 1)
+            watcher.afterTextChanged(editable)
+
+            verify(editText, times(1)).setText(expectedText)
+            verify(editText).setSelection(expectedCursorPosition)
+        }
+    }
+
+    @Test
     fun `should remove any non digit character`() {
         for (locale in locales) {
             val currentEditTextContent = "- 10006metres"
