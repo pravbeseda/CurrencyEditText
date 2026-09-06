@@ -156,19 +156,6 @@ class CurrencyInputWatcher(
             fractionalPart = fractionalPart.substring(0, config.maxNumberOfDecimalPlaces)
         }
 
-        // Remove leading zeros
-        // removed 23.06.2024 (
-        // was covered with shouldDeleteLeadZeros test
-        // Looks like not convenient
-//        integerPart = integerPart.dropWhile {
-//            if (it == '0') {
-//                cursorPosition--
-//                true
-//            } else {
-//                false
-//            }
-//        }
-
         if (integerPart.isEmpty() && (newPartOfText == "0" || fractionalPart.isNotEmpty())) {
             integerPart = "0"
             cursorPosition++
