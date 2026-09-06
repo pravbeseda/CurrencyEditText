@@ -120,10 +120,6 @@ public final class ru/pravbeseda/currencyedittext/model/CurrencyInputWatcherConf
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class ru/pravbeseda/currencyedittext/util/CurrencyRounderKt {
-	public static final fun truncateNumberToMaxDecimalDigits (Ljava/lang/String;IC)Ljava/lang/String;
-}
-
 public final class ru/pravbeseda/currencyedittext/util/Routines {
 	public static final field Companion Lru/pravbeseda/currencyedittext/util/Routines$Companion;
 	public fun <init> ()V
