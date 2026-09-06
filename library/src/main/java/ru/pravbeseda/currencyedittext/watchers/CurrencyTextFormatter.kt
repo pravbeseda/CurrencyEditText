@@ -66,8 +66,12 @@ internal class CurrencyTextFormatter(
             text = text.replaceRange(position - 1, position, decimalSeparator.toString())
         }
 
-        // Replace single zero to inserted digit
-        if (oldText?.removePrefix(config.currencySymbol) == "0" && newPartOfText?.length == 1) {
+        // Replace the single zero with what was typed over it, unless that is a decimal separator:
+        // then the zero is the integer part of the number being entered
+        if (oldText?.removePrefix(config.currencySymbol) == "0" &&
+            newPartOfText?.length == 1 &&
+            !separatorTyped
+        ) {
             text = text.replaceFirst("0", "")
         }
 
@@ -103,7 +107,7 @@ internal class CurrencyTextFormatter(
             position -= numberOfMinus
         }
 
-        return SignedText(sign, TextWithCursor(input.text.replace("-", ""), position))
+        return SignedText(sign, TextWithCursor(input.text.replace("-", ""), maxOf(0, position)))
     }
 
     /** Puts the currency symbol back when the user has deleted part of it. */
