@@ -106,10 +106,10 @@ jobs:
         # so an accidental signature change has to be caught before the merge,
         # not by the people whose build stops compiling. library/api/library.api
         # is the dump of the public API; a mismatch prints the diff. An intended
-        # change is made reviewable by running `./gradlew :library:apiDump` and
-        # committing the result.
+        # change is made reviewable by running `./gradlew :library:updateKotlinAbi`
+        # and committing the result.
         if: always()
-        run: ./gradlew :library:apiCheck --stacktrace
+        run: ./gradlew :library:checkKotlinAbi --stacktrace
 
       - name: Assemble
         # The instrumented tests are compiled but not run: there is no emulator

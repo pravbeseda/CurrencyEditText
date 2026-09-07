@@ -12,11 +12,6 @@ kotlin = "2.4.10"
 mavenPublish = "0.34.0"
 
 # --- quality gates ---------------------------------------------------------
-# The standalone plugin rather than the Kotlin Gradle Plugin's own
-# `abiValidation {}`. Kotlin is now new enough for the built-in one, so this
-# entry is on its way out: issue #21 replaces it in its own change, where the
-# dump's format diff can be reviewed on its own.
-binaryCompatibilityValidator = "0.18.2"
 # 1.23.8 is the last stable line; detekt 2.x has been in alpha since 2025. See
 # the note in the root build script for how its lag behind our Kotlin version is
 # checked rather than tolerated.
@@ -56,7 +51,6 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
