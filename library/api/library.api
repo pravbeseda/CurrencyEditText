@@ -8,11 +8,15 @@ public class ru/pravbeseda/currencyedittext/CurrencyEditText : androidx/appcompa
 	public final fun getNegativeValueAllow ()Z
 	public final fun getValue ()Ljava/math/BigDecimal;
 	public final fun getValue0 ()Ljava/math/BigDecimal;
+	public final fun isCalculatorEnabled ()Z
 	public final fun isValid ()Z
 	public final fun isValidState ()Z
 	protected fun onFocusChanged (ZILandroid/graphics/Rect;)V
 	protected fun onSelectionChanged (II)V
+	public fun onTouchEvent (Landroid/view/MotionEvent;)Z
 	public final fun onValueChanged (Lkotlin/jvm/functions/Function3;)V
+	public fun performClick ()Z
+	public final fun setCalculatorEnabled (Z)V
 	public final fun setCurrencySymbol (Ljava/lang/String;Z)V
 	public static synthetic fun setCurrencySymbol$default (Lru/pravbeseda/currencyedittext/CurrencyEditText;Ljava/lang/String;ZILjava/lang/Object;)V
 	public final fun setDecimalZerosPadding (Z)V
@@ -53,9 +57,11 @@ public class ru/pravbeseda/currencyedittext/CurrencyMaterialEditText : com/googl
 	public final fun getText ()Landroid/text/Editable;
 	public final fun getValue ()Ljava/math/BigDecimal;
 	public final fun getValue0 ()Ljava/math/BigDecimal;
+	public final fun isCalculatorEnabled ()Z
 	public final fun isValid ()Z
 	public final fun isValidState ()Z
 	public final fun onValueChanged (Lkotlin/jvm/functions/Function3;)V
+	public final fun setCalculatorEnabled (Z)V
 	public final fun setDecimalZerosPadding (Z)V
 	public final fun setEmptyStringForZero (Z)V
 	public final fun setLocale (Ljava/lang/String;)V

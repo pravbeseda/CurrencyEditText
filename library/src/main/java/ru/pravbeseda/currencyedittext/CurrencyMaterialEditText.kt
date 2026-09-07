@@ -50,6 +50,7 @@ open class CurrencyMaterialEditText(
         get() = isValidState()
 
     private val editText = CurrencyEditText(context, null)
+    private var calculatorEnabled: Boolean = false
 
     init {
         var localeTag: String?
@@ -61,6 +62,7 @@ open class CurrencyMaterialEditText(
         var maxDecimalPlaces: Int
         var decimalZerosPadding: Boolean
         var emptyStringForZero: Boolean
+        var enableCalculator: Boolean
         context.theme
             .obtainStyledAttributes(
                 attrs,
@@ -87,6 +89,8 @@ open class CurrencyMaterialEditText(
                     getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
                 emptyStringForZero =
                     getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
+                enableCalculator =
+                    getBoolean(R.styleable.CurrencyMaterialEditText_calculatorEnabled, false)
             }
         if (!localeTag.isNullOrBlank()) {
             setLocale(getLocaleFromTag(localeTag!!))
@@ -108,6 +112,8 @@ open class CurrencyMaterialEditText(
         setDecimalZerosPadding(decimalZerosPadding)
         setEmptyStringForZero(emptyStringForZero)
         this.addView(editText)
+        // Only when asked for: the end icon belongs to the host until the calculator claims it.
+        if (enableCalculator) setCalculatorEnabled(true)
     }
 
     fun setValue(value: BigDecimal) {
@@ -161,6 +167,25 @@ open class CurrencyMaterialEditText(
     fun setEmptyStringForZero(newValue: Boolean) {
         editText.setEmptyStringForZero(newValue)
     }
+
+    /**
+     * Shows or hides the calculator button. Unlike [CurrencyEditText], which draws it as a
+     * compound drawable, the layout renders it as its own end icon and anchors the panel under the
+     * whole layout, error text included.
+     */
+    fun setCalculatorEnabled(enabled: Boolean) {
+        calculatorEnabled = enabled
+        if (enabled) {
+            endIconMode = END_ICON_CUSTOM
+            setEndIconDrawable(R.drawable.currency_edit_text_ic_calculator)
+            setEndIconContentDescription(R.string.currency_edit_text_calculator)
+            setEndIconOnClickListener { editText.showCalculator(this) }
+        } else {
+            endIconMode = END_ICON_NONE
+        }
+    }
+
+    fun isCalculatorEnabled(): Boolean = calculatorEnabled
 
     fun onValueChanged(action: (BigDecimal?, state: CurrencyEditText.Companion.State, textError: String) -> Unit) {
         editText.onValueChanged(action)

@@ -56,6 +56,7 @@
             app:maxNumberOfDecimalPlaces="2"
             app:decimalZerosPadding="false"
             app:localeTag="da-DK"
+            app:calculatorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -92,6 +93,7 @@
             android:theme="@style/CustomThemeEditText"
             app:negativeValueAllow="true"
             app:errorEnabled="true"
+            app:calculatorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button" />

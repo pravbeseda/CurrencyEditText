@@ -17,6 +17,7 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import com.google.android.material.textfield.TextInputLayout
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -31,6 +32,28 @@ class CurrencyMaterialEditTextTest {
     fun init() {
         context.setTheme(com.google.android.material.R.style.Theme_MaterialComponents_Light)
         currencyEditText = CurrencyMaterialEditText(context, null)
+    }
+
+    @Test
+    fun calculatorIsOffByDefault() {
+        Assert.assertFalse(currencyEditText.isCalculatorEnabled())
+        Assert.assertEquals(TextInputLayout.END_ICON_NONE, currencyEditText.endIconMode)
+    }
+
+    @Test
+    fun enablingTheCalculatorShowsTheEndIcon() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCalculatorEnabled(true)
+        }
+        Assert.assertTrue(currencyEditText.isCalculatorEnabled())
+        Assert.assertEquals(TextInputLayout.END_ICON_CUSTOM, currencyEditText.endIconMode)
+        Assert.assertNotNull(currencyEditText.endIconDrawable)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCalculatorEnabled(false)
+        }
+        Assert.assertFalse(currencyEditText.isCalculatorEnabled())
+        Assert.assertEquals(TextInputLayout.END_ICON_NONE, currencyEditText.endIconMode)
     }
 
     @Test

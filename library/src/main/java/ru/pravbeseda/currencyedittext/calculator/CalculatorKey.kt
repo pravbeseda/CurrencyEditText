@@ -43,3 +43,16 @@ internal enum class CalculatorKey(
     BACKSPACE('⌫'),
     CLEAR('C'),
 }
+
+/** Operators the panel prints differently from the ASCII the expression is built out of. */
+private val PRINTED_OPERATORS = mapOf('*' to '\u00d7', '/' to '\u00f7', '-' to '\u2212')
+
+/** The character the user reads in place of [this]: an operator sign, or their decimal separator. */
+internal fun Char.printed(decimalSeparator: Char): Char =
+    when {
+        this == '.' -> decimalSeparator
+        else -> PRINTED_OPERATORS[this] ?: this
+    }
+
+/** The label the panel draws on the key's button. */
+internal fun CalculatorKey.label(decimalSeparator: Char): String = symbol.printed(decimalSeparator).toString()

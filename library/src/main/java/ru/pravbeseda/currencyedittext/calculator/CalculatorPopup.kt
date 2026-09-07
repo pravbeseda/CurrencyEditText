@@ -1,0 +1,181 @@
+/*
+ * Copyright (c) 2022-2023 Alexander Ivanov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package ru.pravbeseda.currencyedittext.calculator
+
+import android.graphics.Rect
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.PopupWindow
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import ru.pravbeseda.currencyedittext.R
+import java.math.BigDecimal
+
+/** Which key each button of the panel presses. The button's label comes from the key itself. */
+private val KEY_BUTTONS =
+    mapOf(
+        R.id.currency_calculator_key_0 to CalculatorKey.DIGIT_0,
+        R.id.currency_calculator_key_1 to CalculatorKey.DIGIT_1,
+        R.id.currency_calculator_key_2 to CalculatorKey.DIGIT_2,
+        R.id.currency_calculator_key_3 to CalculatorKey.DIGIT_3,
+        R.id.currency_calculator_key_4 to CalculatorKey.DIGIT_4,
+        R.id.currency_calculator_key_5 to CalculatorKey.DIGIT_5,
+        R.id.currency_calculator_key_6 to CalculatorKey.DIGIT_6,
+        R.id.currency_calculator_key_7 to CalculatorKey.DIGIT_7,
+        R.id.currency_calculator_key_8 to CalculatorKey.DIGIT_8,
+        R.id.currency_calculator_key_9 to CalculatorKey.DIGIT_9,
+        R.id.currency_calculator_key_decimal to CalculatorKey.DECIMAL,
+        R.id.currency_calculator_key_plus to CalculatorKey.PLUS,
+        R.id.currency_calculator_key_minus to CalculatorKey.MINUS,
+        R.id.currency_calculator_key_multiply to CalculatorKey.MULTIPLY,
+        R.id.currency_calculator_key_divide to CalculatorKey.DIVIDE,
+        R.id.currency_calculator_key_open_paren to CalculatorKey.OPEN_PAREN,
+        R.id.currency_calculator_key_close_paren to CalculatorKey.CLOSE_PAREN,
+        R.id.currency_calculator_key_sign to CalculatorKey.SIGN,
+        R.id.currency_calculator_key_backspace to CalculatorKey.BACKSPACE,
+        R.id.currency_calculator_key_clear to CalculatorKey.CLEAR,
+    )
+
+private const val ERROR_COLOR = 0xFFB00020.toInt()
+
+private const val EQUALS_LABEL = "="
+
+/**
+ * The calculator panel: the only class here that touches Android. It inflates the keys, hands each
+ * press to [CalculatorState] and, on `=`, gives the value back to the field through [onAccept].
+ *
+ * An expression that does not evaluate — incomplete, dividing by zero, or negative where the field
+ * takes no negative values — leaves the panel open in an error state and writes nothing.
+ */
+internal class CalculatorPopup(
+    private val anchor: View,
+    private val decimalSeparator: Char,
+    private val scale: Int,
+    private val negativeValueAllow: Boolean,
+    initialValue: BigDecimal,
+    private val onAccept: (BigDecimal) -> Unit,
+) {
+    private var state = CalculatorState.seededWith(initialValue)
+    private var defaultTextColor: Int = 0
+    private lateinit var expressionView: TextView
+    private lateinit var window: PopupWindow
+
+    fun show() {
+        val content =
+            LayoutInflater
+                .from(anchor.context)
+                .inflate(R.layout.currency_calculator_panel, FrameLayout(anchor.context), false)
+        bindKeys(content)
+        expressionView = content.findViewById(R.id.currency_calculator_expression)
+        defaultTextColor = expressionView.textColors.defaultColor
+        render(failed = false)
+        window =
+            PopupWindow(content, panelWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
+                setBackgroundDrawable(
+                    AppCompatResources.getDrawable(
+                        anchor.context,
+                        R.drawable.currency_calculator_panel_background,
+                    ),
+                )
+                isOutsideTouchable = true
+                elevation = anchor.resources.displayMetrics.density * POPUP_ELEVATION_DP
+            }
+        showAnchored(content)
+    }
+
+    /**
+     * Hangs the panel on whichever side of the field has room for it, and caps its height to that
+     * room where neither side is tall enough — a landscape screen, typically. The panel scrolls, so
+     * a capped one is cramped rather than unusable, while an uncapped one would be clipped to the
+     * space below the field and could show no keys at all.
+     */
+    private fun showAnchored(content: View) {
+        val visible = Rect().also { anchor.getWindowVisibleDisplayFrame(it) }
+        val anchorTop = IntArray(2).also { anchor.getLocationOnScreen(it) }[1]
+        val below = visible.bottom - (anchorTop + anchor.height)
+        val above = anchorTop - visible.top
+        val wanted = measureHeight(content)
+
+        val dropDown = wanted <= below || below >= above
+        val room = if (dropDown) below else above
+        window.height = if (wanted <= room) ViewGroup.LayoutParams.WRAP_CONTENT else room
+        if (dropDown) {
+            window.showAsDropDown(anchor)
+        } else {
+            window.showAsDropDown(anchor, 0, -(anchor.height + minOf(wanted, room)))
+        }
+    }
+
+    private fun measureHeight(content: View): Int {
+        val width = panelWidth()
+        val widthSpec =
+            if (width > 0) {
+                View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+            } else {
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            }
+        content.measure(widthSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+        return content.measuredHeight
+    }
+
+    /** The panel is as wide as the field it belongs to, unless that field is not laid out yet. */
+    private fun panelWidth(): Int = if (anchor.width > 0) anchor.width else ViewGroup.LayoutParams.WRAP_CONTENT
+
+    private fun bindKeys(content: View) {
+        KEY_BUTTONS.forEach { (id, key) ->
+            content.findViewById<Button>(id).apply {
+                text = key.label(decimalSeparator)
+                // Kept visible but dead, so the panel does not change shape between fields.
+                isEnabled = key != CalculatorKey.SIGN || negativeValueAllow
+                setOnClickListener { press(key) }
+            }
+        }
+        content.findViewById<Button>(R.id.currency_calculator_key_equals).apply {
+            text = EQUALS_LABEL
+            setOnClickListener { accept() }
+        }
+    }
+
+    private fun press(key: CalculatorKey) {
+        state = state.press(key)
+        render(failed = false)
+    }
+
+    private fun accept() {
+        when (val result = state.result(scale, negativeValueAllow)) {
+            is EvalResult.Success -> {
+                window.dismiss()
+                onAccept(result.value)
+            }
+
+            EvalResult.Failure -> {
+                render(failed = true)
+            }
+        }
+    }
+
+    private fun render(failed: Boolean) {
+        expressionView.text = state.display(decimalSeparator)
+        expressionView.setTextColor(if (failed) ERROR_COLOR else defaultTextColor)
+    }
+
+    private companion object {
+        const val POPUP_ELEVATION_DP = 8f
+    }
+}

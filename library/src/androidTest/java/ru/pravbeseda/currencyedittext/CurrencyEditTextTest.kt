@@ -17,6 +17,7 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -66,6 +67,23 @@ class CurrencyEditTextTest {
         valuesAssertEquals()
         currencyEditText.setSeparators('^', '_')
         valuesAssertEquals()
+    }
+
+    @Test
+    fun calculatorIsOffByDefault() {
+        Assert.assertFalse(currencyEditText.isCalculatorEnabled())
+        Assert.assertNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+    }
+
+    @Test
+    fun enablingTheCalculatorShowsTheButton() {
+        currencyEditText.setCalculatorEnabled(true)
+        Assert.assertTrue(currencyEditText.isCalculatorEnabled())
+        Assert.assertNotNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+
+        currencyEditText.setCalculatorEnabled(false)
+        Assert.assertFalse(currencyEditText.isCalculatorEnabled())
+        Assert.assertNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
     }
 
     @Test
@@ -135,5 +153,10 @@ class CurrencyEditTextTest {
     ) {
         setText(text)
         assertEquals(expected, currencyEditText.text.toString())
+    }
+
+    private companion object {
+        /** Index of the end drawable in `compoundDrawablesRelative`. */
+        const val END_DRAWABLE = 2
     }
 }
