@@ -28,6 +28,9 @@ private val OPERATOR_KEYS =
 /** Characters after which an operand — and therefore a unary minus — may start. */
 private const val OPERAND_MAY_FOLLOW = "+-*/("
 
+/** The binary operators, and therefore also the characters a pending sign can be written among. */
+private const val OPERATORS = "+-*/"
+
 private fun Char.isOperandChar(): Boolean = isDigit() || this == '.'
 
 private fun Char?.mayPrecedeOperand(): Boolean = this != null && this in OPERAND_MAY_FOLLOW
@@ -77,21 +80,24 @@ internal data class CalculatorState(
             else -> CalculatorState("$expression.")
         }
 
-    private fun appendOperator(operator: Char): CalculatorState =
-        when {
-            // A minus may open an expression or a parenthesis; the others need a left operand.
-            expression.isEmpty() || lastChar == '(' -> {
-                if (operator == '-') CalculatorState(expression + operator) else this
-            }
-
-            lastChar.mayPrecedeOperand() -> {
-                CalculatorState(expression.dropLast(1) + operator)
+    /**
+     * Replaces everything still pending at the end — an operator, and the sign `flipSign` may have
+     * written after it — so that `1*-` plus `+` is `1+` and never `1*+`. Where no operand has
+     * started yet, only a minus is legal, and any other operator leaves the expression alone.
+     */
+    private fun appendOperator(operator: Char): CalculatorState {
+        val pending = expression.takeLastWhile { it in OPERATORS }
+        val settled = expression.dropLast(pending.length)
+        return when {
+            settled.isEmpty() || settled.last() == '(' -> {
+                if (operator == '-') CalculatorState("$settled-") else this
             }
 
             else -> {
-                CalculatorState(expression + operator)
+                CalculatorState(settled + operator)
             }
         }
+    }
 
     private fun appendOpeningParenthesis(): CalculatorState =
         if (expression.isEmpty() || lastChar.mayPrecedeOperand()) {

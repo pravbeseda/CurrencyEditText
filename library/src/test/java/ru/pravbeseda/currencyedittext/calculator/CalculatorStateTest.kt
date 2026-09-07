@@ -51,6 +51,18 @@ class CalculatorStateTest {
     }
 
     @Test
+    fun `an operator replaces a pending sign as well as the operator carrying it`() {
+        assertEquals("1*", press(DIGIT_1, MULTIPLY, SIGN, MULTIPLY))
+        assertEquals("1+", press(DIGIT_1, MULTIPLY, SIGN, PLUS))
+    }
+
+    @Test
+    fun `an operator cannot turn a leading or bracketed minus into another sign`() {
+        assertEquals("-", press(MINUS, PLUS))
+        assertEquals("(-", press(OPEN_PAREN, MINUS, PLUS))
+    }
+
+    @Test
     fun `a leading minus starts a negative operand, other operators are ignored`() {
         assertEquals("-", press(MINUS))
         assertEquals("", press(PLUS))

@@ -56,6 +56,11 @@ class ExpressionEvaluatorTest {
     }
 
     @Test
+    fun `multiplication is exact, however many digits the operands carry`() {
+        assertEquals(success("89999999999999991.00"), evaluate("9999999999999999*9", scale = 2))
+    }
+
+    @Test
     fun `intermediate division keeps precision the final scale would lose`() {
         assertEquals(success("100.00"), evaluate("100/3*3", scale = 2))
     }

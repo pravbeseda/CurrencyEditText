@@ -48,9 +48,11 @@ internal object ExpressionEvaluator {
 }
 
 /**
- * Significant digits kept between operations. Wider than any field's scale on purpose, so that a
- * division in the middle of an expression does not round away digits a later multiplication needs
- * back: `100 / 3 * 3` has to end at 100.00, not 99.99.
+ * Significant digits a division keeps. Addition, subtraction and multiplication are exact and take
+ * no context at all; only division has to be told when to stop, or `10 / 3` never terminates. The
+ * figure is wider than any field's scale on purpose, so that a division in the middle of an
+ * expression does not round away digits a later multiplication needs back: `100 / 3 * 3` has to
+ * end at 100.00, not 99.99.
  */
 private const val INTERMEDIATE_PRECISION = 16
 
@@ -99,7 +101,7 @@ private class Parser(
             left =
                 when {
                     right == null -> null
-                    times -> left.multiply(right, INTERMEDIATE_MATH)
+                    times -> left.multiply(right)
                     right.signum() == 0 -> null
                     else -> left.divide(right, INTERMEDIATE_MATH)
                 }
