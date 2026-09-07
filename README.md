@@ -163,6 +163,10 @@ expression that does not evaluate, divides by zero, or comes out negative in a f
 `negativeValueAllow="false"` leaves the field untouched. The system keyboard is not replaced: the
 field still takes typed input as before.
 
+On `CurrencyEditText` the button is drawn as a compound drawable and opens on a tap on the icon, so
+it is not a separate node for a screen reader. Where that matters, use `CurrencyMaterialEditText`:
+there the button is a real end icon with a content description.
+
 ## Localization
 
 The library supports localization. You can set the locale in the layout file:

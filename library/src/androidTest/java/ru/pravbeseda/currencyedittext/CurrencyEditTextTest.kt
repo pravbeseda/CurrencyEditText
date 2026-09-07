@@ -16,6 +16,10 @@
 package ru.pravbeseda.currencyedittext
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.SystemClock
+import android.view.MotionEvent
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -87,6 +91,51 @@ class CurrencyEditTextTest {
     }
 
     @Test
+    fun theHostsOwnDrawablesSurviveTheCalculatorButton() {
+        val hostIcon = ColorDrawable(Color.RED)
+        currencyEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(hostIcon, null, null, null)
+
+        currencyEditText.setCalculatorEnabled(true)
+        Assert.assertSame(hostIcon, currencyEditText.compoundDrawablesRelative[START_DRAWABLE])
+
+        currencyEditText.setCalculatorEnabled(false)
+        Assert.assertSame(hostIcon, currencyEditText.compoundDrawablesRelative[START_DRAWABLE])
+        Assert.assertNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+    }
+
+    @Test
+    fun disablingACalculatorTheFieldNeverHadLeavesTheHostsEndDrawableAlone() {
+        val hostIcon = ColorDrawable(Color.RED)
+        currencyEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, hostIcon, null)
+
+        currencyEditText.setCalculatorEnabled(false)
+
+        Assert.assertSame(hostIcon, currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+    }
+
+    @Test
+    fun onlyAnEnabledFieldWithTheCalculatorOnOpensThePanel() {
+        currencyEditText.layout(0, 0, 200, 60)
+        currencyEditText.setCalculatorEnabled(true)
+        val onTheIcon = tapAt(currencyEditText.width.toFloat())
+
+        Assert.assertTrue(currencyEditText.opensCalculatorOn(onTheIcon))
+
+        currencyEditText.isEnabled = false
+        Assert.assertFalse(currencyEditText.opensCalculatorOn(onTheIcon))
+
+        currencyEditText.isEnabled = true
+        currencyEditText.setCalculatorEnabled(false)
+        currencyEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            null,
+            ColorDrawable(Color.RED).apply { setBounds(0, 0, 24, 24) },
+            null,
+        )
+        Assert.assertFalse(currencyEditText.opensCalculatorOn(onTheIcon))
+    }
+
+    @Test
     fun testSetText() {
         currencyEditText.setSeparators(' ', '.')
         setText("1 000.45")
@@ -155,8 +204,14 @@ class CurrencyEditTextTest {
         assertEquals(expected, currencyEditText.text.toString())
     }
 
+    private fun tapAt(x: Float): MotionEvent {
+        val now = SystemClock.uptimeMillis()
+        return MotionEvent.obtain(now, now, MotionEvent.ACTION_UP, x, 0f, 0)
+    }
+
     private companion object {
-        /** Index of the end drawable in `compoundDrawablesRelative`. */
+        /** Indices in `compoundDrawablesRelative`. */
+        const val START_DRAWABLE = 0
         const val END_DRAWABLE = 2
     }
 }

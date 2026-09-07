@@ -99,26 +99,23 @@ internal class CalculatorPopup(
         showAnchored(content)
     }
 
-    /**
-     * Hangs the panel on whichever side of the field has room for it, and caps its height to that
-     * room where neither side is tall enough — a landscape screen, typically. The panel scrolls, so
-     * a capped one is cramped rather than unusable, while an uncapped one would be clipped to the
-     * space below the field and could show no keys at all.
-     */
+    /** Measures the panel, asks [CalculatorPlacement] where it goes, and shows it there. */
     private fun showAnchored(content: View) {
         val visible = Rect().also { anchor.getWindowVisibleDisplayFrame(it) }
         val anchorTop = IntArray(2).also { anchor.getLocationOnScreen(it) }[1]
-        val below = visible.bottom - (anchorTop + anchor.height)
-        val above = anchorTop - visible.top
         val wanted = measureHeight(content)
+        val placement =
+            CalculatorPlacement.choose(
+                spaceBelow = visible.bottom - (anchorTop + anchor.height),
+                spaceAbove = anchorTop - visible.top,
+                wanted = wanted,
+            )
 
-        val dropDown = wanted <= below || below >= above
-        val room = if (dropDown) below else above
-        window.height = if (wanted <= room) ViewGroup.LayoutParams.WRAP_CONTENT else room
-        if (dropDown) {
-            window.showAsDropDown(anchor)
+        window.height = placement.height ?: ViewGroup.LayoutParams.WRAP_CONTENT
+        if (placement.above) {
+            window.showAsDropDown(anchor, 0, -(anchor.height + (placement.height ?: wanted)))
         } else {
-            window.showAsDropDown(anchor, 0, -(anchor.height + minOf(wanted, room)))
+            window.showAsDropDown(anchor)
         }
     }
 

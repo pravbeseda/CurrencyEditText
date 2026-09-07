@@ -57,6 +57,16 @@ class CurrencyMaterialEditTextTest {
     }
 
     @Test
+    fun disablingACalculatorTheLayoutNeverHadKeepsTheHostsEndIcon() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
+            currencyEditText.setCalculatorEnabled(false)
+        }
+
+        Assert.assertEquals(TextInputLayout.END_ICON_CLEAR_TEXT, currencyEditText.endIconMode)
+    }
+
+    @Test
     fun shouldSetText() {
         val samples =
             listOf(

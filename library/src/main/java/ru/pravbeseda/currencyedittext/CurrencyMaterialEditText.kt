@@ -174,6 +174,9 @@ open class CurrencyMaterialEditText(
      * whole layout, error text included.
      */
     fun setCalculatorEnabled(enabled: Boolean) {
+        // Nothing to do when the state does not change: the end icon is the host's until the
+        // calculator claims it, and switching a calculator off that was never on must not take it.
+        if (calculatorEnabled == enabled) return
         calculatorEnabled = enabled
         if (enabled) {
             endIconMode = END_ICON_CUSTOM
@@ -181,6 +184,7 @@ open class CurrencyMaterialEditText(
             setEndIconContentDescription(R.string.currency_edit_text_calculator)
             setEndIconOnClickListener { editText.showCalculator(this) }
         } else {
+            setEndIconOnClickListener(null)
             endIconMode = END_ICON_NONE
         }
     }

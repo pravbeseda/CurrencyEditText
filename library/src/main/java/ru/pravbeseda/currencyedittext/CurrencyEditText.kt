@@ -17,6 +17,7 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.util.AttributeSet
@@ -49,6 +50,7 @@ open class CurrencyEditText(
     private var emptyStringForZero: Boolean = true
     private var maxDecimalPlaces: Int
     private var calculatorEnabled: Boolean = false
+    private var calculatorIcon: Drawable? = null
 
     private var onValueChanged: OnValueChanged? = null
     private var validator: ((BigDecimal) -> String?)? = null
@@ -112,7 +114,7 @@ open class CurrencyEditText(
         textWatcher = createTextWatcher()
         this.addTextChangedListener(textWatcher)
         text = this.text // to apply text watcher formatting
-        updateCalculatorButton()
+        if (calculatorEnabled) updateCalculatorButton()
     }
 
     fun setValue(value: BigDecimal) {
@@ -210,6 +212,7 @@ open class CurrencyEditText(
      * opens, so this changes nothing about the watcher and must not invalidate it.
      */
     fun setCalculatorEnabled(enabled: Boolean) {
+        if (calculatorEnabled == enabled) return
         calculatorEnabled = enabled
         updateCalculatorButton()
     }
@@ -231,18 +234,32 @@ open class CurrencyEditText(
         ).show()
     }
 
+    /** The button takes the end slot only; whatever the host put in the other three stays. */
     private fun updateCalculatorButton() {
-        val icon =
+        val drawables = compoundDrawablesRelative
+        calculatorIcon =
             if (calculatorEnabled) {
                 AppCompatResources.getDrawable(context, R.drawable.currency_edit_text_ic_calculator)
             } else {
                 null
             }
-        setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, icon, null)
+        setCompoundDrawablesRelativeWithIntrinsicBounds(
+            drawables[START_DRAWABLE],
+            drawables[TOP_DRAWABLE],
+            calculatorIcon,
+            drawables[BOTTOM_DRAWABLE],
+        )
     }
 
+    /** A tap opens the panel only where the field is live and the button is the one this view drew. */
+    internal fun opensCalculatorOn(event: MotionEvent): Boolean =
+        isEnabled &&
+            calculatorEnabled &&
+            event.action == MotionEvent.ACTION_UP &&
+            isTouchOnCalculatorButton(event.x)
+
     private fun isTouchOnCalculatorButton(x: Float): Boolean {
-        val iconWidth = compoundDrawablesRelative[END_DRAWABLE]?.bounds?.width() ?: return false
+        val iconWidth = calculatorIcon?.bounds?.width() ?: return false
         return if (layoutDirection == LAYOUT_DIRECTION_RTL) {
             x <= paddingLeft + iconWidth
         } else {
@@ -312,7 +329,7 @@ open class CurrencyEditText(
      * is recognised here, by where it lands. Everything else is ordinary text editing.
      */
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_UP && isTouchOnCalculatorButton(event.x)) {
+        if (opensCalculatorOn(event)) {
             performClick()
             showCalculator(this)
             return true
@@ -383,8 +400,10 @@ open class CurrencyEditText(
     }
 
     companion object {
-        /** Index of the end drawable in `compoundDrawablesRelative`. */
-        private const val END_DRAWABLE = 2
+        /** Indices in `compoundDrawablesRelative`. */
+        private const val START_DRAWABLE = 0
+        private const val TOP_DRAWABLE = 1
+        private const val BOTTOM_DRAWABLE = 3
 
         /**
          * Component's state values
