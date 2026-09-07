@@ -17,10 +17,15 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatEditText
+import ru.pravbeseda.currencyedittext.calculator.CalculatorPopup
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.formatMoneyValue
@@ -44,6 +49,8 @@ open class CurrencyEditText(
     private var decimalZerosPadding: Boolean = false
     private var emptyStringForZero: Boolean = true
     private var maxDecimalPlaces: Int
+    private var calculatorEnabled: Boolean = false
+    private var calculatorIcon: Drawable? = null
 
     private var onValueChanged: OnValueChanged? = null
     private var validator: ((BigDecimal) -> String?)? = null
@@ -93,6 +100,8 @@ open class CurrencyEditText(
                         getBoolean(R.styleable.CurrencyEditText_decimalZerosPadding, false)
                     emptyStringForZero =
                         getBoolean(R.styleable.CurrencyEditText_emptyStringForZero, true)
+                    calculatorEnabled =
+                        getBoolean(R.styleable.CurrencyEditText_calculatorEnabled, false)
                 } finally {
                     recycle()
                 }
@@ -105,6 +114,7 @@ open class CurrencyEditText(
         textWatcher = createTextWatcher()
         this.addTextChangedListener(textWatcher)
         text = this.text // to apply text watcher formatting
+        if (calculatorEnabled) updateCalculatorButton()
     }
 
     fun setValue(value: BigDecimal) {
@@ -197,6 +207,66 @@ open class CurrencyEditText(
 
     fun isValidState(): Boolean = state == State.OK
 
+    /**
+     * Shows or hides the calculator button. The panel reads the field's configuration when it
+     * opens, so this changes nothing about the watcher and must not invalidate it.
+     */
+    fun setCalculatorEnabled(enabled: Boolean) {
+        if (calculatorEnabled == enabled) return
+        calculatorEnabled = enabled
+        updateCalculatorButton()
+    }
+
+    fun isCalculatorEnabled(): Boolean = calculatorEnabled
+
+    /**
+     * Opens the calculator panel under [anchor], which is the field itself unless it sits inside a
+     * [CurrencyMaterialEditText] — there the panel hangs below the whole layout.
+     */
+    internal fun showCalculator(anchor: View) {
+        CalculatorPopup(
+            anchor = anchor,
+            decimalSeparator = getDecimalSeparator(),
+            scale = maxDecimalPlaces,
+            negativeValueAllow = negativeValueAllow,
+            initialValue = getValue(),
+            onAccept = ::setValue,
+        ).show()
+    }
+
+    /** The button takes the end slot only; whatever the host put in the other three stays. */
+    private fun updateCalculatorButton() {
+        val drawables = compoundDrawablesRelative
+        calculatorIcon =
+            if (calculatorEnabled) {
+                AppCompatResources.getDrawable(context, R.drawable.currency_edit_text_ic_calculator)
+            } else {
+                null
+            }
+        setCompoundDrawablesRelativeWithIntrinsicBounds(
+            drawables[START_DRAWABLE],
+            drawables[TOP_DRAWABLE],
+            calculatorIcon,
+            drawables[BOTTOM_DRAWABLE],
+        )
+    }
+
+    /** A tap opens the panel only where the field is live and the button is the one this view drew. */
+    internal fun opensCalculatorOn(event: MotionEvent): Boolean =
+        isEnabled &&
+            calculatorEnabled &&
+            event.action == MotionEvent.ACTION_UP &&
+            isTouchOnCalculatorButton(event.x)
+
+    private fun isTouchOnCalculatorButton(x: Float): Boolean {
+        val iconWidth = calculatorIcon?.bounds?.width() ?: return false
+        return if (layoutDirection == LAYOUT_DIRECTION_RTL) {
+            x <= paddingLeft + iconWidth
+        } else {
+            x >= width - paddingRight - iconWidth
+        }
+    }
+
     private fun invalidateTextWatcher() {
         removeTextChangedListener(textWatcher)
         textWatcher = createTextWatcher()
@@ -253,6 +323,22 @@ open class CurrencyEditText(
         super.setText(text, type)
         getText()?.length?.let { setSelection(it) }
     }
+
+    /**
+     * The calculator button is a compound drawable rather than a view of its own, so the tap on it
+     * is recognised here, by where it lands. Everything else is ordinary text editing.
+     */
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (opensCalculatorOn(event)) {
+            performClick()
+            showCalculator(this)
+            return true
+        }
+        return super.onTouchEvent(event)
+    }
+
+    /** Overridden only because [onTouchEvent] is: an accessibility click has to reach the view. */
+    override fun performClick(): Boolean = super.performClick()
 
     override fun onFocusChanged(
         focused: Boolean,
@@ -314,6 +400,11 @@ open class CurrencyEditText(
     }
 
     companion object {
+        /** Indices in `compoundDrawablesRelative`. */
+        private const val START_DRAWABLE = 0
+        private const val TOP_DRAWABLE = 1
+        private const val BOTTOM_DRAWABLE = 3
+
         /**
          * Component's state values
          */

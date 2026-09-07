@@ -9,6 +9,7 @@
     <attr name="maxNumberOfDecimalPlaces" format="integer" />
     <attr name="decimalZerosPadding" format="boolean" />
     <attr name="emptyStringForZero" format="boolean" />
+    <attr name="calculatorEnabled" format="boolean" />
 
     <declare-styleable name="CurrencyEditText">
         <attr name="currencySymbol" />
@@ -20,6 +21,7 @@
         <attr name="decimalZerosPadding" />
         <attr name="maxNumberOfDecimalPlaces" />
         <attr name="emptyStringForZero" />
+        <attr name="calculatorEnabled" />
     </declare-styleable>
     <declare-styleable name="CurrencyMaterialEditText">
         <attr name="text" format="string" />
@@ -33,5 +35,6 @@
         <attr name="decimalZerosPadding" />
         <attr name="maxNumberOfDecimalPlaces" />
         <attr name="emptyStringForZero" />
+        <attr name="calculatorEnabled" />
     </declare-styleable>
 </resources>

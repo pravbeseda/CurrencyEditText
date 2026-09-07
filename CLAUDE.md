@@ -117,6 +117,10 @@ Supporting pieces:
 - `util/Utils.kt` — `parseMoneyValue*`, `formatMoneyValue`, locale/API-level helpers (internal).
 - `util/Routines.kt` — public `Routines.bigDecimalToString(value, CurrencyFormatConfig)` for
   formatting outside the view; also the `emptyChar = 'n'` sentinel meaning "no grouping separator".
+- `calculator/` — the opt-in calculator panel, all `internal`: `CalculatorKey`,
+  `ExpressionEvaluator` (recursive descent over `BigDecimal`), `CalculatorState` (the immutable key
+  state machine, which also renders the expression line), and `CalculatorPopup` — the only class of
+  the package that touches Android, and therefore the only one excluded from the Kover filter.
 - `res-public/values/attrs.xml` — XML attributes; `library/build.gradle` adds `src/main/res-public`
   as a second res source dir.
 
@@ -130,6 +134,11 @@ Conventions that matter when editing the views:
 - A new XML attribute must be added in three places: `attrs.xml` (both `declare-styleable` blocks),
   the `init` block of `CurrencyEditText`, and the `init` block + delegating setter/getter of
   `CurrencyMaterialEditText`.
+- `calculatorEnabled` is the one attribute that must **not** call `invalidateTextWatcher()`: the
+  panel reads the field's configuration when it opens, so it changes nothing about the watcher.
+  It is also the one setting `CurrencyMaterialEditText` does not delegate to the inner view — the
+  layout draws the button itself, through `END_ICON_CUSTOM`, and the inner `CurrencyEditText` would
+  otherwise draw a second one as a compound drawable.
 
 ## Tests
 

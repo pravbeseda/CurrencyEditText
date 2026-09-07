@@ -64,7 +64,21 @@ internal data class CalculatorState(
             else -> appendDigit(key.symbol)
         }
 
-    fun result(scale: Int): EvalResult = ExpressionEvaluator.evaluate(expression, scale)
+    /**
+     * The value of the expression, or [EvalResult.Failure] when it is incomplete, divides by zero,
+     * or comes out negative in a field that takes no negative values.
+     */
+    fun result(
+        scale: Int,
+        negativeValueAllow: Boolean = true,
+    ): EvalResult {
+        val evaluated = ExpressionEvaluator.evaluate(expression, scale)
+        val refused = !negativeValueAllow && evaluated is EvalResult.Success && evaluated.value.signum() < 0
+        return if (refused) EvalResult.Failure else evaluated
+    }
+
+    /** The expression as the user reads it: their decimal separator, and the printed operators. */
+    fun display(decimalSeparator: Char): String = expression.map { it.printed(decimalSeparator) }.joinToString("")
 
     private val lastChar: Char? get() = expression.lastOrNull()
 

@@ -142,6 +142,31 @@ edittext.onValueChanged { bigDecimal, state: State, textError: String ->
 
 In the CurrencyMaterialEditText component, the validation error text is shown automatically.
 
+## Calculator
+
+Both components can show a calculator button at the end of the field. It is off by default:
+
+```
+app:calculatorEnabled="true"
+```
+
+Or in the code:
+
+```Kotlin
+edittext.setCalculatorEnabled(true)
+```
+
+Tapping the button opens a panel under the field, seeded with the field's current value. It
+evaluates a full expression — `+ - x /`, parentheses, and a sign key that flips the operand being
+entered — and `=` writes the result back into the field, rounded to `maxNumberOfDecimalPlaces`. An
+expression that does not evaluate, divides by zero, or comes out negative in a field with
+`negativeValueAllow="false"` leaves the field untouched. The system keyboard is not replaced: the
+field still takes typed input as before.
+
+On `CurrencyEditText` the button is drawn as a compound drawable and opens on a tap on the icon, so
+it is not a separate node for a screen reader. Where that matters, use `CurrencyMaterialEditText`:
+there the button is a real end icon with a content description.
+
 ## Localization
 
 The library supports localization. You can set the locale in the layout file:

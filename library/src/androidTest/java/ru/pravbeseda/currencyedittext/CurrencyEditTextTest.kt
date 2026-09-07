@@ -16,7 +16,12 @@
 package ru.pravbeseda.currencyedittext
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.SystemClock
+import android.view.MotionEvent
 import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -69,6 +74,68 @@ class CurrencyEditTextTest {
     }
 
     @Test
+    fun calculatorIsOffByDefault() {
+        Assert.assertFalse(currencyEditText.isCalculatorEnabled())
+        Assert.assertNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+    }
+
+    @Test
+    fun enablingTheCalculatorShowsTheButton() {
+        currencyEditText.setCalculatorEnabled(true)
+        Assert.assertTrue(currencyEditText.isCalculatorEnabled())
+        Assert.assertNotNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+
+        currencyEditText.setCalculatorEnabled(false)
+        Assert.assertFalse(currencyEditText.isCalculatorEnabled())
+        Assert.assertNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+    }
+
+    @Test
+    fun theHostsOwnDrawablesSurviveTheCalculatorButton() {
+        val hostIcon = ColorDrawable(Color.RED)
+        currencyEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(hostIcon, null, null, null)
+
+        currencyEditText.setCalculatorEnabled(true)
+        Assert.assertSame(hostIcon, currencyEditText.compoundDrawablesRelative[START_DRAWABLE])
+
+        currencyEditText.setCalculatorEnabled(false)
+        Assert.assertSame(hostIcon, currencyEditText.compoundDrawablesRelative[START_DRAWABLE])
+        Assert.assertNull(currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+    }
+
+    @Test
+    fun disablingACalculatorTheFieldNeverHadLeavesTheHostsEndDrawableAlone() {
+        val hostIcon = ColorDrawable(Color.RED)
+        currencyEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, hostIcon, null)
+
+        currencyEditText.setCalculatorEnabled(false)
+
+        Assert.assertSame(hostIcon, currencyEditText.compoundDrawablesRelative[END_DRAWABLE])
+    }
+
+    @Test
+    fun onlyAnEnabledFieldWithTheCalculatorOnOpensThePanel() {
+        currencyEditText.layout(0, 0, 200, 60)
+        currencyEditText.setCalculatorEnabled(true)
+        val onTheIcon = tapAt(currencyEditText.width.toFloat())
+
+        Assert.assertTrue(currencyEditText.opensCalculatorOn(onTheIcon))
+
+        currencyEditText.isEnabled = false
+        Assert.assertFalse(currencyEditText.opensCalculatorOn(onTheIcon))
+
+        currencyEditText.isEnabled = true
+        currencyEditText.setCalculatorEnabled(false)
+        currencyEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            null,
+            ColorDrawable(Color.RED).apply { setBounds(0, 0, 24, 24) },
+            null,
+        )
+        Assert.assertFalse(currencyEditText.opensCalculatorOn(onTheIcon))
+    }
+
+    @Test
     fun testSetText() {
         currencyEditText.setSeparators(' ', '.')
         setText("1 000.45")
@@ -101,8 +168,10 @@ class CurrencyEditTextTest {
         assertEquals("1,000.45", currencyEditText.text.toString())
     }
 
+    // Backtick names with spaces cannot be dexed below DEX 040, so instrumented
+    // tests spell the issue number out instead (#39).
     @Test
-    fun `Issue #23 - an empty field reads as zero`() {
+    fun issue23EmptyFieldReadsAsZero() {
         setText("")
         assertEquals(BigDecimal.ZERO, currencyEditText.getValue())
     }
@@ -133,5 +202,16 @@ class CurrencyEditTextTest {
     ) {
         setText(text)
         assertEquals(expected, currencyEditText.text.toString())
+    }
+
+    private fun tapAt(x: Float): MotionEvent {
+        val now = SystemClock.uptimeMillis()
+        return MotionEvent.obtain(now, now, MotionEvent.ACTION_UP, x, 0f, 0)
+    }
+
+    private companion object {
+        /** Indices in `compoundDrawablesRelative`. */
+        const val START_DRAWABLE = 0
+        const val END_DRAWABLE = 2
     }
 }

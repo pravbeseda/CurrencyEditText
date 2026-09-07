@@ -184,6 +184,26 @@ class CalculatorStateTest {
         assertEquals(EvalResult.Failure, result(""))
     }
 
+    @Test
+    fun `a negative result is refused when the field allows no negative values`() {
+        assertEquals(EvalResult.Success(BigDecimal("-5.00")), CalculatorState("1-6").result(scale = 2))
+        assertEquals(
+            EvalResult.Failure,
+            CalculatorState("1-6").result(scale = 2, negativeValueAllow = false),
+        )
+        assertEquals(
+            EvalResult.Success(BigDecimal("5.00")),
+            CalculatorState("6-1").result(scale = 2, negativeValueAllow = false),
+        )
+    }
+
+    @Test
+    fun `the expression is displayed with the field's separator and the printed operators`() {
+        assertEquals("1234,5\u00d72\u00f74", CalculatorState("1234.5*2/4").display(','))
+        assertEquals("1234.5\u00d72", CalculatorState("1234.5*2").display('.'))
+        assertEquals("\u22125+(\u22123)", CalculatorState("-5+(-3)").display('.'))
+    }
+
     private fun press(vararg keys: CalculatorKey): String = keys.fold(CalculatorState()) { state, key -> state.press(key) }.expression
 
     private fun result(expression: String): EvalResult = CalculatorState(expression).result(scale = 2)
