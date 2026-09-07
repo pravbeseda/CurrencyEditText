@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'ru.pravbeseda.currencyedittext'
-    compileSdk 34
+    compileSdk 37
 
     compileOptions {
         sourceCompatibility 1.8
@@ -15,8 +15,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 34
+        minSdkVersion 24
+        targetSdkVersion 37
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

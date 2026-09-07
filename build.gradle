@@ -20,6 +20,15 @@ plugins {
     // deliberate UnsafeCallOnNullableType was planted and detekt failed the build
     // on it, which it can only do with type resolution working.
     alias(libs.plugins.detekt) apply false
+    // Applied, not `apply false`: it configures every module from the root. It is
+    // an audit run by hand — `./gradlew buildHealth` — and deliberately not part
+    // of `check`. It has no baseline, and "unused" is a false positive by
+    // construction for a dependency pulled in for its resources, so wiring it into
+    // the build would mean arguing with it on every branch. The debt it exists to
+    // catch is real, though: this repository has already shipped
+    // `androidx.test:monitor` on `implementation` of the published library
+    // (6b75231).
+    alias(libs.plugins.dependency.analysis)
 }
 
 allprojects {
@@ -48,6 +57,10 @@ def typedDetektTasks = [
 
 subprojects {
     apply plugin: 'io.gitlab.arturbosch.detekt'
+    // The root application above only creates the aggregating `buildHealth` task;
+    // since 3.x the plugin has to be applied to every module that should be
+    // analysed as well.
+    apply plugin: 'com.autonomousapps.dependency-analysis'
 
     // Both modules get the same lint gate; `com.android.base` is what the
     // application and library plugins have in common. Configured here rather
@@ -87,7 +100,15 @@ subprojects {
                 // cannot fail a build on the calendar's say-so. Both ids are
                 // named because NewerVersionAvailable covers what
                 // GradleDependency does not.
-                informational += ['GradleDependency', 'NewerVersionAvailable']
+                // OldTargetApi is the third of the same family, and the worst
+                // behaved: it judges targetSdk against the newest platform
+                // installed on the machine, so the same commit is green here and
+                // red on a CI runner that happens to have one more SDK. It cannot
+                // be frozen either — a baseline entry carries the old targetSdk in
+                // its message, so it stops matching the moment that line changes,
+                // and it stays unmatched on any machine that does not report the
+                // finding at all.
+                informational += ['GradleDependency', 'NewerVersionAvailable', 'OldTargetApi']
                 baseline = new File(moduleDir, 'lint-baseline.xml')
             }
         }

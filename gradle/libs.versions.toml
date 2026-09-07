@@ -12,6 +12,7 @@ kotlin = "2.4.10"
 mavenPublish = "0.34.0"
 
 # --- quality gates ---------------------------------------------------------
+dependencyAnalysis = "3.19.1"
 # 1.23.8 is the last stable line; detekt 2.x has been in alpha since 2025. See
 # the note in the root build script for how its lag behind our Kotlin version is
 # checked rather than tolerated.
@@ -21,20 +22,20 @@ ktlint = "1.8.0"
 spotless = "8.9.0"
 
 # --- androidx --------------------------------------------------------------
-appcompat = "1.6.1"
-constraintlayout = "2.1.4"
-coreKtx = "1.10.1"
+appcompat = "1.8.0"
+constraintlayout = "2.2.2"
+coreKtx = "1.17.0"
 
 # --- google ----------------------------------------------------------------
-material = "1.9.0"
+material = "1.14.0"
 
 # --- test ------------------------------------------------------------------
 junit = "4.13.2"
-mockito = "5.20.0"
-testCoreKtx = "1.5.0"
-testExtJunitKtx = "1.1.5"
-testRules = "1.5.0"
-testRunner = "1.5.2"
+mockito = "5.23.0"
+testCoreKtx = "1.7.0"
+testExtJunitKtx = "1.3.0"
+testRules = "1.7.0"
+testRunner = "1.7.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -51,6 +52,7 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

@@ -16,15 +16,12 @@
 package ru.pravbeseda.currencyedittext
 
 import android.content.Context
-import android.os.Build
 import android.text.Editable
 import android.util.AttributeSet
-import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
 import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isApi26AndAbove
-import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 import java.math.BigDecimal
 import java.util.Locale
 
@@ -91,12 +88,8 @@ open class CurrencyMaterialEditText(
                 emptyStringForZero =
                     getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
             }
-        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) {
-            setLocale(
-                getLocaleFromTag(
-                    localeTag!!,
-                ),
-            )
+        if (!localeTag.isNullOrBlank()) {
+            setLocale(getLocaleFromTag(localeTag!!))
         }
         if (isApi26AndAbove()) {
             // bugfix api26
@@ -131,7 +124,6 @@ open class CurrencyMaterialEditText(
         editText.setLocale(locale)
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setLocale(localeTag: String) {
         editText.setLocale(localeTag)
     }

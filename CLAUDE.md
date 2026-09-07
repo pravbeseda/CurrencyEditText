@@ -27,14 +27,24 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ./gradlew :library:lintDebug :sample:lintDebug              # Android Lint
 ./gradlew :library:checkKotlinAbi      # public API against library/api/library.api
 ./gradlew :library:updateKotlinAbi     # rewrite that file after an intended API change
+./gradlew buildHealth                  # dependency audit, run by hand — not part of `check`
 ```
 
-Toolchain: Gradle 8.14.5, AGP 8.13.0, Kotlin 2.4.10, JDK 17 (JDK 21 also works), minSdk 19,
-compileSdk/targetSdk 34. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
+Toolchain: Gradle 8.14.5, AGP 8.13.0, Kotlin 2.4.10, JDK 17 (JDK 21 also works), minSdk 24,
+compileSdk/targetSdk 37. AGP 8.13.0 prints a warning that it has not been tested against compile
+SDK 37; it is left visible rather than silenced with `android.suppressUnsupportedCompileSdk`, and
+it goes away with the next AGP upgrade. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
 = JVM_1_8 } }` is set in both modules to keep the two compilers in step.
 
 Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script
 instead is a bug, not a shortcut.
+
+Updates arrive through Renovate, configured in `renovate.json5`: weekly, patch releases
+automerged, minor and major read by a person, androidx grouped, the toolchain never automerged.
+The file only configures the bot — the GitHub App itself is installed on the repository by hand.
+
+`androidx.core` is held at 1.17.0 on purpose: 1.18.0 and above require Android Gradle plugin
+9.1.0. Renovate will keep offering the newer one; the pull request waits for the AGP upgrade.
 
 Git hooks live in `.githooks/` and are installed by `settings.gradle`, which points
 `core.hooksPath` at that directory on every Gradle invocation (skipped when `CI` is set). Nothing
@@ -74,6 +84,13 @@ The gate is the Kotlin plugin's own `abiValidation {}`, enabled in `library/buil
 than the standalone `binary-compatibility-validator` plugin it replaced in #21. Same reference
 file, byte for byte: the swap changed no line of the dump. `checkLegacyAbi` and `updateLegacyAbi`
 exist as aliases of the two tasks above — do not use them, they are the deprecated spelling.
+
+`dependency-analysis` is the one check here that is **not** a gate. `./gradlew buildHealth` reports
+misdeclared dependencies — unused, used but undeclared, on the wrong configuration — and is run by
+hand, never from `check`: it has no baseline, and "unused" is a false positive by construction for a
+dependency pulled in only for its resources (`material` in `:sample` is reported today, and is
+correct as declared). Read its advice, do not obey it. It exists because this repository has already
+shipped `androidx.test:monitor` on `implementation` of the published library (`6b75231`).
 
 ## Architecture
 
@@ -122,8 +139,11 @@ the resulting string and the resulting cursor position. Helpers live in `Exts.kt
 (`runAllWatcherMethods`, `LocaleVars.toWatcher`) and most tests loop over a fixed list of
 `LocaleVars` so behaviour is checked against several separator combinations at once.
 
-Instrumented tests (`src/androidTest`) cover the real views and need a device. CI compiles them but
-does not run them.
+Instrumented tests (`src/androidTest`) cover the real views and need a device. Every CI run
+compiles them; they are executed on an API 24 emulator — this library's minSdk — by the
+`instrumented` job of `ci.yml` on every push to `main`, and again by `release.yml` as a gate before
+the irreversible publish. They deliberately do not run on pull requests: the emulator costs about
+ten minutes and the two Views change rarely.
 
 ### Testing and Definition of Done
 

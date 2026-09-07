@@ -55,6 +55,29 @@ jobs:
       - name: Build and run tests
         run: ./gradlew build
 
+      - name: Enable KVM
+        # Without it the emulator falls back to software rendering and the step
+        # takes long enough to be useless.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run instrumented tests
+        # The two Views are unreachable from src/test, so these nine tests are the
+        # only check the published artifact's public surface gets. They run here,
+        # before the irreversible publish below, on API 24 — this library's
+        # minSdk. ci.yml runs the same tests on every push to main, so this step
+        # is normally a formality; it is a gate because a release cannot be
+        # withdrawn.
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 24
+          target: default
+          arch: x86_64
+          script: ./gradlew :library:connectedDebugAndroidTest --stacktrace
+
       # Publishing to Maven Central is irreversible, so it runs before anything is pushed: a
       # failure here leaves the repository untouched. The check refuses to release a build that
       # already misses something merged into main since this run started.

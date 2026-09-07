@@ -2,17 +2,6 @@
 <issues format="6" by="lint 8.13.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.0)" variant="all" version="8.13.0">
 
     <issue
-        id="OldTargetApi"
-        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
-        errorLine1="        targetSdkVersion 34"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="22"
-            column="9"/>
-    </issue>
-
-    <issue
         id="UnusedResources"
         message="The resource `R.dimen.content_inset_quarter` appears to be unused"
         errorLine1="  &lt;dimen name=&quot;content_inset_quarter&quot;>4dp&lt;/dimen>"

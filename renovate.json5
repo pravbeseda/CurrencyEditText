@@ -1,0 +1,65 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  // Renovate reads gradle/libs.versions.toml natively, so every pull request it
+  // opens is a one-line diff in the one file a version is allowed to live in.
+  //
+  // This file only configures the bot; it does not enable it. The Renovate GitHub
+  // App has to be installed on the repository once, by hand, from
+  // https://github.com/apps/renovate.
+  extends: [
+    'config:recommended',
+    ':dependencyDashboard',
+    // Security updates ignore the schedule below: waiting until Monday for a
+    // known vulnerability is the one case where batching is wrong.
+    ':enableVulnerabilityAlerts',
+  ],
+  // Weekly, not on every upstream release: this is a small library with a slow
+  // release cadence, and a pull request a day would be read by nobody.
+  schedule: ['before 6am on monday'],
+  // A dependency that has been out for less than three days has not yet had its
+  // "we broke it, here is 1.2.1" moment.
+  minimumReleaseAge: '3 days',
+  packageRules: [
+    {
+      // Patch releases are bug fixes by definition, and every gate in ci.yml runs
+      // on the branch before the merge. Automerge needs
+      // "Allow auto-merge" enabled in the repository settings; without it
+      // Renovate leaves the pull request open and nothing is lost.
+      matchUpdateTypes: ['patch'],
+      automerge: true,
+    },
+    {
+      // Minor and major updates change behaviour, and `material` is an `api`
+      // dependency of a published artifact, so its version is part of this
+      // library's contract. A person reads these.
+      matchUpdateTypes: ['minor', 'major'],
+      automerge: false,
+    },
+    {
+      // androidx releases in waves; one pull request per artifact would be six
+      // pull requests describing a single upstream release train.
+      matchPackageNames: ['androidx.**'],
+      groupName: 'androidx',
+    },
+    {
+      // The toolchain decides whether everything else compiles at all, and each
+      // of these upgrades has already needed manual work in this repository
+      // (#21). Never automerged, whatever the update type.
+      //
+      // The globs are load-bearing. A `[plugins]` entry of a version catalog
+      // reaches package rules as `<id>:<id>.gradle.plugin`, and matchPackageNames
+      // is matched against that name and never against the plugin id, so a bare
+      // 'com.android.application' matches nothing and an AGP release would fall
+      // through to the patch rule above — automerged, which is the one case this
+      // rule promises never happens. 'gradle' is the wrapper, whose package name
+      // falls back to its dependency name and needs no glob.
+      matchPackageNames: [
+        'org.jetbrains.kotlin**',
+        'com.android.**',
+        'gradle',
+      ],
+      automerge: false,
+      groupName: 'toolchain',
+    },
+  ],
+}
