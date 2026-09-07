@@ -72,6 +72,9 @@ class CurrencyMaterialEditTextTest {
 
     @Test
     fun shouldSetDecimalZerosPadding() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setSeparators(' ', '.')
+        }
         currencyEditText.setDecimalZerosPadding(true)
         testSetText("100.1", "100.10")
         currencyEditText.setDecimalZerosPadding(false)
