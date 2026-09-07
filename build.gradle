@@ -17,10 +17,11 @@ plugins {
     // API, and :sample publishes nothing.
     alias(libs.plugins.binary.compatibility.validator) apply false
     // detekt 1.23.8 is the last stable line: detekt 2.x has been in alpha since
-    // 2025 and wants Gradle 8.14.3+, while this project builds on 8.13. It is
-    // compiled against Kotlin 2.0.21, so it prints a version-mismatch warning on
-    // our 2.1.10; the typed run below was checked rather than assumed, and it
-    // completes and reports.
+    // 2025, and an alpha is not what a build gate is made of. It is compiled
+    // against Kotlin 2.0.21, four minor lines behind our 2.4.10, so the
+    // typed run below is checked rather than assumed on every Kotlin upgrade: a
+    // deliberate UnsafeCallOnNullableType was planted and detekt failed the build
+    // on it, which it can only do with type resolution working.
     alias(libs.plugins.detekt) apply false
 }
 

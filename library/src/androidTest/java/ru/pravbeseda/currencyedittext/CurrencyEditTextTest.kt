@@ -41,15 +41,15 @@ class CurrencyEditTextTest {
             val groupingSeparator = currencyEditText.getGroupingSeparator()
             currencyEditText.setEmptyStringForZero(false)
             listOf(
-                arrayOf(BigDecimal(4321.76), "4${groupingSeparator}321${decimalSeparator}76"),
-                arrayOf(BigDecimal(100.0), "100"),
-                arrayOf(BigDecimal(0.0), "0"),
+                BigDecimal(4321.76) to "4${groupingSeparator}321${decimalSeparator}76",
+                BigDecimal(100.0) to "100",
+                BigDecimal(0.0) to "0",
             )
         }
         // Run all checks
         val valuesAssertEquals = {
             samples().forEach {
-                setValueAssertEquals(it[0] as BigDecimal, it[1] as String)
+                setValueAssertEquals(it.first, it.second)
             }
         }
 

@@ -29,7 +29,7 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ./gradlew :library:apiDump             # rewrite that file after an intended API change
 ```
 
-Toolchain: Gradle 8.13, AGP 8.13.0, Kotlin 2.1.10, JDK 17 (JDK 21 also works), minSdk 19,
+Toolchain: Gradle 8.14.5, AGP 8.13.0, Kotlin 2.4.10, JDK 17 (JDK 21 also works), minSdk 19,
 compileSdk/targetSdk 34. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
 = JVM_1_8 } }` is set in both modules to keep the two compilers in step.
 
