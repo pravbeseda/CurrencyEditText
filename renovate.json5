@@ -45,11 +45,17 @@
       // The toolchain decides whether everything else compiles at all, and each
       // of these upgrades has already needed manual work in this repository
       // (#21). Never automerged, whatever the update type.
+      //
+      // The globs are load-bearing. A `[plugins]` entry of a version catalog
+      // reaches package rules as `<id>:<id>.gradle.plugin`, and matchPackageNames
+      // is matched against that name and never against the plugin id, so a bare
+      // 'com.android.application' matches nothing and an AGP release would fall
+      // through to the patch rule above — automerged, which is the one case this
+      // rule promises never happens. 'gradle' is the wrapper, whose package name
+      // falls back to its dependency name and needs no glob.
       matchPackageNames: [
         'org.jetbrains.kotlin**',
-        'com.android.tools.build**',
-        'com.android.application',
-        'com.android.library',
+        'com.android.**',
         'gradle',
       ],
       automerge: false,
