@@ -121,6 +121,7 @@ open class CurrencyEditText(
         )
     }
 
+    /** The number in the field. A field holding no number — an empty one — reads as zero. */
     fun getValue(): BigDecimal = stringToBigDecimal(text.toString())
 
     fun setLocale(locale: Locale) {

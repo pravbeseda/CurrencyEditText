@@ -90,6 +90,8 @@ edittext.setValue(BigDecimal(4321.76))
 val value = edittext.getValue()
 ```
 
+`getValue` always returns a number: an empty field reads as `BigDecimal.ZERO`.
+
 Or you can set the text value directly:
 
 ```Kotlin

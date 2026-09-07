@@ -114,6 +114,7 @@ open class CurrencyMaterialEditText(
         editText.setValue(value)
     }
 
+    /** The number in the field. A field holding no number — an empty one — reads as zero. */
     fun getValue(): BigDecimal = editText.getValue()
 
     fun setText(text: CharSequence) {

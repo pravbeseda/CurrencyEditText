@@ -101,6 +101,12 @@ class CurrencyEditTextTest {
         assertEquals("1,000.45", currencyEditText.text.toString())
     }
 
+    @Test
+    fun `Issue #23 - an empty field reads as zero`() {
+        setText("")
+        assertEquals(BigDecimal.ZERO, currencyEditText.getValue())
+    }
+
     private fun setValue(value: BigDecimal) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setValue(value)
