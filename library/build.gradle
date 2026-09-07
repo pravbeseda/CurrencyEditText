@@ -77,6 +77,7 @@ kover {
         filters {
             includes {
                 classes(
+                        'ru.pravbeseda.currencyedittext.calculator.*',
                         'ru.pravbeseda.currencyedittext.watchers.*',
                         'ru.pravbeseda.currencyedittext.util.*'
                 )
