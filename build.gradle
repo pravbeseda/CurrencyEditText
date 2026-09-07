@@ -20,6 +20,15 @@ plugins {
     // deliberate UnsafeCallOnNullableType was planted and detekt failed the build
     // on it, which it can only do with type resolution working.
     alias(libs.plugins.detekt) apply false
+    // Applied, not `apply false`: it configures every module from the root. It is
+    // an audit run by hand — `./gradlew buildHealth` — and deliberately not part
+    // of `check`. It has no baseline, and "unused" is a false positive by
+    // construction for a dependency pulled in for its resources, so wiring it into
+    // the build would mean arguing with it on every branch. The debt it exists to
+    // catch is real, though: this repository has already shipped
+    // `androidx.test:monitor` on `implementation` of the published library
+    // (6b75231).
+    alias(libs.plugins.dependency.analysis)
 }
 
 allprojects {
@@ -48,6 +57,10 @@ def typedDetektTasks = [
 
 subprojects {
     apply plugin: 'io.gitlab.arturbosch.detekt'
+    // The root application above only creates the aggregating `buildHealth` task;
+    // since 3.x the plugin has to be applied to every module that should be
+    // analysed as well.
+    apply plugin: 'com.autonomousapps.dependency-analysis'
 
     // Both modules get the same lint gate; `com.android.base` is what the
     // application and library plugins have in common. Configured here rather

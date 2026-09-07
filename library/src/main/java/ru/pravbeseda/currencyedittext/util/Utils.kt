@@ -16,7 +16,6 @@
 package ru.pravbeseda.currencyedittext.util
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -63,14 +62,11 @@ internal fun formatMoneyValue(
     return df.format(value)
 }
 
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 internal fun getLocaleFromTag(localeTag: String): Locale =
     try {
         Locale.Builder().setLanguageTag(localeTag).build()
     } catch (e: IllformedLocaleException) {
         Locale.getDefault()
     }
-
-internal fun isLollipopAndAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
 
 internal fun isApi26AndAbove(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O

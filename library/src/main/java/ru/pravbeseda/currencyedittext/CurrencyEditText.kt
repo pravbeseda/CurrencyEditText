@@ -17,17 +17,14 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import android.graphics.Rect
-import android.os.Build
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.util.AttributeSet
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.formatMoneyValue
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
-import ru.pravbeseda.currencyedittext.util.isLollipopAndAbove
 import ru.pravbeseda.currencyedittext.util.parseMoneyValueWithLocale
 import ru.pravbeseda.currencyedittext.watchers.CurrencyInputWatcher
 import java.lang.ref.WeakReference
@@ -102,9 +99,8 @@ open class CurrencyEditText(
             }
         currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
-        if (isLollipopAndAbove() && !localeTag.isNullOrBlank()) {
-            locale =
-                getLocaleFromTag(localeTag!!)
+        if (!localeTag.isNullOrBlank()) {
+            locale = getLocaleFromTag(localeTag!!)
         }
         textWatcher = createTextWatcher()
         this.addTextChangedListener(textWatcher)
@@ -135,7 +131,6 @@ open class CurrencyEditText(
         setValue(value)
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setLocale(localeTag: String) {
         val value = getValue()
         setText("")

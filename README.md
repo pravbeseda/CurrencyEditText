@@ -30,6 +30,8 @@ Add the dependency to your app's `build.gradle`:
 implementation 'ru.pravbeseda:CurrencyEditText:<insert-latest-version-here>'
 ```
 
+Requires `minSdk 24` (Android 7.0). Releases up to 1.1.1 support `minSdk 19`.
+
 For versions, kindly head over to
 the [releases page](https://github.com/pravbeseda/CurrencyEditText/releases)
 
