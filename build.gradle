@@ -13,9 +13,6 @@ plugins {
     // Applied in :library only — see library/build.gradle for why the sample app
     // is left out.
     alias(libs.plugins.kover) apply false
-    // Also :library only: what it records is the published artifact's public
-    // API, and :sample publishes nothing.
-    alias(libs.plugins.binary.compatibility.validator) apply false
     // detekt 1.23.8 is the last stable line: detekt 2.x has been in alpha since
     // 2025, and an alpha is not what a build gate is made of. It is compiled
     // against Kotlin 2.0.21, four minor lines behind our 2.4.10, so the

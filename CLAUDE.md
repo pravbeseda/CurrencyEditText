@@ -25,8 +25,8 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ./gradlew :library:koverVerifyDebug :library:koverLogDebug  # coverage + the bound
 ./gradlew detektAll                    # detekt with type resolution, both modules
 ./gradlew :library:lintDebug :sample:lintDebug              # Android Lint
-./gradlew :library:apiCheck            # public API against library/api/library.api
-./gradlew :library:apiDump             # rewrite that file after an intended API change
+./gradlew :library:checkKotlinAbi      # public API against library/api/library.api
+./gradlew :library:updateKotlinAbi     # rewrite that file after an intended API change
 ```
 
 Toolchain: Gradle 8.14.5, AGP 8.13.0, Kotlin 2.4.10, JDK 17 (JDK 21 also works), minSdk 19,
@@ -51,7 +51,7 @@ All six block the build, and `./gradlew build` runs all six:
 | Kover 0.9.9, `minBound(80)` | `library/build.gradle` | — the bound is a floor, not a baseline |
 | Android Lint, `warningsAsErrors` | root `build.gradle` | `*/lint-baseline.xml` |
 | Unit tests | `library/src/test` | — |
-| binary-compatibility-validator 0.18.2 | `library/build.gradle` | `library/api/library.api` — the public API, not a debt list |
+| ABI validation (Kotlin plugin's `abiValidation {}`) | `library/build.gradle` | `library/api/library.api` — the public API, not a debt list |
 
 Coverage is measured on `:library` only and filtered to
 `ru.pravbeseda.currencyedittext.watchers.*` and `…util.*`. The two Views cannot be reached from
@@ -62,12 +62,18 @@ The plain `detekt` task is disabled on purpose: it analyses without type resolut
 a green run that checks a fraction of what the gate checks. Use `detektAll`, which is the same list
 of tasks each module's `check` is wired from.
 
-`library/api/library.api` is a dump of the published artifact's public signatures, and `apiCheck`
-is the only gate here that looks at the library's outward boundary rather than at the code inside
-it. It is not a baseline: an intended API change is made by running `./gradlew :library:apiDump`
-and committing the rewritten file, so the change arrives in the diff as a reviewable line instead
-of reaching Maven Central unnoticed — where it cannot be taken back. It is wired into `check`, and
-CI runs it as its own step because that job runs the gate tasks one by one, not `check`.
+`library/api/library.api` is a dump of the published artifact's public signatures, and
+`checkKotlinAbi` is the only gate here that looks at the library's outward boundary rather than at
+the code inside it. It is not a baseline: an intended API change is made by running
+`./gradlew :library:updateKotlinAbi` and committing the rewritten file, so the change arrives in
+the diff as a reviewable line instead of reaching Maven Central unnoticed — where it cannot be
+taken back. The Kotlin Gradle Plugin wires it into `check` itself, and CI runs it as its own step
+because that job runs the gate tasks one by one, not `check`.
+
+The gate is the Kotlin plugin's own `abiValidation {}`, enabled in `library/build.gradle`, rather
+than the standalone `binary-compatibility-validator` plugin it replaced in #21. Same reference
+file, byte for byte: the swap changed no line of the dump. `checkLegacyAbi` and `updateLegacyAbi`
+exist as aliases of the two tasks above — do not use them, they are the deprecated spelling.
 
 ## Architecture
 
@@ -159,7 +165,7 @@ class, the way every step of the formatter returns a `TextWithCursor`.
 losing the information is safe (`util/Utils.kt` `parseMoneyValue` is the example of how not to).
 
 **Public API changes get their own bullet in the PR description**, headed "Public API change",
-and the `apiDump` diff in the same commit. Reason: the artifact goes to Maven Central and a
+and the `updateKotlinAbi` diff in the same commit. Reason: the artifact goes to Maven Central and a
 release cannot be taken back.
 
 **Test libraries belong in `testImplementation` / `androidTestImplementation`, never in

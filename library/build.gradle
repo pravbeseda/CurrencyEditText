@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.kover)
-    alias(libs.plugins.binary.compatibility.validator)
 }
 
 android {
@@ -37,6 +36,16 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+    }
+
+    // The public API gate, and the only one here that looks at the artifact's
+    // outward boundary. It is the Kotlin plugin's own feature rather than the
+    // standalone binary-compatibility-validator it replaced in #21: same
+    // reference file and, byte for byte, the same dump, with one dependency
+    // fewer. `checkKotlinAbi` is wired into `check` by the plugin; an intended
+    // change is committed by running `updateKotlinAbi`.
+    abiValidation {
+        enabled = true
     }
 }
 
