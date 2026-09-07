@@ -43,6 +43,14 @@ Updates arrive through Renovate, configured in `renovate.json5`: weekly, patch r
 automerged, minor and major read by a person, androidx grouped, the toolchain never automerged.
 The file only configures the bot — the GitHub App itself is installed on the repository by hand.
 
+The Kotlin language and api versions are pinned to 2.1 in `library/build.gradle`, and
+`kotlin.stdlib.default.dependency=false` in `gradle.properties` hands the stdlib version to
+the catalog's `kotlinStdlib = "2.1.0"`, declared by both modules. Together they are what
+lets a consumer on Kotlin 2.1 use the published artifact: the pin alone stamps `mv=[2,1,0]`
+on the library's own classes, but the POM would still carry the plugin's `kotlin-stdlib`
+2.4.10 and stop that consumer on the stdlib instead. Both halves are needed; changing either
+one alone re-breaks it.
+
 `androidx.core` is held at 1.17.0 on purpose: 1.18.0 and above require Android Gradle plugin
 9.1.0. Renovate will keep offering the newer one; the pull request waits for the AGP upgrade.
 

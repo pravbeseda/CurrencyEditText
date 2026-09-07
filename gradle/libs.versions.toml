@@ -9,6 +9,11 @@
 # --- toolchain -------------------------------------------------------------
 agp = "8.13.0"
 kotlin = "2.4.10"
+# Deliberately behind `kotlin`, and not a mistake Renovate should quietly fix: this is the
+# stdlib version the published POM declares, and it is the floor a consumer's own Kotlin
+# raises by conflict resolution. Held at the lowest version that speaks the language version
+# the library is compiled with, so a consumer on Kotlin 2.1 resolves a stdlib it can read.
+kotlinStdlib = "2.1.0"
 mavenPublish = "0.34.0"
 
 # --- quality gates ---------------------------------------------------------
@@ -46,6 +51,7 @@ androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "testRules" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "testRunner" }
 junit = { module = "junit:junit", version.ref = "junit" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 

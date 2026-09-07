@@ -36,6 +36,16 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+        // The metadata version of the published classes follows the language
+        // version, so building with the compiler's own 2.4 stamps mv=[2,4,0] and
+        // every consumer still on Kotlin 2.1 or 2.2 is met with "class file was
+        // compiled by a newer Kotlin compiler". Pinning both to 2.1 stamps
+        // mv=[2,1,0] instead, which every compiler from 2.1 up can read. The api
+        // version keeps the source honest about it: no stdlib member newer than
+        // 2.1 can slip into the artifact. kotlinc warns that 2.1 is deprecated;
+        // the warning is the cost of the wider reach and fails nothing.
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
+        apiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
     }
 
     // The public API gate, and the only one here that looks at the artifact's
@@ -53,6 +63,7 @@ dependencies {
     implementation libs.androidx.appcompat
 
     api libs.material
+    api libs.kotlin.stdlib
 
     testImplementation libs.junit
     testImplementation libs.androidx.test.core.ktx
