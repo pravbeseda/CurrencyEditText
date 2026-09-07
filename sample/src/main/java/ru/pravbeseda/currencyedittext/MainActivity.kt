@@ -18,6 +18,10 @@ package ru.pravbeseda.currencyedittext
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import pravbeseda.databinding.ActivityMainBinding
 import ru.pravbeseda.currencyedittext.CurrencyEditText.Companion.State
 import ru.pravbeseda.currencyedittext.model.CurrencyFormatConfig
@@ -32,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        applySystemBarInsets()
 
         binding.currencyEditText.setValue(BigDecimal(1123.476))
         binding.currencyMaterialEditText.setValue(BigDecimal(1432.167))
@@ -69,6 +75,25 @@ class MainActivity : AppCompatActivity() {
                 error = "Value can't be less than the first field"
             }
             error
+        }
+    }
+
+    // Targeting SDK 35+ makes the window edge-to-edge: without this the system bars
+    // are drawn over the content.
+    private fun applySystemBarInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.statusBarBackground.updateLayoutParams { height = systemBars.top }
+            binding.toolbar.updatePadding(
+                left = systemBars.left,
+                right = systemBars.right,
+            )
+            binding.content.updatePadding(
+                left = systemBars.left,
+                right = systemBars.right,
+                bottom = systemBars.bottom,
+            )
+            insets
         }
     }
 

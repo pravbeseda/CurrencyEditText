@@ -1,77 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="ru.pravbeseda.currencyedittext.MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimaryDark" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/value"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <ru.pravbeseda.currencyedittext.CurrencyEditText
-        android:id="@+id/currencyEditText"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="20dp"
-        android:selectAllOnFocus="true"
-        app:currencySymbol="$"
-        app:negativeValueAllow="true"
-        app:maxNumberOfDecimalPlaces="2"
-        app:decimalZerosPadding="false"
-        app:localeTag="da-DK"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:useCurrencySymbolAsHint="true" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:text="Clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currencyEditText" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/value"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ru.pravbeseda.currencyedittext.CurrencyMaterialEditText
-        android:id="@+id/currencyMaterialEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="20dp"
-        android:hint="CurrencyMaterialEditText"
-        app:decimalSeparator=","
-        app:groupingSeparator=" "
-        app:selectAllOnFocus="true"
-        app:maxNumberOfDecimalPlaces="2"
-        app:decimalZerosPadding="false"
-        android:importantForAutofill="noExcludeDescendants"
-        android:textAlignment="viewStart"
-        android:theme="@style/CustomThemeEditText"
-        app:negativeValueAllow="true"
-        app:errorEnabled="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        <ru.pravbeseda.currencyedittext.CurrencyEditText
+            android:id="@+id/currencyEditText"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="20dp"
+            android:selectAllOnFocus="true"
+            app:currencySymbol="$"
+            app:negativeValueAllow="true"
+            app:maxNumberOfDecimalPlaces="2"
+            app:decimalZerosPadding="false"
+            app:localeTag="da-DK"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:useCurrencySymbolAsHint="true" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:text="Clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/currencyEditText" />
+
+        <ru.pravbeseda.currencyedittext.CurrencyMaterialEditText
+            android:id="@+id/currencyMaterialEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="20dp"
+            android:hint="CurrencyMaterialEditText"
+            app:decimalSeparator=","
+            app:groupingSeparator=" "
+            app:selectAllOnFocus="true"
+            app:maxNumberOfDecimalPlaces="2"
+            app:decimalZerosPadding="false"
+            android:importantForAutofill="noExcludeDescendants"
+            android:textAlignment="viewStart"
+            android:theme="@style/CustomThemeEditText"
+            app:negativeValueAllow="true"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
