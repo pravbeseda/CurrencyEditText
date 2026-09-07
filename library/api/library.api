@@ -131,7 +131,6 @@ public final class ru/pravbeseda/currencyedittext/util/Routines$Companion {
 
 public final class ru/pravbeseda/currencyedittext/util/RoutinesKt {
 	public static final field emptyChar C
-	public static final fun firstChar (Ljava/lang/String;)Ljava/lang/Character;
 }
 
 public final class ru/pravbeseda/currencyedittext/watchers/CurrencyInputWatcher : ru/pravbeseda/currencyedittext/watchers/EasyTextWatcher {

@@ -54,4 +54,4 @@ class Routines {
     }
 }
 
-fun String?.firstChar(): Char? = if (!this.isNullOrEmpty()) this[0] else null
+internal fun String?.firstChar(): Char? = if (!this.isNullOrEmpty()) this[0] else null
