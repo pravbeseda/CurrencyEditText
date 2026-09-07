@@ -101,8 +101,10 @@ class CurrencyEditTextTest {
         assertEquals("1,000.45", currencyEditText.text.toString())
     }
 
+    // Backtick names with spaces cannot be dexed below DEX 040, so instrumented
+    // tests spell the issue number out instead (#39).
     @Test
-    fun `Issue #23 - an empty field reads as zero`() {
+    fun issue23EmptyFieldReadsAsZero() {
         setText("")
         assertEquals(BigDecimal.ZERO, currencyEditText.getValue())
     }
