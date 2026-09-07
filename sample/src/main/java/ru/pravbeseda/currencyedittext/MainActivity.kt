@@ -20,6 +20,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import pravbeseda.databinding.ActivityMainBinding
 import ru.pravbeseda.currencyedittext.CurrencyEditText.Companion.State
@@ -82,8 +83,8 @@ class MainActivity : AppCompatActivity() {
     private fun applySystemBarInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.statusBarBackground.updateLayoutParams { height = systemBars.top }
             binding.toolbar.updatePadding(
-                top = systemBars.top,
                 left = systemBars.left,
                 right = systemBars.right,
             )
