@@ -46,6 +46,9 @@ internal fun parseMoneyValueWithLocale(
     return try {
         NumberFormat.getInstance(Locale.ENGLISH).parse(valueWithoutSeparator)!!
     } catch (exception: ParseException) {
+        // Whatever reaches here holds no number at all — an empty or half-typed field, such as
+        // a lone minus sign — and zero is what such a field is worth. Nothing is lost: getValue()
+        // states that a field holding no number reads as zero.
         0
     }
 }
