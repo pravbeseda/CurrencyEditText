@@ -33,6 +33,9 @@ kotlin {
 
 dependencies {
     implementation project(':library')
+    // kotlin.stdlib.default.dependency is off project-wide — see gradle.properties — so the
+    // demo declares the stdlib itself. Nothing here needs a newer one than the library's.
+    implementation libs.kotlin.stdlib
     implementation libs.androidx.core.ktx
     implementation libs.material
     implementation libs.androidx.appcompat

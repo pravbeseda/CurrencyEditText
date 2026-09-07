@@ -63,6 +63,7 @@ dependencies {
     implementation libs.androidx.appcompat
 
     api libs.material
+    api libs.kotlin.stdlib
 
     testImplementation libs.junit
     testImplementation libs.androidx.test.core.ktx

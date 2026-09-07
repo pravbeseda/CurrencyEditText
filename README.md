@@ -32,8 +32,10 @@ implementation 'ru.pravbeseda:CurrencyEditText:<insert-latest-version-here>'
 
 Requires `minSdk 24` (Android 7.0). Releases up to 1.1.1 support `minSdk 19`.
 
-The artifact is compiled against Kotlin 2.1, so it can be consumed by Kotlin 2.1 and
-newer. Release 2.0.0 was built with Kotlin 2.4 metadata and needs a 2.4 compiler.
+The artifact carries Kotlin 2.1 metadata and declares `kotlin-stdlib:2.1.0`, so a project
+on Kotlin 2.1 or newer can consume it with nothing special in its own build; a newer
+consumer keeps its own stdlib. Release 2.0.0 carries Kotlin 2.4 metadata and needs a 2.4
+compiler.
 
 For versions, kindly head over to
 the [releases page](https://github.com/pravbeseda/CurrencyEditText/releases)
