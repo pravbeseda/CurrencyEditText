@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'pravbeseda'
-    compileSdk 36
+    compileSdk 37
 
     compileOptions {
         sourceCompatibility 1.8
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "ru.pravbeseda.currencyedittext"
         minSdkVersion 24
-        targetSdkVersion 36
+        targetSdkVersion 37
         versionCode VERSION_CODE.toInteger()
         versionName VERSION_NAME
     }

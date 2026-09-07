@@ -31,7 +31,9 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ```
 
 Toolchain: Gradle 8.14.5, AGP 8.13.0, Kotlin 2.4.10, JDK 17 (JDK 21 also works), minSdk 24,
-compileSdk/targetSdk 36. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
+compileSdk/targetSdk 37. AGP 8.13.0 prints a warning that it has not been tested against compile
+SDK 37; it is left visible rather than silenced with `android.suppressUnsupportedCompileSdk`, and
+it goes away with the next AGP upgrade. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
 = JVM_1_8 } }` is set in both modules to keep the two compilers in step.
 
 Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script

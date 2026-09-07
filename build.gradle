@@ -100,7 +100,15 @@ subprojects {
                 // cannot fail a build on the calendar's say-so. Both ids are
                 // named because NewerVersionAvailable covers what
                 // GradleDependency does not.
-                informational += ['GradleDependency', 'NewerVersionAvailable']
+                // OldTargetApi is the third of the same family, and the worst
+                // behaved: it judges targetSdk against the newest platform
+                // installed on the machine, so the same commit is green here and
+                // red on a CI runner that happens to have one more SDK. It cannot
+                // be frozen either — a baseline entry carries the old targetSdk in
+                // its message, so it stops matching the moment that line changes,
+                // and it stays unmatched on any machine that does not report the
+                // finding at all.
+                informational += ['GradleDependency', 'NewerVersionAvailable', 'OldTargetApi']
                 baseline = new File(moduleDir, 'lint-baseline.xml')
             }
         }

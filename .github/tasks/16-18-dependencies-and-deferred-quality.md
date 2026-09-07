@@ -27,9 +27,13 @@ validation — was already done in #20 and #30; only its first two items remain.
    `mockito 5.20.0 → 5.23.0`, `testCoreKtx 1.5.0 → 1.7.0`, `testExtJunitKtx
    1.1.5 → 1.3.0`, `testRules 1.5.0 → 1.7.0`, `testRunner 1.5.2 → 1.7.0`; add the
    `dependencyAnalysis` plugin. → verify: `./gradlew build` is green.
-2. `library/build.gradle` and `sample/build.gradle`: `compileSdk 34 → 36`,
-   `minSdkVersion 19 → 24`, `targetSdkVersion 34 → 36`. → verify: both modules
+2. `library/build.gradle` and `sample/build.gradle`: `compileSdk 34 → 37`,
+   `minSdkVersion 19 → 24`, `targetSdkVersion 34 → 37`. → verify: both modules
    assemble and `:library:compileDebugAndroidTestSources` passes.
+   `OldTargetApi` joins `GradleDependency` and `NewerVersionAvailable` as
+   `informational`: it judges `targetSdk` against the newest SDK installed on the
+   machine, so it was green locally and red on the runner, and a baseline entry
+   for it goes stale the moment `targetSdk` changes.
 3. `renovate.json5`: weekly schedule, `config:recommended`, vulnerability alerts,
    dependency dashboard, patch updates automerged, minor and major read by a
    person, androidx grouped, the Kotlin/AGP toolchain never automerged.
