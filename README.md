@@ -9,7 +9,7 @@ This library provides components `CurrencyEditText` and `CurrencyMaterialEditTex
 a regular `EditText`. With built-in number formatting, these components are useful for entering
 monetary amounts and other numeric values.
 
-![CurrencyEditText](./demo/CurrencyTextEdit.png) ![CurrencyMaterialEditText](./demo/CurrencyMaterialEditText.png)
+![CurrencyEditText](./demo/CurrencyTextEdit.png) ![CurrencyMaterialEditText](./demo/CurrencyMaterialTextEdit.png)
 
 **Library features:**
 * Support for formatting both by locale and by setting a separate grouping separator and decimal separator
