@@ -51,6 +51,7 @@ class CalculatorPanelThemeTest {
         assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
     }
 
+    /** Issue #46 — the fixed error red gave 2.54:1 on a dark panel, below the WCAG AA bound. */
     @Test
     fun theErrorColourFollowsADarkMaterialTheme() {
         val themed = themed(com.google.android.material.R.style.Theme_Material3_Dark)
@@ -61,6 +62,7 @@ class CalculatorPanelThemeTest {
         )
     }
 
+    /** Issue #46 — the same, under the plainest theme the panel supports. */
     @Test
     fun theErrorColourFollowsADarkAppCompatTheme() {
         val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_NoActionBar)
@@ -99,7 +101,8 @@ class CalculatorPanelThemeTest {
     }
 
     /**
-     * A [android.graphics.drawable.GradientDrawable] hands no stroke back, so the edge is asserted
+     * Issue #46 — the panel had no edge, so on a window of its own colour it was invisible. A
+     * [android.graphics.drawable.GradientDrawable] hands no stroke back, so the edge is asserted
      * where it matters: the pixels the panel is drawn from.
      */
     @Test
