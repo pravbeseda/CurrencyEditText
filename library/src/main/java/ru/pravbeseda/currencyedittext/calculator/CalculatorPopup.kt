@@ -20,6 +20,8 @@ import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.PopupWindow
@@ -94,12 +96,49 @@ internal class CalculatorPopup(
                 isOutsideTouchable = true
                 elevation = anchor.resources.displayMetrics.density * POPUP_ELEVATION_DP
             }
-        showAnchored(content)
+        placeOnceTheKeyboardIsOutOfTheWay(content)
     }
+
+    /**
+     * The panel is measured against the visible window frame, and the popup itself takes focus and
+     * so closes the keyboard: measured before that, the panel is placed against a screen that no
+     * longer exists — flipped above the field and capped to the room the keyboard left. Ask the
+     * keyboard to close first, and place the panel once the frame has answered.
+     */
+    private fun placeOnceTheKeyboardIsOutOfTheWay(content: View) {
+        val frameWithKeyboard = visibleFrame()
+        val keyboardIsClosing =
+            anchor.context
+                .getSystemService(InputMethodManager::class.java)
+                ?.hideSoftInputFromWindow(anchor.windowToken, 0) == true
+        if (!keyboardIsClosing) {
+            showAnchored(content)
+            return
+        }
+
+        var placed = false
+        var onLayout: ViewTreeObserver.OnGlobalLayoutListener? = null
+        val place = {
+            if (!placed) {
+                placed = true
+                onLayout?.let { anchor.viewTreeObserver.removeOnGlobalLayoutListener(it) }
+                if (anchor.isAttachedToWindow) showAnchored(content)
+            }
+        }
+        onLayout =
+            ViewTreeObserver.OnGlobalLayoutListener {
+                if (visibleFrame() != frameWithKeyboard) place()
+            }
+        anchor.viewTreeObserver.addOnGlobalLayoutListener(onLayout)
+        // A keyboard that was already on its way out, or refuses to go, must not hold the panel back.
+        anchor.postDelayed({ place() }, KEYBOARD_CLOSE_TIMEOUT_MS)
+    }
+
+    private fun visibleFrame(): Rect = Rect().also { anchor.getWindowVisibleDisplayFrame(it) }
 
     /** Measures the panel, asks [CalculatorPlacement] where it goes, and shows it there. */
     private fun showAnchored(content: View) {
-        val visible = Rect().also { anchor.getWindowVisibleDisplayFrame(it) }
+        val visible = visibleFrame()
         val anchorTop = IntArray(2).also { anchor.getLocationOnScreen(it) }[1]
         val wanted = measureHeight(content)
         val placement =
@@ -174,5 +213,6 @@ internal class CalculatorPopup(
 
     private companion object {
         const val POPUP_ELEVATION_DP = 8f
+        const val KEYBOARD_CLOSE_TIMEOUT_MS = 300L
     }
 }
