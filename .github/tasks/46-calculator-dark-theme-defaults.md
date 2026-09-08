@@ -79,4 +79,5 @@ still gets a readable panel.
   in that companion, so the code the exclude comment says the instrumented test covers instead
   counts against the 80% floor today; the module verifies at 80.52%. To see it: `./gradlew
   :library:koverXmlReportDebug` and grep the two class names in
-  `library/build/reports/kover/reportDebug.xml`.
+  `library/build/reports/kover/reportDebug.xml`. Filed as
+  https://github.com/pravbeseda/CurrencyEditText/issues/48.
