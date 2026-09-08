@@ -52,6 +52,10 @@ open class CurrencyEditText(
     private var calculatorEnabled: Boolean = false
     private var calculatorIcon: Drawable? = null
 
+    /** The panel this field has open, if any. */
+    internal var calculatorPanel: CalculatorPopup? = null
+        private set
+
     private var onValueChanged: OnValueChanged? = null
     private var validator: ((BigDecimal) -> String?)? = null
     private var state: State = State.OK
@@ -222,16 +226,22 @@ open class CurrencyEditText(
     /**
      * Opens the calculator panel under [anchor], which is the field itself unless it sits inside a
      * [CurrencyMaterialEditText] — there the panel hangs below the whole layout.
+     *
+     * Placement waits for the keyboard to close, and until the panel is up the button that opened it
+     * still takes taps: a second request in that window is this field's own panel being asked for
+     * twice, and is ignored.
      */
     internal fun showCalculator(anchor: View) {
-        CalculatorPopup(
-            anchor = anchor,
-            decimalSeparator = getDecimalSeparator(),
-            scale = maxDecimalPlaces,
-            negativeValueAllow = negativeValueAllow,
-            initialValue = getValue(),
-            onAccept = ::setValue,
-        ).show()
+        if (calculatorPanel?.isActive == true) return
+        calculatorPanel =
+            CalculatorPopup(
+                anchor = anchor,
+                decimalSeparator = getDecimalSeparator(),
+                scale = maxDecimalPlaces,
+                negativeValueAllow = negativeValueAllow,
+                initialValue = getValue(),
+                onAccept = ::setValue,
+            ).also { it.show() }
     }
 
     /** The button takes the end slot only; whatever the host put in the other three stays. */

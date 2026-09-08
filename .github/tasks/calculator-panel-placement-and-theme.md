@@ -94,4 +94,16 @@ colors from the app's theme.
   attributes, which makes the panel's layout, drawables, colours and styles private to the artifact
   — what the calculator plan said it wanted.
 
+- Where the guard against a second panel lives → on the field, as the `CurrencyEditText` that owns
+  the panel holding it (`calculatorPanel`) and asking it whether it is still active, rather than a
+  flag inside `CalculatorPopup`. A popup is built fresh on every request, so a guard of its own
+  would have to be static and one field's panel would then block the other field's. Activity is the
+  popup's own answer — `awaitingPlacement || window.isShowing` — so every way out releases it with
+  no bookkeeping: an outside tap, back, `=`, and the popup going down with its window all clear
+  `isShowing`, and a placement abandoned because the anchor left the window clears
+  `awaitingPlacement` without ever showing. That last path — the anchor detached while a placement
+  is pending — is the one case the tests do not reach: entering it needs a keyboard that is really
+  open, and driving the IME from an instrumented test is a race. It is covered by the same flag the
+  other paths use.
+
 ## Parked

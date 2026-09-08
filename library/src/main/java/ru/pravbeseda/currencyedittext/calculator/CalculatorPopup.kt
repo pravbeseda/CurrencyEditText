@@ -74,8 +74,17 @@ internal class CalculatorPopup(
 ) {
     private val colors = CalculatorColors.of(anchor.context)
     private var state = CalculatorState.seededWith(initialValue)
+    private var awaitingPlacement = true
     private lateinit var expressionView: TextView
     private lateinit var window: PopupWindow
+
+    /**
+     * True from the moment the panel is asked for until it has left the screen. Placement waits for
+     * the keyboard to go, so a panel can be on its way and not yet showing, and the field that owns
+     * it must count that window as open too. It starts true, so the popup is only read back once
+     * [show] has built it.
+     */
+    val isActive: Boolean get() = awaitingPlacement || window.isShowing
 
     fun show() {
         val content =
@@ -112,15 +121,15 @@ internal class CalculatorPopup(
                 .getSystemService(InputMethodManager::class.java)
                 ?.hideSoftInputFromWindow(anchor.windowToken, 0) == true
         if (!keyboardIsClosing) {
+            awaitingPlacement = false
             showAnchored(content)
             return
         }
 
-        var placed = false
         var onLayout: ViewTreeObserver.OnGlobalLayoutListener? = null
         val place = {
-            if (!placed) {
-                placed = true
+            if (awaitingPlacement) {
+                awaitingPlacement = false
                 onLayout?.let { anchor.viewTreeObserver.removeOnGlobalLayoutListener(it) }
                 if (anchor.isAttachedToWindow) showAnchored(content)
             }
