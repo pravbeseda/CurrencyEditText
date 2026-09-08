@@ -127,8 +127,9 @@ Supporting pieces:
   formatting outside the view; also the `emptyChar = 'n'` sentinel meaning "no grouping separator".
 - `calculator/` — the opt-in calculator panel, all `internal`: `CalculatorKey`,
   `ExpressionEvaluator` (recursive descent over `BigDecimal`), `CalculatorState` (the immutable key
-  state machine, which also renders the expression line), and `CalculatorPopup` — the only class of
-  the package that touches Android, and therefore the only one excluded from the Kover filter.
+  state machine, which also renders the expression line), `CalculatorPopup` and `CalculatorColors` —
+  the two classes of the package that touch Android, and therefore the two excluded from the Kover
+  filter; `library/build.gradle` carries the reason.
 - `res-public/values/attrs.xml` — XML attributes; `library/build.gradle` adds `src/main/res-public`
   as a second res source dir.
 

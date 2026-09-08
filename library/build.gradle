@@ -94,16 +94,15 @@ kover {
                 )
             }
             excludes {
-                // The calculator's panel is the one class of that package that
-                // touches Android, and it is out of the filter for the same
-                // reason as the two Views: src/test cannot reach it, so its
-                // lines would measure the size of the panel rather than the
-                // quality of the tests. Everything it decides — key semantics,
+                // The two classes of the calculator package that touch
+                // Android, out of the filter for the same reason as the two
+                // Views: src/test cannot reach them, so their lines would
+                // measure the size of the panel rather than the quality of the
+                // tests. Everything the panel decides — key semantics,
                 // arithmetic, the expression line — lives in CalculatorState
-                // and ExpressionEvaluator, which are measured.
-                // CalculatorColors is out for the same reason: it reads the
-                // host's theme through a Context, which src/test has none of.
-                // The instrumented CalculatorPanelThemeTest covers it instead.
+                // and ExpressionEvaluator, which are measured; CalculatorColors
+                // reads the host's theme through a Context, and the instrumented
+                // CalculatorPanelThemeTest covers it instead.
                 classes(
                         'ru.pravbeseda.currencyedittext.calculator.CalculatorPopup',
                         'ru.pravbeseda.currencyedittext.calculator.CalculatorColors'
