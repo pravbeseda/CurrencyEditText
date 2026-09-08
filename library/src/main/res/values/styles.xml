@@ -16,22 +16,25 @@
 -->
 <resources>
 
-    <!-- Geometry shared by every calculator key; the colours come from the host app's theme. -->
-    <style name="CurrencyCalculatorKey">
+    <!-- The panel's default colours. Every default resolves under any theme, Material or not; a
+         host overrides any subset through the currencyCalculatorStyle theme attribute. -->
+    <style name="Widget.CurrencyEditText.Calculator" parent="">
+        <item name="calculatorPanelBackgroundColor">?android:attr/colorBackground</item>
+        <item name="calculatorExpressionTextColor">?android:attr/textColorPrimary</item>
+        <item name="calculatorErrorTextColor">@color/currency_calculator_error</item>
+        <item name="calculatorKeyTextColor">?android:attr/textColorPrimary</item>
+        <item name="calculatorOperatorTextColor">@color/currency_calculator_key_primary</item>
+    </style>
+
+    <!-- Geometry shared by every calculator key; the colours are set from the style above. -->
+    <style name="CurrencyCalculatorKey" parent="@android:style/Widget.Material.Button.Borderless">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_columnWeight">1</item>
         <item name="android:layout_gravity">fill_horizontal</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/currency_calculator_key_on_surface</item>
-    </style>
-
-    <!-- Operators, sign, backspace, clear and equals: set apart the way a calculator sets them apart. -->
-    <style name="CurrencyCalculatorKey.Operator">
-        <item name="android:textColor">@color/currency_calculator_key_primary</item>
     </style>
 
 </resources>

@@ -14,11 +14,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- A key that is switched off is dimmed, the way the platform button style used to dim it. -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:alpha="0.38"
-        android:color="?attr/colorOnSurface"
-        android:state_enabled="false" />
-    <item android:color="?attr/colorOnSurface" />
-</selector>
+<resources>
+
+    <!-- The panel's error red, kept out of the theme: ?attr/colorError exists only under Material. -->
+    <color name="currency_calculator_error">#FFB00020</color>
+
+</resources>

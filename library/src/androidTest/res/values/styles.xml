@@ -14,10 +14,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- The popup's own background: a PopupWindow needs one to dismiss on an outside tap. The colour
-     is a placeholder; the panel tints this drawable with calculatorPanelBackgroundColor. -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="@android:color/white" />
-    <corners android:radius="8dp" />
-</shape>
+<resources>
+
+    <!-- A host theme that repaints two of the five roles and leaves the rest to the library. -->
+    <style name="TestThemeWithCalculatorOverride" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="currencyCalculatorStyle">@style/TestCalculatorOverride</item>
+    </style>
+
+    <style name="TestCalculatorOverride" parent="">
+        <item name="calculatorPanelBackgroundColor">#FF102030</item>
+        <item name="calculatorOperatorTextColor">#FF00FF00</item>
+    </style>
+
+</resources>

@@ -15,6 +15,7 @@
  */
 package ru.pravbeseda.currencyedittext.calculator
 
+import android.content.res.ColorStateList
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
@@ -52,8 +53,6 @@ private val KEY_BUTTONS =
         R.id.currency_calculator_key_clear to CalculatorKey.CLEAR,
     )
 
-private const val ERROR_COLOR = 0xFFB00020.toInt()
-
 private const val EQUALS_LABEL = "="
 
 /**
@@ -71,8 +70,8 @@ internal class CalculatorPopup(
     initialValue: BigDecimal,
     private val onAccept: (BigDecimal) -> Unit,
 ) {
+    private val colors = CalculatorColors.of(anchor.context)
     private var state = CalculatorState.seededWith(initialValue)
-    private var defaultTextColor: Int = 0
     private lateinit var expressionView: TextView
     private lateinit var window: PopupWindow
 
@@ -83,15 +82,14 @@ internal class CalculatorPopup(
                 .inflate(R.layout.currency_calculator_panel, FrameLayout(anchor.context), false)
         bindKeys(content)
         expressionView = content.findViewById(R.id.currency_calculator_expression)
-        defaultTextColor = expressionView.textColors.defaultColor
         render(failed = false)
         window =
             PopupWindow(content, panelWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
                 setBackgroundDrawable(
-                    AppCompatResources.getDrawable(
-                        anchor.context,
-                        R.drawable.currency_calculator_panel_background,
-                    ),
+                    AppCompatResources
+                        .getDrawable(anchor.context, R.drawable.currency_calculator_panel_background)
+                        ?.mutate()
+                        ?.apply { setTintList(colors.panelBackground) },
                 )
                 isOutsideTouchable = true
                 elevation = anchor.resources.displayMetrics.density * POPUP_ELEVATION_DP
@@ -138,6 +136,7 @@ internal class CalculatorPopup(
         KEY_BUTTONS.forEach { (id, key) ->
             content.findViewById<Button>(id).apply {
                 text = key.label(decimalSeparator)
+                setTextColor(if (key.isOperator) colors.operatorText else colors.keyText)
                 // Kept visible but dead, so the panel does not change shape between fields.
                 isEnabled = key != CalculatorKey.SIGN || negativeValueAllow
                 setOnClickListener { press(key) }
@@ -145,6 +144,7 @@ internal class CalculatorPopup(
         }
         content.findViewById<Button>(R.id.currency_calculator_key_equals).apply {
             text = EQUALS_LABEL
+            setTextColor(colors.operatorText)
             setOnClickListener { accept() }
         }
     }
@@ -169,7 +169,7 @@ internal class CalculatorPopup(
 
     private fun render(failed: Boolean) {
         expressionView.text = state.display(decimalSeparator)
-        expressionView.setTextColor(if (failed) ERROR_COLOR else defaultTextColor)
+        expressionView.setTextColor(if (failed) colors.errorText else colors.expressionText)
     }
 
     private companion object {

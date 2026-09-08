@@ -11,6 +11,22 @@
     <attr name="emptyStringForZero" format="boolean" />
     <attr name="calculatorEnabled" format="boolean" />
 
+    <!-- The style the calculator panel takes its colours from. Set it on the field's own
+         android:theme overlay to give one field its own panel colours. -->
+    <attr name="currencyCalculatorStyle" format="reference" />
+
+    <!-- The colour roles of the calculator panel. Every one of them has a default that resolves
+         under any theme, so a host overrides the ones it cares about and leaves the rest. -->
+    <declare-styleable name="CurrencyCalculator">
+        <attr name="calculatorPanelBackgroundColor" format="reference|color" />
+        <attr name="calculatorExpressionTextColor" format="reference|color" />
+        <attr name="calculatorErrorTextColor" format="reference|color" />
+        <!-- Digits and the decimal separator. -->
+        <attr name="calculatorKeyTextColor" format="reference|color" />
+        <!-- Operators, sign, backspace, clear and equals. -->
+        <attr name="calculatorOperatorTextColor" format="reference|color" />
+    </declare-styleable>
+
     <declare-styleable name="CurrencyEditText">
         <attr name="currencySymbol" />
         <attr name="localeTag" />

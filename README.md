@@ -172,6 +172,33 @@ On `CurrencyEditText` the button is drawn as a compound drawable and opens on a 
 it is not a separate node for a screen reader. Where that matters, use `CurrencyMaterialEditText`:
 there the button is a real end icon with a content description.
 
+### Panel colors
+
+The panel takes its colors from the host app's theme and needs no configuration. Where the defaults
+are not what you want, point `currencyCalculatorStyle` at a style of your own — on the app theme, or
+on the `android:theme` overlay of a single field, which gives that one field its own panel:
+
+```xml
+<style name="AppTheme" parent="Theme.Material3.DayNight">
+    <item name="currencyCalculatorStyle">@style/MyCalculator</item>
+</style>
+
+<style name="MyCalculator" parent="">
+    <item name="calculatorPanelBackgroundColor">@color/panel</item>
+    <item name="calculatorOperatorTextColor">?attr/colorPrimary</item>
+</style>
+```
+
+Name only the roles you want changed; the rest keep their defaults.
+
+| Attribute | What it paints | Default |
+|---|---|---|
+| `calculatorPanelBackgroundColor` | the panel behind the keys | `?android:attr/colorBackground` |
+| `calculatorExpressionTextColor` | the expression line | `?android:attr/textColorPrimary` |
+| `calculatorErrorTextColor` | the expression line when it does not evaluate | `#B00020` |
+| `calculatorKeyTextColor` | the digits and the decimal separator | `?android:attr/textColorPrimary` |
+| `calculatorOperatorTextColor` | operators, sign, backspace, clear and equals | `?attr/colorPrimary`, dimmed when a key is disabled |
+
 ## Localization
 
 The library supports localization. You can set the locale in the layout file:

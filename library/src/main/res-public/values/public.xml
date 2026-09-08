@@ -1,2 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The library's public resource surface: the XML attributes, and nothing else. Naming them here
+     makes the panel's own layout, drawables, colours and styles private to the artifact. -->
 <resources>
+    <public type="attr" name="currencySymbol" />
+    <public type="attr" name="localeTag" />
+    <public type="attr" name="decimalSeparator" />
+    <public type="attr" name="groupingSeparator" />
+    <public type="attr" name="useCurrencySymbolAsHint" />
+    <public type="attr" name="negativeValueAllow" />
+    <public type="attr" name="maxNumberOfDecimalPlaces" />
+    <public type="attr" name="decimalZerosPadding" />
+    <public type="attr" name="emptyStringForZero" />
+    <public type="attr" name="calculatorEnabled" />
+    <public type="attr" name="currencyCalculatorStyle" />
+    <public type="attr" name="calculatorPanelBackgroundColor" />
+    <public type="attr" name="calculatorExpressionTextColor" />
+    <public type="attr" name="calculatorErrorTextColor" />
+    <public type="attr" name="calculatorKeyTextColor" />
+    <public type="attr" name="calculatorOperatorTextColor" />
 </resources>

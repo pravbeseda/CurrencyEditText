@@ -8,8 +8,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- The overlay this one field is themed with: it also names the calculator panel's style,
+         which is how a host gives a single field its own panel colours. -->
     <style name="CustomThemeEditText">
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="currencyCalculatorStyle">@style/SampleCalculator</item>
+    </style>
+
+    <!-- Two of the five roles repainted; the other three keep the library's defaults. -->
+    <style name="SampleCalculator" parent="">
+        <item name="calculatorOperatorTextColor">@color/colorAccent</item>
+        <item name="calculatorPanelBackgroundColor">@color/calculatorPanel</item>
     </style>
 
 </resources>

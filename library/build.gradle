@@ -101,7 +101,13 @@ kover {
                 // quality of the tests. Everything it decides — key semantics,
                 // arithmetic, the expression line — lives in CalculatorState
                 // and ExpressionEvaluator, which are measured.
-                classes('ru.pravbeseda.currencyedittext.calculator.CalculatorPopup')
+                // CalculatorColors is out for the same reason: it reads the
+                // host's theme through a Context, which src/test has none of.
+                // The instrumented CalculatorPanelThemeTest covers it instead.
+                classes(
+                        'ru.pravbeseda.currencyedittext.calculator.CalculatorPopup',
+                        'ru.pravbeseda.currencyedittext.calculator.CalculatorColors'
+                )
             }
         }
         variant('debug') {
