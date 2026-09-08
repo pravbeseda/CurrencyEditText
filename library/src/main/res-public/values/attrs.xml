@@ -19,6 +19,8 @@
          under any theme, so a host overrides the ones it cares about and leaves the rest. -->
     <declare-styleable name="CurrencyCalculator">
         <attr name="calculatorPanelBackgroundColor" format="reference|color" />
+        <!-- The panel's 1dp edge, which is all that separates it from a window of the same colour. -->
+        <attr name="calculatorPanelStrokeColor" format="reference|color" />
         <attr name="calculatorExpressionTextColor" format="reference|color" />
         <attr name="calculatorErrorTextColor" format="reference|color" />
         <!-- Digits and the decimal separator. -->

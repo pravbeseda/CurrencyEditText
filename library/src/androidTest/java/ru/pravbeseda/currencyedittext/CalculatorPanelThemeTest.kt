@@ -17,6 +17,8 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
@@ -24,6 +26,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import ru.pravbeseda.currencyedittext.calculator.CalculatorColors
@@ -42,6 +45,7 @@ class CalculatorPanelThemeTest {
         val colors = CalculatorColors.of(themed)
 
         assertEquals(themed.color(android.R.attr.colorBackground), colors.panelBackground.defaultColor)
+        assertEquals(themed.color(android.R.attr.colorControlHighlight), colors.panelStroke.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.expressionText.defaultColor)
         assertEquals(themed.color(androidx.appcompat.R.attr.colorPrimary), colors.operatorText.defaultColor)
@@ -89,9 +93,37 @@ class CalculatorPanelThemeTest {
         val colors = CalculatorColors.of(themed)
 
         assertEquals(Color.parseColor("#FF102030"), colors.panelBackground.defaultColor)
+        assertEquals(Color.parseColor("#FF405060"), colors.panelStroke.defaultColor)
         assertEquals(Color.parseColor("#FF00FF00"), colors.operatorText.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
         assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
+    }
+
+    /**
+     * A [android.graphics.drawable.GradientDrawable] hands no stroke back, so the edge is asserted
+     * where it matters: the pixels the panel is drawn from.
+     */
+    @Test
+    fun thePanelBackgroundIsDrawnWithAnEdge() {
+        val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar)
+        val colors =
+            CalculatorColors.of(themed).copy(
+                panelBackground = ColorStateList.valueOf(Color.WHITE),
+                panelStroke = ColorStateList.valueOf(Color.RED),
+            )
+        val size = 128
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        colors.panelDrawable(themed).apply {
+            setBounds(0, 0, size, size)
+            draw(Canvas(bitmap))
+        }
+
+        assertEquals(Color.WHITE, bitmap.getPixel(size / 2, size / 2))
+        assertNotEquals(
+            "the panel needs an edge of its own, or it vanishes into a window of its own colour",
+            bitmap.getPixel(size / 2, size / 2),
+            bitmap.getPixel(size / 2, 0),
+        )
     }
 
     @Test

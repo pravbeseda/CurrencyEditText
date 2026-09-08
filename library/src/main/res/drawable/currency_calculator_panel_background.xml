@@ -14,8 +14,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- The popup's own background: a PopupWindow needs one to dismiss on an outside tap. The colour
-     is a placeholder; the panel tints this drawable with calculatorPanelBackgroundColor. -->
+<!-- The popup's own background: a PopupWindow needs one to dismiss on an outside tap. Only the
+     shape is fixed here and the colour is a placeholder; the panel paints the fill and the 1dp edge
+     in code, from calculatorPanelBackgroundColor and calculatorPanelStrokeColor. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="@android:color/white" />
