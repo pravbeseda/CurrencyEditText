@@ -45,7 +45,27 @@ class CalculatorPanelThemeTest {
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.expressionText.defaultColor)
         assertEquals(themed.color(androidx.appcompat.R.attr.colorPrimary), colors.operatorText.defaultColor)
-        assertEquals(ERROR_RED, colors.errorText.defaultColor)
+        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
+    }
+
+    @Test
+    fun theErrorColourFollowsADarkMaterialTheme() {
+        val themed = themed(com.google.android.material.R.style.Theme_Material3_Dark)
+
+        assertEquals(
+            themed.color(androidx.appcompat.R.attr.colorError),
+            CalculatorColors.of(themed).errorText.defaultColor,
+        )
+    }
+
+    @Test
+    fun theErrorColourFollowsADarkAppCompatTheme() {
+        val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_NoActionBar)
+
+        assertEquals(
+            themed.color(androidx.appcompat.R.attr.colorError),
+            CalculatorColors.of(themed).errorText.defaultColor,
+        )
     }
 
     @Test
@@ -71,7 +91,7 @@ class CalculatorPanelThemeTest {
         assertEquals(Color.parseColor("#FF102030"), colors.panelBackground.defaultColor)
         assertEquals(Color.parseColor("#FF00FF00"), colors.operatorText.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
-        assertEquals(ERROR_RED, colors.errorText.defaultColor)
+        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
     }
 
     @Test
@@ -109,8 +129,4 @@ class CalculatorPanelThemeTest {
     }
 
     private fun ColorStateList.disabled(): Int = getColorForState(intArrayOf(-android.R.attr.state_enabled), defaultColor)
-
-    private companion object {
-        const val ERROR_RED = 0xFFB00020.toInt()
-    }
 }
