@@ -15,10 +15,13 @@
  */
 package ru.pravbeseda.currencyedittext.calculator
 
+import android.content.res.ColorStateList
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.PopupWindow
@@ -52,8 +55,6 @@ private val KEY_BUTTONS =
         R.id.currency_calculator_key_clear to CalculatorKey.CLEAR,
     )
 
-private const val ERROR_COLOR = 0xFFB00020.toInt()
-
 private const val EQUALS_LABEL = "="
 
 /**
@@ -71,10 +72,19 @@ internal class CalculatorPopup(
     initialValue: BigDecimal,
     private val onAccept: (BigDecimal) -> Unit,
 ) {
+    private val colors = CalculatorColors.of(anchor.context)
     private var state = CalculatorState.seededWith(initialValue)
-    private var defaultTextColor: Int = 0
+    private var awaitingPlacement = true
     private lateinit var expressionView: TextView
     private lateinit var window: PopupWindow
+
+    /**
+     * True from the moment the panel is asked for until it has left the screen. Placement waits for
+     * the keyboard to go, so a panel can be on its way and not yet showing, and the field that owns
+     * it must count that window as open too. It starts true, so the popup is only read back once
+     * [show] has built it.
+     */
+    val isActive: Boolean get() = awaitingPlacement || window.isShowing
 
     fun show() {
         val content =
@@ -83,25 +93,61 @@ internal class CalculatorPopup(
                 .inflate(R.layout.currency_calculator_panel, FrameLayout(anchor.context), false)
         bindKeys(content)
         expressionView = content.findViewById(R.id.currency_calculator_expression)
-        defaultTextColor = expressionView.textColors.defaultColor
         render(failed = false)
         window =
             PopupWindow(content, panelWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
                 setBackgroundDrawable(
-                    AppCompatResources.getDrawable(
-                        anchor.context,
-                        R.drawable.currency_calculator_panel_background,
-                    ),
+                    AppCompatResources
+                        .getDrawable(anchor.context, R.drawable.currency_calculator_panel_background)
+                        ?.mutate()
+                        ?.apply { setTintList(colors.panelBackground) },
                 )
                 isOutsideTouchable = true
                 elevation = anchor.resources.displayMetrics.density * POPUP_ELEVATION_DP
             }
-        showAnchored(content)
+        placeOnceTheKeyboardIsOutOfTheWay(content)
     }
+
+    /**
+     * The panel is measured against the visible window frame, and the popup itself takes focus and
+     * so closes the keyboard: measured before that, the panel is placed against a screen that no
+     * longer exists — flipped above the field and capped to the room the keyboard left. Ask the
+     * keyboard to close first, and place the panel once the frame has answered.
+     */
+    private fun placeOnceTheKeyboardIsOutOfTheWay(content: View) {
+        val frameWithKeyboard = visibleFrame()
+        val keyboardIsClosing =
+            anchor.context
+                .getSystemService(InputMethodManager::class.java)
+                ?.hideSoftInputFromWindow(anchor.windowToken, 0) == true
+        if (!keyboardIsClosing) {
+            awaitingPlacement = false
+            showAnchored(content)
+            return
+        }
+
+        var onLayout: ViewTreeObserver.OnGlobalLayoutListener? = null
+        val place = {
+            if (awaitingPlacement) {
+                awaitingPlacement = false
+                onLayout?.let { anchor.viewTreeObserver.removeOnGlobalLayoutListener(it) }
+                if (anchor.isAttachedToWindow) showAnchored(content)
+            }
+        }
+        onLayout =
+            ViewTreeObserver.OnGlobalLayoutListener {
+                if (visibleFrame() != frameWithKeyboard) place()
+            }
+        anchor.viewTreeObserver.addOnGlobalLayoutListener(onLayout)
+        // A keyboard that was already on its way out, or refuses to go, must not hold the panel back.
+        anchor.postDelayed({ place() }, KEYBOARD_CLOSE_TIMEOUT_MS)
+    }
+
+    private fun visibleFrame(): Rect = Rect().also { anchor.getWindowVisibleDisplayFrame(it) }
 
     /** Measures the panel, asks [CalculatorPlacement] where it goes, and shows it there. */
     private fun showAnchored(content: View) {
-        val visible = Rect().also { anchor.getWindowVisibleDisplayFrame(it) }
+        val visible = visibleFrame()
         val anchorTop = IntArray(2).also { anchor.getLocationOnScreen(it) }[1]
         val wanted = measureHeight(content)
         val placement =
@@ -138,6 +184,7 @@ internal class CalculatorPopup(
         KEY_BUTTONS.forEach { (id, key) ->
             content.findViewById<Button>(id).apply {
                 text = key.label(decimalSeparator)
+                setTextColor(if (key.isOperator) colors.operatorText else colors.keyText)
                 // Kept visible but dead, so the panel does not change shape between fields.
                 isEnabled = key != CalculatorKey.SIGN || negativeValueAllow
                 setOnClickListener { press(key) }
@@ -145,6 +192,7 @@ internal class CalculatorPopup(
         }
         content.findViewById<Button>(R.id.currency_calculator_key_equals).apply {
             text = EQUALS_LABEL
+            setTextColor(colors.operatorText)
             setOnClickListener { accept() }
         }
     }
@@ -169,10 +217,11 @@ internal class CalculatorPopup(
 
     private fun render(failed: Boolean) {
         expressionView.text = state.display(decimalSeparator)
-        expressionView.setTextColor(if (failed) ERROR_COLOR else defaultTextColor)
+        expressionView.setTextColor(if (failed) colors.errorText else colors.expressionText)
     }
 
     private companion object {
         const val POPUP_ELEVATION_DP = 8f
+        const val KEYBOARD_CLOSE_TIMEOUT_MS = 300L
     }
 }

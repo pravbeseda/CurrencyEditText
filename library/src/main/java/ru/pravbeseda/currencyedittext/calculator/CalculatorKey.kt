@@ -44,6 +44,13 @@ internal enum class CalculatorKey(
     CLEAR('C'),
 }
 
+/**
+ * Digits and the decimal separator carry the value; every other key acts on it. The panel paints
+ * the two roles in different colours, so each key belongs to exactly one of them.
+ */
+internal val CalculatorKey.isOperator: Boolean
+    get() = !symbol.isDigit() && symbol != '.'
+
 /** Operators the panel prints differently from the ASCII the expression is built out of. */
 private val PRINTED_OPERATORS = mapOf('*' to '\u00d7', '/' to '\u00f7', '-' to '\u2212')
 
