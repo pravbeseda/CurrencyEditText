@@ -67,6 +67,9 @@ still gets a readable panel.
 - Step 2, compatibility lens, `blocking`: the README's role table still lists five roles and gives a
   consumer no way to find the opt-out (`calculatorPanelStrokeColor` = `@android:color/transparent`).
   Dropped as already planned: step 3 of this plan is exactly that edit.
+- Final gate, compatibility lens, `suggestion`: the release that carries this branch must be cut as
+  `minor`, not `patch` — it adds a public theme attribute and changes a default. Not a code change;
+  recorded here and in the pull request so the person who dispatches the `Release` workflow sees it.
 
 ## Parked
 - The Kover exclude list in `library/build.gradle:106-108` names the classes
