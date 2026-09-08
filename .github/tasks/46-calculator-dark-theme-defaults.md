@@ -30,7 +30,7 @@ still gets a readable panel.
   `library/src/androidTest/.../CalculatorPanelThemeTest.kt` — lenses: compatibility — done when:
   `CalculatorPanelThemeTest` asserts the error colour equals the host theme's `colorError` under
   AppCompat light, Material3 dark and AppCompat dark, and goes green on a device.
-- [ ] 2. The panel gets an edge: new role `calculatorPanelStrokeColor` (default
+- [x] 2. The panel gets an edge: new role `calculatorPanelStrokeColor` (default
   `?android:attr/colorControlHighlight`), a 1dp stroke applied with the fill in `CalculatorPopup` —
   files: `library/src/main/res-public/values/attrs.xml`, `.../public.xml`,
   `library/src/main/res/values/styles.xml`, `.../calculator/CalculatorColors.kt`,
@@ -51,4 +51,29 @@ still gets a readable panel.
   dark side, which is what the issue is about, improves from 1.80:1 to 4.81:1 (AppCompat dark) and
   10.89:1 (Material3 dark), and Material light hosts are unchanged.
 
+- Step 2, spec reviewer, `suggestion`: the drawable construction moved out of `CalculatorPopup` into
+  `CalculatorColors.panelDrawable(context)`, which the step did not name. Kept: it is what lets the
+  theme test reach the drawable without standing up a popup, and a top-level function in
+  `CalculatorPopup.kt` was measured by Kover (`CalculatorPopupKt` is not in the exclude list) and
+  dropped the module under its 80% floor. Cost if wrong: one more member on a class that is
+  otherwise a plain value holder.
+- Step 2, spec reviewer, `suggestion`: `checkNotNull(... as? GradientDrawable)` turns a path that
+  used to pass `null` to `setBackgroundDrawable` into a throw. Kept: CLAUDE.md forbids silently
+  swallowed failures, the resource ships inside the artifact, and the message names the cause.
+- Step 2, spec reviewer, `suggestion`: the comment in
+  `library/src/main/res/drawable/currency_calculator_panel_background.xml` was edited although the
+  step's file list did not name it. Kept: the diff made the old sentence ("the panel tints this
+  drawable") false, and leaving it would have been a contradiction between code and documentation.
+- Step 2, compatibility lens, `blocking`: the README's role table still lists five roles and gives a
+  consumer no way to find the opt-out (`calculatorPanelStrokeColor` = `@android:color/transparent`).
+  Dropped as already planned: step 3 of this plan is exactly that edit.
+
 ## Parked
+- The Kover exclude list in `library/build.gradle:106-108` names the classes
+  `…calculator.CalculatorPopup` and `…calculator.CalculatorColors`, but the report still measures
+  `CalculatorColors$Companion` (0/36) and `CalculatorPopupKt` (0/21) — both unreachable from
+  `src/test` for the very reason the two named classes are excluded. `CalculatorColors.of()` lives
+  in that companion, so the code the exclude comment says the instrumented test covers instead
+  counts against the 80% floor today; the module verifies at 80.52%. To see it: `./gradlew
+  :library:koverXmlReportDebug` and grep the two class names in
+  `library/build/reports/kover/reportDebug.xml`.

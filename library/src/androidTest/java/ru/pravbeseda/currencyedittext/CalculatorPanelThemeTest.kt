@@ -26,7 +26,6 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import ru.pravbeseda.currencyedittext.calculator.CalculatorColors
@@ -119,9 +118,9 @@ class CalculatorPanelThemeTest {
         }
 
         assertEquals(Color.WHITE, bitmap.getPixel(size / 2, size / 2))
-        assertNotEquals(
+        assertEquals(
             "the panel needs an edge of its own, or it vanishes into a window of its own colour",
-            bitmap.getPixel(size / 2, size / 2),
+            Color.RED,
             bitmap.getPixel(size / 2, 0),
         )
     }
