@@ -14,9 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- The popup's own background: a PopupWindow needs one to dismiss on an outside tap. -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="?attr/colorSurface" />
-    <corners android:radius="8dp" />
-</shape>
+<!-- A key that is switched off is dimmed, the way the platform button style used to dim it. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:alpha="0.38"
+        android:color="?attr/colorPrimary"
+        android:state_enabled="false" />
+    <item android:color="?attr/colorPrimary" />
+</selector>

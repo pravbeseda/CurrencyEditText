@@ -37,6 +37,7 @@
             android:paddingEnd="8dp"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="20sp" />
 
         <GridLayout
@@ -46,235 +47,88 @@
 
             <Button
                 android:id="@+id/currency_calculator_key_clear"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_open_paren"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_close_paren"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_backspace"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_7"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_8"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_9"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_divide"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_4"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_5"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_6"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_multiply"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_1"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_2"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_3"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_minus"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_sign"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_0"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_decimal"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_plus"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator" />
 
             <Button
                 android:id="@+id/currency_calculator_key_equals"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnSpan="4"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"
-                android:minHeight="48dp"
-                android:minWidth="0dp"
-                android:textSize="18sp" />
+                style="@style/CurrencyCalculatorKey.Operator"
+                android:layout_columnSpan="4" />
 
         </GridLayout>
 
