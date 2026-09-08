@@ -37,7 +37,7 @@ still gets a readable panel.
   `.../calculator/CalculatorPopup.kt`, `library/src/androidTest/.../CalculatorPanelThemeTest.kt` —
   lenses: compatibility — done when: the theme test asserts the new role's default and a host
   override of it, and the panel drawable carries a non-zero stroke of that colour.
-- [ ] 3. The README's calculator style table names both changed defaults and the new role — files:
+- [x] 3. The README's calculator style table names both changed defaults and the new role — files:
   `README.md` — lenses: none — done when: the table has a `calculatorPanelStrokeColor` row and the
   error row no longer says `#B00020`.
 
