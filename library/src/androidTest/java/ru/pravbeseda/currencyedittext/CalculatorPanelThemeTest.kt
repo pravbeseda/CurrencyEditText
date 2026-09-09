@@ -100,6 +100,33 @@ class CalculatorPanelThemeTest {
         assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
     }
 
+    @Test
+    fun theFillsAreTransparentUntilAHostAsksForThem() {
+        val colors = CalculatorColors.of(themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar))
+
+        assertEquals(Color.TRANSPARENT, colors.expressionBackground.defaultColor)
+        assertEquals(Color.TRANSPARENT, colors.equalsBackground.defaultColor)
+    }
+
+    /** A host that recolours the operators gets the equals key with them, without naming it. */
+    @Test
+    fun theEqualsTextFollowsTheOperatorRoleWhereNoHostNamesIt() {
+        val themed = themed(ru.pravbeseda.currencyedittext.test.R.style.TestThemeWithCalculatorOverride)
+        val colors = CalculatorColors.of(themed)
+
+        assertEquals(Color.parseColor("#FF00FF00"), colors.equalsText.defaultColor)
+    }
+
+    @Test
+    fun aHostStyleFillsTheExpressionLineAndTheEqualsKey() {
+        val themed = themed(ru.pravbeseda.currencyedittext.test.R.style.TestThemeWithFilledEquals)
+        val colors = CalculatorColors.of(themed)
+
+        assertEquals(Color.parseColor("#FF112233"), colors.expressionBackground.defaultColor)
+        assertEquals(Color.parseColor("#FF445566"), colors.equalsBackground.defaultColor)
+        assertEquals(Color.parseColor("#FF778899"), colors.equalsText.defaultColor)
+    }
+
     /**
      * Issue #46 — the panel had no edge, so on a window of its own colour it was invisible. A
      * [android.graphics.drawable.GradientDrawable] hands no stroke back, so the edge is asserted

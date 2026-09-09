@@ -22,11 +22,17 @@
         <!-- The panel's 1dp edge, which is all that separates it from a window of the same colour. -->
         <attr name="calculatorPanelStrokeColor" format="reference|color" />
         <attr name="calculatorExpressionTextColor" format="reference|color" />
+        <!-- The fill behind the expression line; transparent by default. -->
+        <attr name="calculatorExpressionBackgroundColor" format="reference|color" />
         <attr name="calculatorErrorTextColor" format="reference|color" />
         <!-- Digits and the decimal separator. -->
         <attr name="calculatorKeyTextColor" format="reference|color" />
         <!-- Operators, sign, backspace, clear and equals. -->
         <attr name="calculatorOperatorTextColor" format="reference|color" />
+        <!-- The fill behind the equals key; transparent by default, which leaves the key flat. -->
+        <attr name="calculatorEqualsBackgroundColor" format="reference|color" />
+        <!-- The equals key's label. Follows calculatorOperatorTextColor where it is not named. -->
+        <attr name="calculatorEqualsTextColor" format="reference|color" />
     </declare-styleable>
 
     <declare-styleable name="CurrencyEditText">

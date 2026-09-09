@@ -25,6 +25,9 @@
         <item name="calculatorErrorTextColor">?attr/colorError</item>
         <item name="calculatorKeyTextColor">?android:attr/textColorPrimary</item>
         <item name="calculatorOperatorTextColor">@color/currency_calculator_key_primary</item>
+        <!-- The two fills are opt-in: named, the panel looks exactly as it did without them. -->
+        <item name="calculatorExpressionBackgroundColor">@android:color/transparent</item>
+        <item name="calculatorEqualsBackgroundColor">@android:color/transparent</item>
     </style>
 
     <!-- Geometry shared by every calculator key; the colours are set from the style above. -->

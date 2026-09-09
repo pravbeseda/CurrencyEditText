@@ -170,8 +170,9 @@ open class CurrencyMaterialEditText(
 
     /**
      * Shows or hides the calculator button. Unlike [CurrencyEditText], which draws it as a
-     * compound drawable, the layout renders it as its own end icon and anchors the panel under the
-     * whole layout, error text included.
+     * compound drawable, the layout renders it as its own end icon. The panel hangs from the field
+     * inside the layout rather than from the layout itself, whose bottom sits some 21dp lower, past
+     * the strip kept for the error text; an error there is covered while the panel is up.
      */
     fun setCalculatorEnabled(enabled: Boolean) {
         // Nothing to do when the state does not change: the end icon is the host's until the
@@ -182,7 +183,7 @@ open class CurrencyMaterialEditText(
             endIconMode = END_ICON_CUSTOM
             setEndIconDrawable(R.drawable.currency_edit_text_ic_calculator)
             setEndIconContentDescription(R.string.currency_edit_text_calculator)
-            setEndIconOnClickListener { editText.showCalculator(this) }
+            setEndIconOnClickListener { editText.showCalculator(editText) }
         } else {
             setEndIconOnClickListener(null)
             endIconMode = END_ICON_NONE

@@ -268,9 +268,10 @@ editText.setCalculatorEnabled(true)
 ```
 
 Tapping the button opens a panel under the field, seeded with the field's current value. It
-evaluates a full expression — `+ - x /`, parentheses, and a sign key that flips the operand being
-entered — and `=` writes the result back into the field, rounded to `maxNumberOfDecimalPlaces`. An
-expression that does not evaluate, divides by zero, or comes out negative in a field with
+evaluates a full expression — `+ - x /`, with `x` and `/` binding tighter, and a sign key that
+flips the operand being entered — and `=` writes the result back into the field, rounded to
+`maxNumberOfDecimalPlaces`. An expression that does not evaluate, divides by zero, or comes out
+negative in a field with
 `negativeValueAllow="false"` leaves the field untouched. The system keyboard is not replaced: the
 field still takes typed input as before.
 
@@ -302,9 +303,12 @@ Name only the roles you want changed; the rest keep their defaults.
 | `calculatorPanelBackgroundColor` | the panel behind the keys | `?android:attr/colorBackground` |
 | `calculatorPanelStrokeColor` | the 1dp edge around the panel | `?android:attr/colorControlHighlight` |
 | `calculatorExpressionTextColor` | the expression line | `?android:attr/textColorPrimary` |
+| `calculatorExpressionBackgroundColor` | the fill behind the expression line | `@android:color/transparent` |
 | `calculatorErrorTextColor` | the expression line when it does not evaluate | `?attr/colorError` |
 | `calculatorKeyTextColor` | the digits and the decimal separator | `?android:attr/textColorPrimary` |
 | `calculatorOperatorTextColor` | operators, sign, backspace, clear and equals | `?attr/colorPrimary`, dimmed when a key is disabled |
+| `calculatorEqualsBackgroundColor` | the fill behind the equals key | `@android:color/transparent` |
+| `calculatorEqualsTextColor` | the equals key's label | whatever `calculatorOperatorTextColor` resolves to |
 
 The edge is there because the panel's fill defaults to the colour of the window behind it, which
 leaves it without a visible boundary. A panel that does not need one drops the edge by setting
