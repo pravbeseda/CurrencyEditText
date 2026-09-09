@@ -224,8 +224,9 @@ open class CurrencyEditText(
     fun isCalculatorEnabled(): Boolean = calculatorEnabled
 
     /**
-     * Opens the calculator panel under [anchor], which is the field itself unless it sits inside a
-     * [CurrencyMaterialEditText] — there the panel hangs below the whole layout.
+     * Opens the calculator panel under [anchor], which is this field: a [CurrencyMaterialEditText]
+     * passes the field inside it too, so the panel hangs from the box rather than from the strip
+     * that layout keeps below it for the error text.
      *
      * Placement waits for the keyboard to close, and until the panel is up the button that opened it
      * still takes taps: a second request in that window is this field's own panel being asked for
