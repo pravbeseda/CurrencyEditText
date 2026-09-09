@@ -46,8 +46,6 @@ private val KEY_BUTTONS =
         R.id.currency_calculator_key_minus to CalculatorKey.MINUS,
         R.id.currency_calculator_key_multiply to CalculatorKey.MULTIPLY,
         R.id.currency_calculator_key_divide to CalculatorKey.DIVIDE,
-        R.id.currency_calculator_key_open_paren to CalculatorKey.OPEN_PAREN,
-        R.id.currency_calculator_key_close_paren to CalculatorKey.CLOSE_PAREN,
         R.id.currency_calculator_key_sign to CalculatorKey.SIGN,
         R.id.currency_calculator_key_backspace to CalculatorKey.BACKSPACE,
         R.id.currency_calculator_key_clear to CalculatorKey.CLEAR,
@@ -63,7 +61,7 @@ private const val EQUALS_LABEL = "="
  * takes no negative values — leaves the panel open in an error state and writes nothing.
  */
 internal class CalculatorPopup(
-    private val anchor: View,
+    val anchor: View,
     private val decimalSeparator: Char,
     private val scale: Int,
     private val negativeValueAllow: Boolean,
@@ -90,7 +88,10 @@ internal class CalculatorPopup(
                 .from(anchor.context)
                 .inflate(R.layout.currency_calculator_panel, FrameLayout(anchor.context), false)
         bindKeys(content)
-        expressionView = content.findViewById(R.id.currency_calculator_expression)
+        expressionView =
+            content.findViewById<TextView>(R.id.currency_calculator_expression).apply {
+                setBackgroundColor(colors.expressionBackground.defaultColor)
+            }
         render(failed = false)
         window =
             PopupWindow(content, panelWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
@@ -185,7 +186,10 @@ internal class CalculatorPopup(
         }
         content.findViewById<Button>(R.id.currency_calculator_key_equals).apply {
             text = EQUALS_LABEL
-            setTextColor(colors.operatorText)
+            setTextColor(colors.equalsText)
+            // The ripple moves on top of the fill, which replaces the background it was drawn as.
+            foreground = background
+            setBackgroundColor(colors.equalsBackground.defaultColor)
             setOnClickListener { accept() }
         }
     }

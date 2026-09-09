@@ -19,7 +19,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.BACKSPACE
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.CLEAR
-import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.CLOSE_PAREN
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.DECIMAL
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.DIGIT_0
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.DIGIT_1
@@ -29,7 +28,6 @@ import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.DIGIT_5
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.DIVIDE
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.MINUS
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.MULTIPLY
-import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.OPEN_PAREN
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.PLUS
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.SIGN
 import java.math.BigDecimal
@@ -57,9 +55,8 @@ class CalculatorStateTest {
     }
 
     @Test
-    fun `an operator cannot turn a leading or bracketed minus into another sign`() {
+    fun `an operator cannot turn a leading minus into another sign`() {
         assertEquals("-", press(MINUS, PLUS))
-        assertEquals("(-", press(OPEN_PAREN, MINUS, PLUS))
     }
 
     @Test
@@ -126,32 +123,6 @@ class CalculatorStateTest {
     fun `sign on an empty expression starts a negative operand`() {
         assertEquals("-", press(SIGN))
         assertEquals("", press(SIGN, SIGN))
-    }
-
-    @Test
-    fun `sign is ignored right after a closing parenthesis`() {
-        assertEquals("(1+2)", press(OPEN_PAREN, DIGIT_1, PLUS, DIGIT_2, CLOSE_PAREN, SIGN))
-    }
-
-    @Test
-    fun `an opening parenthesis is allowed only where an operand may start`() {
-        assertEquals("(", press(OPEN_PAREN))
-        assertEquals("1*(", press(DIGIT_1, MULTIPLY, OPEN_PAREN))
-        assertEquals("1", press(DIGIT_1, OPEN_PAREN))
-    }
-
-    @Test
-    fun `a closing parenthesis needs an open one and a finished operand`() {
-        assertEquals("(1+2)", press(OPEN_PAREN, DIGIT_1, PLUS, DIGIT_2, CLOSE_PAREN))
-        assertEquals("(1+", press(OPEN_PAREN, DIGIT_1, PLUS, CLOSE_PAREN))
-        assertEquals("1", press(DIGIT_1, CLOSE_PAREN))
-    }
-
-    @Test
-    fun `digits are ignored right after a closing parenthesis`() {
-        assertEquals("(1)", press(OPEN_PAREN, DIGIT_1, CLOSE_PAREN, DIGIT_2))
-        assertEquals("(1)", press(OPEN_PAREN, DIGIT_1, CLOSE_PAREN, DECIMAL))
-        assertEquals("(1)", press(OPEN_PAREN, DIGIT_1, CLOSE_PAREN, OPEN_PAREN))
     }
 
     @Test

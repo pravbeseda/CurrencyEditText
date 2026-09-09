@@ -16,7 +16,10 @@
     <public type="attr" name="calculatorPanelBackgroundColor" />
     <public type="attr" name="calculatorPanelStrokeColor" />
     <public type="attr" name="calculatorExpressionTextColor" />
+    <public type="attr" name="calculatorExpressionBackgroundColor" />
     <public type="attr" name="calculatorErrorTextColor" />
     <public type="attr" name="calculatorKeyTextColor" />
     <public type="attr" name="calculatorOperatorTextColor" />
+    <public type="attr" name="calculatorEqualsBackgroundColor" />
+    <public type="attr" name="calculatorEqualsTextColor" />
 </resources>

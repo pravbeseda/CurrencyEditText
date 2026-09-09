@@ -37,8 +37,6 @@ internal enum class CalculatorKey(
     MINUS('-'),
     MULTIPLY('*'),
     DIVIDE('/'),
-    OPEN_PAREN('('),
-    CLOSE_PAREN(')'),
     SIGN('±'),
     BACKSPACE('⌫'),
     CLEAR('C'),

@@ -49,15 +49,15 @@
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
-                android:id="@+id/currency_calculator_key_open_paren"
-                style="@style/CurrencyCalculatorKey" />
-
-            <Button
-                android:id="@+id/currency_calculator_key_close_paren"
-                style="@style/CurrencyCalculatorKey" />
-
-            <Button
                 android:id="@+id/currency_calculator_key_backspace"
+                style="@style/CurrencyCalculatorKey" />
+
+            <Button
+                android:id="@+id/currency_calculator_key_sign"
+                style="@style/CurrencyCalculatorKey" />
+
+            <Button
+                android:id="@+id/currency_calculator_key_divide"
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
@@ -73,7 +73,7 @@
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
-                android:id="@+id/currency_calculator_key_divide"
+                android:id="@+id/currency_calculator_key_multiply"
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
@@ -89,7 +89,7 @@
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
-                android:id="@+id/currency_calculator_key_multiply"
+                android:id="@+id/currency_calculator_key_minus"
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
@@ -105,29 +105,22 @@
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
-                android:id="@+id/currency_calculator_key_minus"
-                style="@style/CurrencyCalculatorKey" />
-
-            <Button
-                android:id="@+id/currency_calculator_key_sign"
+                android:id="@+id/currency_calculator_key_plus"
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
                 android:id="@+id/currency_calculator_key_0"
-                style="@style/CurrencyCalculatorKey" />
+                style="@style/CurrencyCalculatorKey"
+                android:layout_columnSpan="2"
+                android:layout_columnWeight="2" />
 
             <Button
                 android:id="@+id/currency_calculator_key_decimal"
                 style="@style/CurrencyCalculatorKey" />
 
             <Button
-                android:id="@+id/currency_calculator_key_plus"
-                style="@style/CurrencyCalculatorKey" />
-
-            <Button
                 android:id="@+id/currency_calculator_key_equals"
-                style="@style/CurrencyCalculatorKey"
-                android:layout_columnSpan="4" />
+                style="@style/CurrencyCalculatorKey" />
 
         </GridLayout>
 

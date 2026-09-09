@@ -17,6 +17,7 @@ package ru.pravbeseda.currencyedittext
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.WindowManager
 import android.widget.FrameLayout
 
@@ -39,4 +40,13 @@ class TestActivity : Activity() {
             it.setCalculatorEnabled(true)
             container.addView(it)
         }
+
+    /** A [CurrencyMaterialEditText] refuses to inflate under this window's AppCompat theme. */
+    fun addMaterialField(): CurrencyMaterialEditText {
+        val themed = ContextThemeWrapper(this, com.google.android.material.R.style.Theme_MaterialComponents_Light)
+        return CurrencyMaterialEditText(themed, null).also {
+            it.setCalculatorEnabled(true)
+            container.addView(it)
+        }
+    }
 }

@@ -25,15 +25,13 @@ private val OPERATOR_KEYS =
         CalculatorKey.DIVIDE,
     )
 
-/** Characters after which an operand — and therefore a unary minus — may start. */
-private const val OPERAND_MAY_FOLLOW = "+-*/("
-
-/** The binary operators, and therefore also the characters a pending sign can be written among. */
+/**
+ * The binary operators: the characters a pending sign can be written among, and the ones after
+ * which an operand — and therefore a unary minus — may start.
+ */
 private const val OPERATORS = "+-*/"
 
 private fun Char.isOperandChar(): Boolean = isDigit() || this == '.'
-
-private fun Char?.mayPrecedeOperand(): Boolean = this != null && this in OPERAND_MAY_FOLLOW
 
 private fun String.withCharAt(
     index: Int,
@@ -46,8 +44,8 @@ private fun String.withCharAt(
  * separator into `.` on the way in, and draws `*` and `/` as `×` and `÷` on the way out.
  *
  * Every key press returns a new state; a press that would make the expression unreadable — a
- * second decimal point in one operand, a digit glued to a closing parenthesis — returns the state
- * unchanged rather than a mess the user has to back out of.
+ * second decimal point in one operand, an operator where no operand has started — returns the
+ * state unchanged rather than a mess the user has to back out of.
  */
 internal data class CalculatorState(
     val expression: String = "",
@@ -58,8 +56,6 @@ internal data class CalculatorState(
             CalculatorKey.BACKSPACE -> CalculatorState(expression.dropLast(1))
             CalculatorKey.SIGN -> flipSign()
             CalculatorKey.DECIMAL -> appendDecimal()
-            CalculatorKey.OPEN_PAREN -> appendOpeningParenthesis()
-            CalculatorKey.CLOSE_PAREN -> appendClosingParenthesis()
             in OPERATOR_KEYS -> appendOperator(key.symbol)
             else -> appendDigit(key.symbol)
         }
@@ -80,16 +76,14 @@ internal data class CalculatorState(
     /** The expression as the user reads it: their decimal separator, and the printed operators. */
     fun display(decimalSeparator: Char): String = expression.map { it.printed(decimalSeparator) }.joinToString("")
 
-    private val lastChar: Char? get() = expression.lastOrNull()
-
     /** The run of digits and decimal points at the end — what the user is typing right now. */
     private val currentOperand: String get() = expression.takeLastWhile { it.isOperandChar() }
 
-    private fun appendDigit(digit: Char): CalculatorState = if (lastChar == ')') this else CalculatorState(expression + digit)
+    private fun appendDigit(digit: Char): CalculatorState = CalculatorState(expression + digit)
 
     private fun appendDecimal(): CalculatorState =
         when {
-            lastChar == ')' || currentOperand.contains('.') -> this
+            currentOperand.contains('.') -> this
             currentOperand.isEmpty() -> CalculatorState("${expression}0.")
             else -> CalculatorState("$expression.")
         }
@@ -103,27 +97,9 @@ internal data class CalculatorState(
         val pending = expression.takeLastWhile { it in OPERATORS }
         val settled = expression.dropLast(pending.length)
         return when {
-            settled.isEmpty() || settled.last() == '(' -> {
-                if (operator == '-') CalculatorState("$settled-") else this
-            }
-
-            else -> {
-                CalculatorState(settled + operator)
-            }
+            settled.isEmpty() -> if (operator == '-') CalculatorState("-") else this
+            else -> CalculatorState(settled + operator)
         }
-    }
-
-    private fun appendOpeningParenthesis(): CalculatorState =
-        if (expression.isEmpty() || lastChar.mayPrecedeOperand()) {
-            CalculatorState("$expression(")
-        } else {
-            this
-        }
-
-    private fun appendClosingParenthesis(): CalculatorState {
-        val unclosed = expression.count { it == '(' } - expression.count { it == ')' }
-        val operandFinished = lastChar?.let { it.isDigit() || it == ')' } == true
-        return if (unclosed > 0 && operandFinished) CalculatorState("$expression)") else this
     }
 
     /**
@@ -133,7 +109,6 @@ internal data class CalculatorState(
      * get a unary minus written after them.
      */
     private fun flipSign(): CalculatorState {
-        if (lastChar == ')') return this
         val start = expression.length - currentOperand.length
         val preceding = expression.getOrNull(start - 1)
         return when {
@@ -147,7 +122,7 @@ internal data class CalculatorState(
     private fun isUnaryMinusBefore(start: Int): Boolean =
         start > 0 &&
             expression[start - 1] == '-' &&
-            (start == 1 || expression[start - 2] in OPERAND_MAY_FOLLOW)
+            (start == 1 || expression[start - 2] in OPERATORS)
 
     companion object {
         /**

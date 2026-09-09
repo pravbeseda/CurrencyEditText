@@ -16,6 +16,7 @@
 package ru.pravbeseda.currencyedittext.calculator
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CalculatorKeyTest {
@@ -33,9 +34,14 @@ class CalculatorKeyTest {
     }
 
     @Test
+    fun `the panel has no parenthesis keys`() {
+        assertTrue(CalculatorKey.entries.none { it.symbol == '(' || it.symbol == ')' })
+    }
+
+    @Test
     fun `every other key is drawn with its own symbol`() {
         assertEquals("7", CalculatorKey.DIGIT_7.label(','))
-        assertEquals("(", CalculatorKey.OPEN_PAREN.label(','))
+        assertEquals("±", CalculatorKey.SIGN.label(','))
         assertEquals("C", CalculatorKey.CLEAR.label(','))
     }
 }

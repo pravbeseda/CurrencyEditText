@@ -27,4 +27,15 @@
         <item name="calculatorOperatorTextColor">#FF00FF00</item>
     </style>
 
+    <!-- A host that lifts the equals key out of the flat grid and tints the expression line. -->
+    <style name="TestThemeWithFilledEquals" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="currencyCalculatorStyle">@style/TestCalculatorFilledEquals</item>
+    </style>
+
+    <style name="TestCalculatorFilledEquals" parent="">
+        <item name="calculatorExpressionBackgroundColor">#FF112233</item>
+        <item name="calculatorEqualsBackgroundColor">#FF445566</item>
+        <item name="calculatorEqualsTextColor">#FF778899</item>
+    </style>
+
 </resources>

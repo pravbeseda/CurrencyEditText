@@ -103,9 +103,12 @@ kover {
                 // and ExpressionEvaluator, which are measured; CalculatorColors
                 // reads the host's theme through a Context, and the instrumented
                 // CalculatorPanelThemeTest covers it instead.
+                // The trailing star reaches the companion object: everything
+                // CalculatorColors does lives in one, and a bare class name
+                // leaves CalculatorColors$Companion inside the measurement.
                 classes(
                         'ru.pravbeseda.currencyedittext.calculator.CalculatorPopup',
-                        'ru.pravbeseda.currencyedittext.calculator.CalculatorColors'
+                        'ru.pravbeseda.currencyedittext.calculator.CalculatorColors*'
                 )
             }
         }
