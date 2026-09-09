@@ -17,7 +17,10 @@ package ru.pravbeseda.currencyedittext.calculator
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
+import androidx.appcompat.content.res.AppCompatResources
 import ru.pravbeseda.currencyedittext.R
+import kotlin.math.roundToInt
 
 /**
  * The panel's colours, read from the host's [R.attr.currencyCalculatorStyle] over the library's own
@@ -25,12 +28,36 @@ import ru.pravbeseda.currencyedittext.R
  */
 internal data class CalculatorColors(
     val panelBackground: ColorStateList,
+    val panelStroke: ColorStateList,
     val expressionText: ColorStateList,
     val errorText: ColorStateList,
     val keyText: ColorStateList,
     val operatorText: ColorStateList,
 ) {
+    /**
+     * The panel's background: a rounded rectangle with an edge of its own, because the fill
+     * defaults to the colour of the window behind it and an elevation shadow is invisible on a dark
+     * one. Both colours are set here rather than in the shape XML, which cannot name a role, and
+     * not through a tint, which would paint the fill and the edge alike.
+     */
+    fun panelDrawable(context: Context): GradientDrawable {
+        val shape =
+            checkNotNull(
+                AppCompatResources
+                    .getDrawable(context, R.drawable.currency_calculator_panel_background)
+                    ?.mutate() as? GradientDrawable,
+            ) { "the calculator panel background must inflate to a shape" }
+        shape.setColor(panelBackground)
+        shape.setStroke(
+            (context.resources.displayMetrics.density * PANEL_STROKE_DP).roundToInt(),
+            panelStroke,
+        )
+        return shape
+    }
+
     companion object {
+        private const val PANEL_STROKE_DP = 1f
+
         /**
          * A host names the roles it cares about and leaves the rest: `defStyleRes` is consulted
          * only when `defStyleAttr` resolves to nothing, so the defaults are read as their own pass
@@ -65,6 +92,11 @@ internal data class CalculatorColors(
                         role(
                             R.styleable.CurrencyCalculator_calculatorPanelBackgroundColor,
                             "calculatorPanelBackgroundColor",
+                        ),
+                    panelStroke =
+                        role(
+                            R.styleable.CurrencyCalculator_calculatorPanelStrokeColor,
+                            "calculatorPanelStrokeColor",
                         ),
                     expressionText =
                         role(

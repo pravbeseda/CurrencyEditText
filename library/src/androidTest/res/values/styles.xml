@@ -16,13 +16,14 @@
 -->
 <resources>
 
-    <!-- A host theme that repaints two of the five roles and leaves the rest to the library. -->
+    <!-- A host theme that repaints three of the six roles and leaves the rest to the library. -->
     <style name="TestThemeWithCalculatorOverride" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="currencyCalculatorStyle">@style/TestCalculatorOverride</item>
     </style>
 
     <style name="TestCalculatorOverride" parent="">
         <item name="calculatorPanelBackgroundColor">#FF102030</item>
+        <item name="calculatorPanelStrokeColor">#FF405060</item>
         <item name="calculatorOperatorTextColor">#FF00FF00</item>
     </style>
 

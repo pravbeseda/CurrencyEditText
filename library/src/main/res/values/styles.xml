@@ -20,8 +20,9 @@
          host overrides any subset through the currencyCalculatorStyle theme attribute. -->
     <style name="Widget.CurrencyEditText.Calculator" parent="">
         <item name="calculatorPanelBackgroundColor">?android:attr/colorBackground</item>
+        <item name="calculatorPanelStrokeColor">?android:attr/colorControlHighlight</item>
         <item name="calculatorExpressionTextColor">?android:attr/textColorPrimary</item>
-        <item name="calculatorErrorTextColor">@color/currency_calculator_error</item>
+        <item name="calculatorErrorTextColor">?attr/colorError</item>
         <item name="calculatorKeyTextColor">?android:attr/textColorPrimary</item>
         <item name="calculatorOperatorTextColor">@color/currency_calculator_key_primary</item>
     </style>

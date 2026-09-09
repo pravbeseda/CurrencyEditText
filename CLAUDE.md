@@ -174,7 +174,9 @@ A change is done only when all of the following hold:
    implementation (red → green → refactor). Watch the test fail for the expected reason first, and
    report that red run in the summary.
 3. A bug fix starts with a test that reproduces the bug and fails before the fix. Name the issue in
-   the test: `` `Issue #42 — cursor jumps after deleting the grouping separator` ``.
+   the test: `` `Issue #42 — cursor jumps after deleting the grouping separator` ``. An instrumented
+   test cannot carry that name — D8 rejects spaces in a method name below DEX 040, and these run from
+   minSdk 24 — so in `src/androidTest` the issue number goes in the test's KDoc instead.
 4. Behaviour changes are reflected in tests, not only in the code.
 5. Logic that cannot be tested from `src/test` is a signal to move it out of the View into the
    watcher or into `util/` — not a licence to skip the test.

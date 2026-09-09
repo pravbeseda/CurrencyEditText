@@ -17,6 +17,8 @@ package ru.pravbeseda.currencyedittext
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
@@ -42,10 +44,33 @@ class CalculatorPanelThemeTest {
         val colors = CalculatorColors.of(themed)
 
         assertEquals(themed.color(android.R.attr.colorBackground), colors.panelBackground.defaultColor)
+        assertEquals(themed.color(android.R.attr.colorControlHighlight), colors.panelStroke.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.expressionText.defaultColor)
         assertEquals(themed.color(androidx.appcompat.R.attr.colorPrimary), colors.operatorText.defaultColor)
-        assertEquals(ERROR_RED, colors.errorText.defaultColor)
+        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
+    }
+
+    /** Issue #46 — the fixed error red gave 2.54:1 on a dark panel, below the WCAG AA bound. */
+    @Test
+    fun theErrorColourFollowsADarkMaterialTheme() {
+        val themed = themed(com.google.android.material.R.style.Theme_Material3_Dark)
+
+        assertEquals(
+            themed.color(androidx.appcompat.R.attr.colorError),
+            CalculatorColors.of(themed).errorText.defaultColor,
+        )
+    }
+
+    /** Issue #46 — the same, under the plainest theme the panel supports. */
+    @Test
+    fun theErrorColourFollowsADarkAppCompatTheme() {
+        val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_NoActionBar)
+
+        assertEquals(
+            themed.color(androidx.appcompat.R.attr.colorError),
+            CalculatorColors.of(themed).errorText.defaultColor,
+        )
     }
 
     @Test
@@ -69,9 +94,38 @@ class CalculatorPanelThemeTest {
         val colors = CalculatorColors.of(themed)
 
         assertEquals(Color.parseColor("#FF102030"), colors.panelBackground.defaultColor)
+        assertEquals(Color.parseColor("#FF405060"), colors.panelStroke.defaultColor)
         assertEquals(Color.parseColor("#FF00FF00"), colors.operatorText.defaultColor)
         assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
-        assertEquals(ERROR_RED, colors.errorText.defaultColor)
+        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
+    }
+
+    /**
+     * Issue #46 — the panel had no edge, so on a window of its own colour it was invisible. A
+     * [android.graphics.drawable.GradientDrawable] hands no stroke back, so the edge is asserted
+     * where it matters: the pixels the panel is drawn from.
+     */
+    @Test
+    fun thePanelBackgroundIsDrawnWithAnEdge() {
+        val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar)
+        val colors =
+            CalculatorColors.of(themed).copy(
+                panelBackground = ColorStateList.valueOf(Color.WHITE),
+                panelStroke = ColorStateList.valueOf(Color.RED),
+            )
+        val size = 128
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        colors.panelDrawable(themed).apply {
+            setBounds(0, 0, size, size)
+            draw(Canvas(bitmap))
+        }
+
+        assertEquals(Color.WHITE, bitmap.getPixel(size / 2, size / 2))
+        assertEquals(
+            "the panel needs an edge of its own, or it vanishes into a window of its own colour",
+            Color.RED,
+            bitmap.getPixel(size / 2, 0),
+        )
     }
 
     @Test
@@ -109,8 +163,4 @@ class CalculatorPanelThemeTest {
     }
 
     private fun ColorStateList.disabled(): Int = getColorForState(intArrayOf(-android.R.attr.state_enabled), defaultColor)
-
-    private companion object {
-        const val ERROR_RED = 0xFFB00020.toInt()
-    }
 }

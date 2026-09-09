@@ -300,10 +300,15 @@ Name only the roles you want changed; the rest keep their defaults.
 | Attribute | What it paints | Default |
 |---|---|---|
 | `calculatorPanelBackgroundColor` | the panel behind the keys | `?android:attr/colorBackground` |
+| `calculatorPanelStrokeColor` | the 1dp edge around the panel | `?android:attr/colorControlHighlight` |
 | `calculatorExpressionTextColor` | the expression line | `?android:attr/textColorPrimary` |
-| `calculatorErrorTextColor` | the expression line when it does not evaluate | `#B00020` |
+| `calculatorErrorTextColor` | the expression line when it does not evaluate | `?attr/colorError` |
 | `calculatorKeyTextColor` | the digits and the decimal separator | `?android:attr/textColorPrimary` |
 | `calculatorOperatorTextColor` | operators, sign, backspace, clear and equals | `?attr/colorPrimary`, dimmed when a key is disabled |
+
+The edge is there because the panel's fill defaults to the colour of the window behind it, which
+leaves it without a visible boundary. A panel that does not need one drops the edge by setting
+`calculatorPanelStrokeColor` to `@android:color/transparent`.
 
 ## Formatting outside the view
 

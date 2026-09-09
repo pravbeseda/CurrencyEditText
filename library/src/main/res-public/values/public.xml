@@ -14,6 +14,7 @@
     <public type="attr" name="calculatorEnabled" />
     <public type="attr" name="currencyCalculatorStyle" />
     <public type="attr" name="calculatorPanelBackgroundColor" />
+    <public type="attr" name="calculatorPanelStrokeColor" />
     <public type="attr" name="calculatorExpressionTextColor" />
     <public type="attr" name="calculatorErrorTextColor" />
     <public type="attr" name="calculatorKeyTextColor" />

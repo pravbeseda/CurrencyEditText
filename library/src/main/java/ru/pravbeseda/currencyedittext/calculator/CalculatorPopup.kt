@@ -15,7 +15,6 @@
  */
 package ru.pravbeseda.currencyedittext.calculator
 
-import android.content.res.ColorStateList
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +25,6 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 import ru.pravbeseda.currencyedittext.R
 import java.math.BigDecimal
 
@@ -96,12 +94,7 @@ internal class CalculatorPopup(
         render(failed = false)
         window =
             PopupWindow(content, panelWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
-                setBackgroundDrawable(
-                    AppCompatResources
-                        .getDrawable(anchor.context, R.drawable.currency_calculator_panel_background)
-                        ?.mutate()
-                        ?.apply { setTintList(colors.panelBackground) },
-                )
+                setBackgroundDrawable(colors.panelDrawable(anchor.context))
                 isOutsideTouchable = true
                 elevation = anchor.resources.displayMetrics.density * POPUP_ELEVATION_DP
             }
