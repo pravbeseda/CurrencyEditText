@@ -72,7 +72,8 @@ internal class CalculatorPopup(
     private var state = CalculatorState.seededWith(initialValue)
     private var awaitingPlacement = true
     private lateinit var expressionView: TextView
-    private lateinit var window: PopupWindow
+    lateinit var window: PopupWindow
+        private set
 
     /**
      * True from the moment the panel is asked for until it has left the screen. Placement waits for
@@ -187,9 +188,11 @@ internal class CalculatorPopup(
         content.findViewById<Button>(R.id.currency_calculator_key_equals).apply {
             text = EQUALS_LABEL
             setTextColor(colors.equalsText)
-            // The ripple moves on top of the fill, which replaces the background it was drawn as.
-            foreground = background
+            // The ripple moves on top of the fill, and only once the fill is in place: setting a
+            // background clears the callback of the one it replaces, and that is this ripple.
+            val ripple = background
             setBackgroundColor(colors.equalsBackground.defaultColor)
+            foreground = ripple
             setOnClickListener { accept() }
         }
     }

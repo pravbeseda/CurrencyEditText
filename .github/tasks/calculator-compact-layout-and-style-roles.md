@@ -107,6 +107,11 @@ C   ⌫   ±   ÷
   `setCalculatorEnabled` used to promise. `CalculatorPopup.anchor` drops `private` so the test can
   name what the layout passed; the class is `internal`, so nothing leaves the artifact.
 
+- Review, on the equals key's ripple: the fill was set after the ripple had been moved to the
+  foreground, and `View.setBackground` clears the callback of the background it replaces — the same
+  drawable. The ripple stayed on screen and never drew another frame. The two lines run the other
+  way round now, and `CalculatorPanelPressFeedbackTest` asserts the callback is the key itself.
+
 ## Notes for the pull request
 - Behaviour change: the panel no longer offers parentheses.
 - Behaviour change: on `CurrencyMaterialEditText` the panel hangs from the field rather than from
