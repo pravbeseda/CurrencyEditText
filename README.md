@@ -269,7 +269,7 @@ editText.setCalculatorEnabled(true)
 
 Tapping the button opens a panel at the end of the field, under the button, seeded with the
 field's current value. It evaluates a full expression — `+ - x /`, with `x` and `/` binding
-tighter, a `()` key that writes whichever bracket the expression is missing, and a sign key that
+tighter, a `( )` key that writes whichever bracket the expression is missing, and a sign key that
 flips the operand being entered — and `=` writes the result back into the field, rounded to
 `maxNumberOfDecimalPlaces`. An expression that does not evaluate, divides by zero, or comes out
 negative in a field with
