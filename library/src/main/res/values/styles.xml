@@ -28,16 +28,21 @@
         <!-- The two fills are opt-in: named, the panel looks exactly as it did without them. -->
         <item name="calculatorExpressionBackgroundColor">@android:color/transparent</item>
         <item name="calculatorEqualsBackgroundColor">@android:color/transparent</item>
+        <!-- So is the line between the keys: unnamed, the keys are spaced and nothing is drawn. -->
+        <item name="calculatorKeyBorderColor">@android:color/transparent</item>
+        <item name="calculatorKeySize">56dp</item>
     </style>
 
-    <!-- Geometry shared by every calculator key; the colours are set from the style above. -->
+    <!-- Shared by every calculator key. The square the key is laid out at comes from
+         calculatorKeySize and is set on the view, since a style cannot read a theme dimension. -->
     <style name="CurrencyCalculatorKey" parent="@android:style/Widget.Material.Button.Borderless">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_gravity">fill_horizontal</item>
         <item name="android:minHeight">48dp</item>
-        <item name="android:minWidth">0dp</item>
+        <item name="android:minWidth">48dp</item>
+        <!-- A key is laid out at an exact size, so the button's own padding would only crowd the
+             label: "()" does not fit a 56dp key with 16dp of it taken from each side. -->
+        <item name="android:padding">0dp</item>
         <item name="android:textSize">18sp</item>
     </style>
 

@@ -11,12 +11,13 @@
     <attr name="emptyStringForZero" format="boolean" />
     <attr name="calculatorEnabled" format="boolean" />
 
-    <!-- The style the calculator panel takes its colours from. Set it on the field's own
-         android:theme overlay to give one field its own panel colours. -->
+    <!-- The style the calculator panel takes its look from. Set it on the field's own
+         android:theme overlay to give one field its own panel. -->
     <attr name="currencyCalculatorStyle" format="reference" />
 
-    <!-- The colour roles of the calculator panel. Every one of them has a default that resolves
-         under any theme, so a host overrides the ones it cares about and leaves the rest. -->
+    <!-- What the calculator panel is drawn from: its colour roles, and the size of a key. Every
+         one of them has a default that resolves under any theme, so a host overrides the ones it
+         cares about and leaves the rest. -->
     <declare-styleable name="CurrencyCalculator">
         <attr name="calculatorPanelBackgroundColor" format="reference|color" />
         <!-- The panel's 1dp edge, which is all that separates it from a window of the same colour. -->
@@ -33,6 +34,11 @@
         <attr name="calculatorEqualsBackgroundColor" format="reference|color" />
         <!-- The equals key's label. Follows calculatorOperatorTextColor where it is not named. -->
         <attr name="calculatorEqualsTextColor" format="reference|color" />
+        <!-- The 1dp line between the keys; transparent by default, which leaves them only spaced. -->
+        <attr name="calculatorKeyBorderColor" format="reference|color" />
+        <!-- The side of a key, which every key shares. Four of them plus the panel's padding are
+             what the panel is wide. -->
+        <attr name="calculatorKeySize" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="CurrencyEditText">

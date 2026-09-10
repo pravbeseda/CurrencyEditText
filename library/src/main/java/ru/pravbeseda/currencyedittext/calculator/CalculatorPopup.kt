@@ -16,6 +16,7 @@
 package ru.pravbeseda.currencyedittext.calculator
 
 import android.graphics.Rect
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import ru.pravbeseda.currencyedittext.R
@@ -46,6 +48,7 @@ private val KEY_BUTTONS =
         R.id.currency_calculator_key_minus to CalculatorKey.MINUS,
         R.id.currency_calculator_key_multiply to CalculatorKey.MULTIPLY,
         R.id.currency_calculator_key_divide to CalculatorKey.DIVIDE,
+        R.id.currency_calculator_key_parenthesis to CalculatorKey.PARENTHESIS,
         R.id.currency_calculator_key_sign to CalculatorKey.SIGN,
         R.id.currency_calculator_key_backspace to CalculatorKey.BACKSPACE,
         R.id.currency_calculator_key_clear to CalculatorKey.CLEAR,
@@ -53,23 +56,33 @@ private val KEY_BUTTONS =
 
 private const val EQUALS_LABEL = "="
 
+/** What the panel needs to know about the field it was opened from. */
+internal data class CalculatorField(
+    val decimalSeparator: Char,
+    val scale: Int,
+    val negativeValueAllow: Boolean,
+    val value: BigDecimal,
+)
+
 /**
  * The calculator panel: the only class here that touches Android. It inflates the keys, hands each
  * press to [CalculatorState] and, on `=`, gives the value back to the field through [onAccept].
  *
  * An expression that does not evaluate — incomplete, dividing by zero, or negative where the field
  * takes no negative values — leaves the panel open in an error state and writes nothing.
+ *
+ * The panel hangs under [anchor] and hugs the end edge of [alignTo], which is the same view for a
+ * plain field and the layout around it for a `CurrencyMaterialEditText`, whose calculator button
+ * is an end icon sitting outside the field.
  */
 internal class CalculatorPopup(
     val anchor: View,
-    private val decimalSeparator: Char,
-    private val scale: Int,
-    private val negativeValueAllow: Boolean,
-    initialValue: BigDecimal,
+    val alignTo: View,
+    private val field: CalculatorField,
     private val onAccept: (BigDecimal) -> Unit,
 ) {
-    private val colors = CalculatorColors.of(anchor.context)
-    private var state = CalculatorState.seededWith(initialValue)
+    private val style = CalculatorStyle.of(anchor.context)
+    private var state = CalculatorState.seededWith(field.value)
     private var awaitingPlacement = true
     private lateinit var expressionView: TextView
     lateinit var window: PopupWindow
@@ -88,15 +101,15 @@ internal class CalculatorPopup(
             LayoutInflater
                 .from(anchor.context)
                 .inflate(R.layout.currency_calculator_panel, FrameLayout(anchor.context), false)
-        bindKeys(content)
+        buildKeypad(content)
         expressionView =
             content.findViewById<TextView>(R.id.currency_calculator_expression).apply {
-                setBackgroundColor(colors.expressionBackground.defaultColor)
+                setBackgroundColor(style.expressionBackground.defaultColor)
             }
         render(failed = false)
         window =
-            PopupWindow(content, panelWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
-                setBackgroundDrawable(colors.panelDrawable(anchor.context))
+            PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
+                setBackgroundDrawable(style.panelDrawable(anchor.context))
                 isOutsideTouchable = true
                 elevation = anchor.resources.displayMetrics.density * POPUP_ELEVATION_DP
             }
@@ -144,7 +157,9 @@ internal class CalculatorPopup(
     private fun showAnchored(content: View) {
         val visible = visibleFrame()
         val anchorTop = IntArray(2).also { anchor.getLocationOnScreen(it) }[1]
-        val wanted = measureHeight(content)
+        val unconstrained = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        content.measure(unconstrained, unconstrained)
+        val wanted = content.measuredHeight
         val placement =
             CalculatorPlacement.choose(
                 spaceBelow = visible.bottom - (anchorTop + anchor.height),
@@ -152,49 +167,71 @@ internal class CalculatorPopup(
                 wanted = wanted,
             )
 
+        // An exact width, not WRAP_CONTENT: aligning the end edges is arithmetic on the width the
+        // popup was given, and PopupWindow does that arithmetic with the constant itself.
+        window.width = content.measuredWidth
         window.height = placement.height ?: ViewGroup.LayoutParams.WRAP_CONTENT
-        if (placement.above) {
-            window.showAsDropDown(anchor, 0, -(anchor.height + (placement.height ?: wanted)))
+        val below = if (placement.above) -(anchor.height + (placement.height ?: wanted)) else 0
+        window.showAsDropDown(anchor, alignmentOffset(), below, Gravity.END)
+    }
+
+    /**
+     * How far the panel's end edge sits from the anchor's. [Gravity.END] aligns the panel with the
+     * view it hangs from, and on a `CurrencyMaterialEditText` that is the field inside the layout,
+     * whose end edge stops short of the end icon the panel belongs to.
+     */
+    private fun alignmentOffset(): Int {
+        if (alignTo === anchor) return 0
+        val anchorStart = IntArray(2).also { anchor.getLocationOnScreen(it) }[0]
+        val alignStart = IntArray(2).also { alignTo.getLocationOnScreen(it) }[0]
+        return if (anchor.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+            alignStart - anchorStart
         } else {
-            window.showAsDropDown(anchor)
+            (alignStart + alignTo.width) - (anchorStart + anchor.width)
         }
     }
 
-    private fun measureHeight(content: View): Int {
-        val width = panelWidth()
-        val widthSpec =
-            if (width > 0) {
-                View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-            } else {
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            }
-        content.measure(widthSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-        return content.measuredHeight
-    }
-
-    /** The panel is as wide as the field it belongs to, unless that field is not laid out yet. */
-    private fun panelWidth(): Int = if (anchor.width > 0) anchor.width else ViewGroup.LayoutParams.WRAP_CONTENT
-
-    private fun bindKeys(content: View) {
+    /**
+     * Labels, colours and the square every key is laid out at, and the line drawn between them: a
+     * `LinearLayout` divider, one between the rows and one between the keys of each row. Each
+     * container gets a drawable of its own, since a divider is given bounds as it is drawn.
+     */
+    private fun buildKeypad(content: View) {
         KEY_BUTTONS.forEach { (id, key) ->
             content.findViewById<Button>(id).apply {
-                text = key.label(decimalSeparator)
-                setTextColor(if (key.isOperator) colors.operatorText else colors.keyText)
+                text = key.label(field.decimalSeparator)
+                setTextColor(if (key.isOperator) style.operatorText else style.keyText)
                 // Kept visible but dead, so the panel does not change shape between fields.
-                isEnabled = key != CalculatorKey.SIGN || negativeValueAllow
+                isEnabled = key != CalculatorKey.SIGN || field.negativeValueAllow
                 setOnClickListener { press(key) }
+                squareOff()
             }
         }
         content.findViewById<Button>(R.id.currency_calculator_key_equals).apply {
             text = EQUALS_LABEL
-            setTextColor(colors.equalsText)
+            setTextColor(style.equalsText)
             // The ripple moves on top of the fill, and only once the fill is in place: setting a
             // background clears the callback of the one it replaces, and that is this ripple.
             val ripple = background
-            setBackgroundColor(colors.equalsBackground.defaultColor)
+            setBackgroundColor(style.equalsBackground.defaultColor)
             foreground = ripple
             setOnClickListener { accept() }
+            squareOff()
         }
+        val rows = content.findViewById<LinearLayout>(R.id.currency_calculator_keys)
+        rows.dividerDrawable = style.keyBorderDrawable(anchor.context)
+        for (index in 0 until rows.childCount) {
+            (rows.getChildAt(index) as LinearLayout).dividerDrawable = style.keyBorderDrawable(anchor.context)
+        }
+    }
+
+    /** Every key is the same square, so the panel is four of them wide however wide the field is. */
+    private fun View.squareOff() {
+        layoutParams =
+            layoutParams.apply {
+                width = style.keySize
+                height = style.keySize
+            }
     }
 
     private fun press(key: CalculatorKey) {
@@ -203,7 +240,7 @@ internal class CalculatorPopup(
     }
 
     private fun accept() {
-        when (val result = state.result(scale, negativeValueAllow)) {
+        when (val result = state.result(field.scale, field.negativeValueAllow)) {
             is EvalResult.Success -> {
                 window.dismiss()
                 onAccept(result.value)
@@ -216,8 +253,8 @@ internal class CalculatorPopup(
     }
 
     private fun render(failed: Boolean) {
-        expressionView.text = state.display(decimalSeparator)
-        expressionView.setTextColor(if (failed) colors.errorText else colors.expressionText)
+        expressionView.text = state.display(field.decimalSeparator)
+        expressionView.setTextColor(if (failed) style.errorText else style.expressionText)
     }
 
     private companion object {

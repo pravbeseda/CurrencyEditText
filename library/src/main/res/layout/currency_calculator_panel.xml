@@ -15,13 +15,15 @@
   limitations under the License.
 -->
 <!-- Key labels are set from CalculatorKey, so a key always shows what it does. -->
+<!-- Rows of a LinearLayout rather than a GridLayout: only a LinearLayout draws a divider between
+     its children, which is what the line between the keys is made of. -->
 <!-- Scrollable so that a screen too short for the whole panel shows a usable part of it. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp">
@@ -39,90 +41,134 @@
             android:paddingBottom="12dp"
             android:textSize="20sp" />
 
-        <GridLayout
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/currency_calculator_keys"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:columnCount="4">
+            android:orientation="vertical"
+            android:showDividers="middle">
 
-            <Button
-                android:id="@+id/currency_calculator_key_clear"
-                style="@style/CurrencyCalculatorKey" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:showDividers="middle">
 
-            <Button
-                android:id="@+id/currency_calculator_key_backspace"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_clear"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_sign"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_backspace"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_divide"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_sign"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_7"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_divide"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_8"
-                style="@style/CurrencyCalculatorKey" />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/currency_calculator_key_9"
-                style="@style/CurrencyCalculatorKey" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:showDividers="middle">
 
-            <Button
-                android:id="@+id/currency_calculator_key_multiply"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_7"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_4"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_8"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_5"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_9"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_6"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_multiply"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_minus"
-                style="@style/CurrencyCalculatorKey" />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/currency_calculator_key_1"
-                style="@style/CurrencyCalculatorKey" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:showDividers="middle">
 
-            <Button
-                android:id="@+id/currency_calculator_key_2"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_4"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_3"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_5"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_plus"
-                style="@style/CurrencyCalculatorKey" />
+                <Button
+                    android:id="@+id/currency_calculator_key_6"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_0"
-                style="@style/CurrencyCalculatorKey"
-                android:layout_columnSpan="2"
-                android:layout_columnWeight="2" />
+                <Button
+                    android:id="@+id/currency_calculator_key_minus"
+                    style="@style/CurrencyCalculatorKey" />
 
-            <Button
-                android:id="@+id/currency_calculator_key_decimal"
-                style="@style/CurrencyCalculatorKey" />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/currency_calculator_key_equals"
-                style="@style/CurrencyCalculatorKey" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:showDividers="middle">
 
-        </GridLayout>
+                <Button
+                    android:id="@+id/currency_calculator_key_1"
+                    style="@style/CurrencyCalculatorKey" />
+
+                <Button
+                    android:id="@+id/currency_calculator_key_2"
+                    style="@style/CurrencyCalculatorKey" />
+
+                <Button
+                    android:id="@+id/currency_calculator_key_3"
+                    style="@style/CurrencyCalculatorKey" />
+
+                <Button
+                    android:id="@+id/currency_calculator_key_plus"
+                    style="@style/CurrencyCalculatorKey" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:showDividers="middle">
+
+                <Button
+                    android:id="@+id/currency_calculator_key_parenthesis"
+                    style="@style/CurrencyCalculatorKey" />
+
+                <Button
+                    android:id="@+id/currency_calculator_key_0"
+                    style="@style/CurrencyCalculatorKey" />
+
+                <Button
+                    android:id="@+id/currency_calculator_key_decimal"
+                    style="@style/CurrencyCalculatorKey" />
+
+                <Button
+                    android:id="@+id/currency_calculator_key_equals"
+                    style="@style/CurrencyCalculatorKey" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -267,8 +267,9 @@ Or in the code:
 editText.setCalculatorEnabled(true)
 ```
 
-Tapping the button opens a panel under the field, seeded with the field's current value. It
-evaluates a full expression — `+ - x /`, with `x` and `/` binding tighter, and a sign key that
+Tapping the button opens a panel at the end of the field, under the button, seeded with the
+field's current value. It evaluates a full expression — `+ - x /`, with `x` and `/` binding
+tighter, a `()` key that writes whichever bracket the expression is missing, and a sign key that
 flips the operand being entered — and `=` writes the result back into the field, rounded to
 `maxNumberOfDecimalPlaces`. An expression that does not evaluate, divides by zero, or comes out
 negative in a field with
@@ -279,7 +280,7 @@ On `CurrencyEditText` the button is drawn as a compound drawable and opens on a 
 it is not a separate node for a screen reader. Where that matters, use `CurrencyMaterialEditText`:
 there the button is a real end icon with a content description.
 
-### Panel colors
+### Panel colors and size
 
 The panel takes its colors from the host app's theme and needs no configuration. Where the defaults
 are not what you want, point `currencyCalculatorStyle` at a style of your own — on the app theme, or
@@ -306,13 +307,25 @@ Name only the roles you want changed; the rest keep their defaults.
 | `calculatorExpressionBackgroundColor` | the fill behind the expression line | `@android:color/transparent` |
 | `calculatorErrorTextColor` | the expression line when it does not evaluate | `?attr/colorError` |
 | `calculatorKeyTextColor` | the digits and the decimal separator | `?android:attr/textColorPrimary` |
-| `calculatorOperatorTextColor` | operators, sign, backspace, clear and equals | `?attr/colorPrimary`, dimmed when a key is disabled |
+| `calculatorOperatorTextColor` | operators, brackets, sign, backspace, clear and equals | `?attr/colorPrimary`, dimmed when a key is disabled |
 | `calculatorEqualsBackgroundColor` | the fill behind the equals key | `@android:color/transparent` |
 | `calculatorEqualsTextColor` | the equals key's label | whatever `calculatorOperatorTextColor` resolves to |
+| `calculatorKeyBorderColor` | the 1dp line between the keys | `@android:color/transparent` |
+
+One role is not a colour. `calculatorKeySize` is the square every key is laid out at, and four of
+them plus the panel's padding are what the panel is wide:
+
+| Attribute | What it sizes | Default |
+|---|---|---|
+| `calculatorKeySize` | the side of a key | `56dp` |
 
 The edge is there because the panel's fill defaults to the colour of the window behind it, which
 leaves it without a visible boundary. A panel that does not need one drops the edge by setting
 `calculatorPanelStrokeColor` to `@android:color/transparent`.
+
+The line between the keys is transparent by default, so the keys are only spaced apart. Naming
+`calculatorKeyBorderColor` draws it, between the keys and between the rows — never around the
+outside of the grid.
 
 ## Formatting outside the view
 

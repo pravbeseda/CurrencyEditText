@@ -15,10 +15,11 @@
         <item name="currencyCalculatorStyle">@style/SampleCalculator</item>
     </style>
 
-    <!-- Two of the six roles repainted; the other four keep the library's defaults. -->
+    <!-- Three roles named; the rest keep the library's defaults. -->
     <style name="SampleCalculator" parent="">
         <item name="calculatorOperatorTextColor">@color/colorAccent</item>
         <item name="calculatorPanelBackgroundColor">@color/calculatorPanel</item>
+        <item name="calculatorKeyBorderColor">@color/calculatorKeyBorder</item>
     </style>
 
 </resources>
