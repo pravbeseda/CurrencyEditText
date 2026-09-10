@@ -28,6 +28,7 @@ import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.DIGIT_5
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.DIVIDE
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.MINUS
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.MULTIPLY
+import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.PARENTHESIS
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.PLUS
 import ru.pravbeseda.currencyedittext.calculator.CalculatorKey.SIGN
 import java.math.BigDecimal
@@ -55,8 +56,9 @@ class CalculatorStateTest {
     }
 
     @Test
-    fun `an operator cannot turn a leading minus into another sign`() {
+    fun `an operator cannot turn a leading or bracketed minus into another sign`() {
         assertEquals("-", press(MINUS, PLUS))
+        assertEquals("(-", press(PARENTHESIS, MINUS, PLUS))
     }
 
     @Test
@@ -123,6 +125,47 @@ class CalculatorStateTest {
     fun `sign on an empty expression starts a negative operand`() {
         assertEquals("-", press(SIGN))
         assertEquals("", press(SIGN, SIGN))
+    }
+
+    @Test
+    fun `the parenthesis key opens where an operand may start`() {
+        assertEquals("(", press(PARENTHESIS))
+        assertEquals("1*(", press(DIGIT_1, MULTIPLY, PARENTHESIS))
+        assertEquals("((", press(PARENTHESIS, PARENTHESIS))
+    }
+
+    @Test
+    fun `the parenthesis key closes an open bracket once the operand is finished`() {
+        assertEquals("(1+2)", press(PARENTHESIS, DIGIT_1, PLUS, DIGIT_2, PARENTHESIS))
+        assertEquals("(1)", press(PARENTHESIS, DIGIT_1, PARENTHESIS))
+    }
+
+    @Test
+    fun `the parenthesis key opens a nested bracket where an operand is still owed`() {
+        assertEquals("(1+(", press(PARENTHESIS, DIGIT_1, PLUS, PARENTHESIS))
+    }
+
+    @Test
+    fun `the parenthesis key is ignored where neither bracket is legal`() {
+        assertEquals("1", press(DIGIT_1, PARENTHESIS))
+        assertEquals("(1)", press(PARENTHESIS, DIGIT_1, PARENTHESIS, PARENTHESIS))
+    }
+
+    @Test
+    fun `digits and the decimal key are ignored right after a closing parenthesis`() {
+        assertEquals("(1)", press(PARENTHESIS, DIGIT_1, PARENTHESIS, DIGIT_2))
+        assertEquals("(1)", press(PARENTHESIS, DIGIT_1, PARENTHESIS, DECIMAL))
+    }
+
+    @Test
+    fun `sign is ignored right after a closing parenthesis`() {
+        assertEquals("(1+2)", press(PARENTHESIS, DIGIT_1, PLUS, DIGIT_2, PARENTHESIS, SIGN))
+    }
+
+    @Test
+    fun `a bracketed expression is evaluated before what surrounds it`() {
+        assertEquals(EvalResult.Success(BigDecimal("9.00")), result("(1+2)*3"))
+        assertEquals(EvalResult.Failure, result("(1+2"))
     }
 
     @Test
