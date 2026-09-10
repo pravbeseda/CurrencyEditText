@@ -38,4 +38,14 @@
         <item name="calculatorEqualsTextColor">#FF778899</item>
     </style>
 
+    <!-- A host that draws the line between the keys and sizes them for itself. -->
+    <style name="TestThemeWithCalculatorGeometry" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="currencyCalculatorStyle">@style/TestCalculatorGeometry</item>
+    </style>
+
+    <style name="TestCalculatorGeometry" parent="">
+        <item name="calculatorKeyBorderColor">#FF99AABB</item>
+        <item name="calculatorKeySize">72dp</item>
+    </style>
+
 </resources>

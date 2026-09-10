@@ -17,7 +17,9 @@ package ru.pravbeseda.currencyedittext.calculator
 
 /**
  * A key of the calculator panel. [symbol] is what the key appends to the expression; for the three
- * editing keys, which append nothing, it is the label the panel draws on the button.
+ * editing keys, which append nothing, it is the label the panel draws on the button. The
+ * parenthesis key writes either bracket depending on where it is pressed, so its symbol is the
+ * opening one and [PRINTED_LABELS] gives it a label of its own.
  */
 internal enum class CalculatorKey(
     val symbol: Char,
@@ -37,6 +39,7 @@ internal enum class CalculatorKey(
     MINUS('-'),
     MULTIPLY('*'),
     DIVIDE('/'),
+    PARENTHESIS('('),
     SIGN('±'),
     BACKSPACE('⌫'),
     CLEAR('C'),
@@ -59,5 +62,12 @@ internal fun Char.printed(decimalSeparator: Char): Char =
         else -> PRINTED_OPERATORS[this] ?: this
     }
 
+/**
+ * Keys the panel labels with something other than the single character they append. The
+ * parenthesis key is spaced, because two brackets closed up read as one glyph rather than as the
+ * pair the key writes.
+ */
+private val PRINTED_LABELS = mapOf(CalculatorKey.PARENTHESIS to "( )")
+
 /** The label the panel draws on the key's button. */
-internal fun CalculatorKey.label(decimalSeparator: Char): String = symbol.printed(decimalSeparator).toString()
+internal fun CalculatorKey.label(decimalSeparator: Char): String = PRINTED_LABELS[this] ?: symbol.printed(decimalSeparator).toString()

@@ -25,7 +25,8 @@ import org.junit.Test
  * A [android.widget.PopupWindow] hangs from the bottom of the view it is anchored to. Anchored to
  * the whole [com.google.android.material.textfield.TextInputLayout], the panel starts below the
  * strip that layout keeps for its error text — some 21dp of empty space between the field and the
- * keys — so it is anchored to the field inside it instead.
+ * keys — so it is anchored to the field inside it instead. Sideways it takes the other view: the
+ * end icon it belongs to is the layout's, and stands past the end of the field.
  */
 class CalculatorPanelAnchorTest {
     @Test
@@ -38,6 +39,20 @@ class CalculatorPanelAnchorTest {
                 layout.calculatorButton().performClick()
 
                 assertSame(field, field.calculatorPanel?.anchor)
+            }
+        }
+    }
+
+    @Test
+    fun theMaterialLayoutAlignsThePanelWithItselfAndNotWithTheFieldInsideIt() {
+        launchActivity<TestActivity>().use { scenario ->
+            scenario.onActivity { activity ->
+                val layout = activity.addMaterialField()
+                val field = layout.editText as CurrencyEditText
+
+                layout.calculatorButton().performClick()
+
+                assertSame(layout, field.calculatorPanel?.alignTo)
             }
         }
     }

@@ -25,6 +25,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatEditText
+import ru.pravbeseda.currencyedittext.calculator.CalculatorField
 import ru.pravbeseda.currencyedittext.calculator.CalculatorPopup
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
 import ru.pravbeseda.currencyedittext.util.firstChar
@@ -224,23 +225,27 @@ open class CurrencyEditText(
     fun isCalculatorEnabled(): Boolean = calculatorEnabled
 
     /**
-     * Opens the calculator panel under [anchor], which is this field: a [CurrencyMaterialEditText]
-     * passes the field inside it too, so the panel hangs from the box rather than from the strip
-     * that layout keeps below it for the error text.
+     * Opens the calculator panel under this field — a [CurrencyMaterialEditText] hangs it from the
+     * field inside it too, rather than from the strip that layout keeps below the box for the error
+     * text — and hugs the end edge of [alignTo], the view carrying the button that opened it.
      *
      * Placement waits for the keyboard to close, and until the panel is up the button that opened it
      * still takes taps: a second request in that window is this field's own panel being asked for
      * twice, and is ignored.
      */
-    internal fun showCalculator(anchor: View) {
+    internal fun showCalculator(alignTo: View) {
         if (calculatorPanel?.isActive == true) return
         calculatorPanel =
             CalculatorPopup(
-                anchor = anchor,
-                decimalSeparator = getDecimalSeparator(),
-                scale = maxDecimalPlaces,
-                negativeValueAllow = negativeValueAllow,
-                initialValue = getValue(),
+                anchor = this,
+                alignTo = alignTo,
+                field =
+                    CalculatorField(
+                        decimalSeparator = getDecimalSeparator(),
+                        scale = maxDecimalPlaces,
+                        negativeValueAllow = negativeValueAllow,
+                        value = getValue(),
+                    ),
                 onAccept = ::setValue,
             ).also { it.show() }
     }

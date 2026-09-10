@@ -24,10 +24,11 @@ import ru.pravbeseda.currencyedittext.R
 import kotlin.math.roundToInt
 
 /**
- * The panel's colours, read from the host's [R.attr.currencyCalculatorStyle] over the library's own
- * defaults, so a host that sets nothing still gets a panel that resolves under any theme.
+ * What the panel is drawn from — its colours and the size of a key — read from the host's
+ * [R.attr.currencyCalculatorStyle] over the library's own defaults, so a host that sets nothing
+ * still gets a panel that resolves under any theme.
  */
-internal data class CalculatorColors(
+internal data class CalculatorStyle(
     val panelBackground: ColorStateList,
     val panelStroke: ColorStateList,
     val expressionText: ColorStateList,
@@ -37,6 +38,8 @@ internal data class CalculatorColors(
     val operatorText: ColorStateList,
     val equalsBackground: ColorStateList,
     val equalsText: ColorStateList,
+    val keyBorder: ColorStateList,
+    val keySize: Int,
 ) {
     /**
      * The panel's background: a rounded rectangle with an edge of its own, because the fill
@@ -59,15 +62,32 @@ internal data class CalculatorColors(
         return shape
     }
 
+    /**
+     * The line between two keys: a square of the border colour a dp on the side. A
+     * [android.widget.LinearLayout] divider reads one side of it — its width between the keys of a
+     * row, its height between the rows — so both are set.
+     */
+    fun keyBorderDrawable(context: Context): GradientDrawable {
+        val thickness = (context.resources.displayMetrics.density * KEY_BORDER_DP).roundToInt()
+        return GradientDrawable().apply {
+            setColor(keyBorder)
+            setSize(thickness, thickness)
+        }
+    }
+
     companion object {
         private const val PANEL_STROKE_DP = 1f
+        private const val KEY_BORDER_DP = 1f
+
+        /** No dimension a host could mean, so it says the attribute was not named. */
+        private const val UNSET = -1
 
         /**
          * A host names the roles it cares about and leaves the rest: `defStyleRes` is consulted
          * only when `defStyleAttr` resolves to nothing, so the defaults are read as their own pass
          * and the host's style is laid over them role by role.
          */
-        fun of(context: Context): CalculatorColors {
+        fun of(context: Context): CalculatorStyle {
             val defaults =
                 context.obtainStyledAttributes(
                     null,
@@ -94,7 +114,7 @@ internal data class CalculatorColors(
         private fun read(
             host: TypedArray,
             defaults: TypedArray,
-        ): CalculatorColors {
+        ): CalculatorStyle {
             fun named(index: Int): ColorStateList? = host.getColorStateList(index) ?: defaults.getColorStateList(index)
 
             fun role(
@@ -105,12 +125,22 @@ internal data class CalculatorColors(
                     "the library's default calculator style leaves $name unset"
                 }
 
+            fun dimension(
+                index: Int,
+                name: String,
+            ): Int {
+                val source = if (host.hasValue(index)) host else defaults
+                val value = source.getDimensionPixelSize(index, UNSET)
+                check(value != UNSET) { "the library's default calculator style leaves $name unset" }
+                return value
+            }
+
             val operatorText =
                 role(
                     R.styleable.CurrencyCalculator_calculatorOperatorTextColor,
                     "calculatorOperatorTextColor",
                 )
-            return CalculatorColors(
+            return CalculatorStyle(
                 panelBackground =
                     role(
                         R.styleable.CurrencyCalculator_calculatorPanelBackgroundColor,
@@ -150,6 +180,16 @@ internal data class CalculatorColors(
                 // The one role with no default of its own: a host that recolours the operators
                 // gets the equals key with them, and only a host that fills the key names it.
                 equalsText = named(R.styleable.CurrencyCalculator_calculatorEqualsTextColor) ?: operatorText,
+                keyBorder =
+                    role(
+                        R.styleable.CurrencyCalculator_calculatorKeyBorderColor,
+                        "calculatorKeyBorderColor",
+                    ),
+                keySize =
+                    dimension(
+                        R.styleable.CurrencyCalculator_calculatorKeySize,
+                        "calculatorKeySize",
+                    ),
             )
         }
     }

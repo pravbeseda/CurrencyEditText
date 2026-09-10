@@ -22,4 +22,6 @@
     <public type="attr" name="calculatorOperatorTextColor" />
     <public type="attr" name="calculatorEqualsBackgroundColor" />
     <public type="attr" name="calculatorEqualsTextColor" />
+    <public type="attr" name="calculatorKeyBorderColor" />
+    <public type="attr" name="calculatorKeySize" />
 </resources>

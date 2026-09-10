@@ -28,10 +28,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import ru.pravbeseda.currencyedittext.calculator.CalculatorColors
+import ru.pravbeseda.currencyedittext.calculator.CalculatorStyle
+import kotlin.math.roundToInt
 
 /**
- * The panel's colours come from the host: its own theme where it says nothing, and the style it
+ * The panel's look comes from the host: its own theme where it says nothing, and the style it
  * points [R.attr.currencyCalculatorStyle] at where it does. The defaults must resolve under any
  * theme — a Material-only attribute crashes the inflater in an AppCompat app.
  */
@@ -41,14 +42,14 @@ class CalculatorPanelThemeTest {
     @Test
     fun theDefaultsComeFromTheHostThemeUnderAppCompat() {
         val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar)
-        val colors = CalculatorColors.of(themed)
+        val style = CalculatorStyle.of(themed)
 
-        assertEquals(themed.color(android.R.attr.colorBackground), colors.panelBackground.defaultColor)
-        assertEquals(themed.color(android.R.attr.colorControlHighlight), colors.panelStroke.defaultColor)
-        assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
-        assertEquals(themed.color(android.R.attr.textColorPrimary), colors.expressionText.defaultColor)
-        assertEquals(themed.color(androidx.appcompat.R.attr.colorPrimary), colors.operatorText.defaultColor)
-        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
+        assertEquals(themed.color(android.R.attr.colorBackground), style.panelBackground.defaultColor)
+        assertEquals(themed.color(android.R.attr.colorControlHighlight), style.panelStroke.defaultColor)
+        assertEquals(themed.color(android.R.attr.textColorPrimary), style.keyText.defaultColor)
+        assertEquals(themed.color(android.R.attr.textColorPrimary), style.expressionText.defaultColor)
+        assertEquals(themed.color(androidx.appcompat.R.attr.colorPrimary), style.operatorText.defaultColor)
+        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), style.errorText.defaultColor)
     }
 
     /** Issue #46 — the fixed error red gave 2.54:1 on a dark panel, below the WCAG AA bound. */
@@ -58,7 +59,7 @@ class CalculatorPanelThemeTest {
 
         assertEquals(
             themed.color(androidx.appcompat.R.attr.colorError),
-            CalculatorColors.of(themed).errorText.defaultColor,
+            CalculatorStyle.of(themed).errorText.defaultColor,
         )
     }
 
@@ -69,62 +70,62 @@ class CalculatorPanelThemeTest {
 
         assertEquals(
             themed.color(androidx.appcompat.R.attr.colorError),
-            CalculatorColors.of(themed).errorText.defaultColor,
+            CalculatorStyle.of(themed).errorText.defaultColor,
         )
     }
 
     @Test
     fun theDefaultsFollowAMaterialTheme() {
         val themed = themed(com.google.android.material.R.style.Theme_Material3_DayNight)
-        val colors = CalculatorColors.of(themed)
+        val style = CalculatorStyle.of(themed)
 
         assertEquals(
             themed.color(com.google.android.material.R.attr.colorOnSurface),
-            colors.keyText.defaultColor,
+            style.keyText.defaultColor,
         )
         assertEquals(
             themed.color(androidx.appcompat.R.attr.colorPrimary),
-            colors.operatorText.defaultColor,
+            style.operatorText.defaultColor,
         )
     }
 
     @Test
     fun aHostStyleRepaintsTheRolesItNamesAndLeavesTheRest() {
         val themed = themed(ru.pravbeseda.currencyedittext.test.R.style.TestThemeWithCalculatorOverride)
-        val colors = CalculatorColors.of(themed)
+        val style = CalculatorStyle.of(themed)
 
-        assertEquals(Color.parseColor("#FF102030"), colors.panelBackground.defaultColor)
-        assertEquals(Color.parseColor("#FF405060"), colors.panelStroke.defaultColor)
-        assertEquals(Color.parseColor("#FF00FF00"), colors.operatorText.defaultColor)
-        assertEquals(themed.color(android.R.attr.textColorPrimary), colors.keyText.defaultColor)
-        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), colors.errorText.defaultColor)
+        assertEquals(Color.parseColor("#FF102030"), style.panelBackground.defaultColor)
+        assertEquals(Color.parseColor("#FF405060"), style.panelStroke.defaultColor)
+        assertEquals(Color.parseColor("#FF00FF00"), style.operatorText.defaultColor)
+        assertEquals(themed.color(android.R.attr.textColorPrimary), style.keyText.defaultColor)
+        assertEquals(themed.color(androidx.appcompat.R.attr.colorError), style.errorText.defaultColor)
     }
 
     @Test
     fun theFillsAreTransparentUntilAHostAsksForThem() {
-        val colors = CalculatorColors.of(themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar))
+        val style = CalculatorStyle.of(themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar))
 
-        assertEquals(Color.TRANSPARENT, colors.expressionBackground.defaultColor)
-        assertEquals(Color.TRANSPARENT, colors.equalsBackground.defaultColor)
+        assertEquals(Color.TRANSPARENT, style.expressionBackground.defaultColor)
+        assertEquals(Color.TRANSPARENT, style.equalsBackground.defaultColor)
     }
 
     /** A host that recolours the operators gets the equals key with them, without naming it. */
     @Test
     fun theEqualsTextFollowsTheOperatorRoleWhereNoHostNamesIt() {
         val themed = themed(ru.pravbeseda.currencyedittext.test.R.style.TestThemeWithCalculatorOverride)
-        val colors = CalculatorColors.of(themed)
+        val style = CalculatorStyle.of(themed)
 
-        assertEquals(Color.parseColor("#FF00FF00"), colors.equalsText.defaultColor)
+        assertEquals(Color.parseColor("#FF00FF00"), style.equalsText.defaultColor)
     }
 
     @Test
     fun aHostStyleFillsTheExpressionLineAndTheEqualsKey() {
         val themed = themed(ru.pravbeseda.currencyedittext.test.R.style.TestThemeWithFilledEquals)
-        val colors = CalculatorColors.of(themed)
+        val style = CalculatorStyle.of(themed)
 
-        assertEquals(Color.parseColor("#FF112233"), colors.expressionBackground.defaultColor)
-        assertEquals(Color.parseColor("#FF445566"), colors.equalsBackground.defaultColor)
-        assertEquals(Color.parseColor("#FF778899"), colors.equalsText.defaultColor)
+        assertEquals(Color.parseColor("#FF112233"), style.expressionBackground.defaultColor)
+        assertEquals(Color.parseColor("#FF445566"), style.equalsBackground.defaultColor)
+        assertEquals(Color.parseColor("#FF778899"), style.equalsText.defaultColor)
     }
 
     /**
@@ -135,14 +136,14 @@ class CalculatorPanelThemeTest {
     @Test
     fun thePanelBackgroundIsDrawnWithAnEdge() {
         val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar)
-        val colors =
-            CalculatorColors.of(themed).copy(
+        val style =
+            CalculatorStyle.of(themed).copy(
                 panelBackground = ColorStateList.valueOf(Color.WHITE),
                 panelStroke = ColorStateList.valueOf(Color.RED),
             )
         val size = 128
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        colors.panelDrawable(themed).apply {
+        style.panelDrawable(themed).apply {
             setBounds(0, 0, size, size)
             draw(Canvas(bitmap))
         }
@@ -156,12 +157,47 @@ class CalculatorPanelThemeTest {
     }
 
     @Test
+    fun theLineBetweenTheKeysIsTransparentUntilAHostAsksForIt() {
+        val style = CalculatorStyle.of(themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar))
+
+        assertEquals(Color.TRANSPARENT, style.keyBorder.defaultColor)
+    }
+
+    @Test
+    fun aKeyIsFiftySixDpUntilAHostSizesItItself() {
+        val themed = themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar)
+
+        assertEquals(themed.dp(56), CalculatorStyle.of(themed).keySize)
+    }
+
+    @Test
+    fun aHostStyleDrawsTheLineBetweenTheKeysAndSizesThem() {
+        val themed = themed(ru.pravbeseda.currencyedittext.test.R.style.TestThemeWithCalculatorGeometry)
+        val style = CalculatorStyle.of(themed)
+
+        assertEquals(Color.parseColor("#FF99AABB"), style.keyBorder.defaultColor)
+        assertEquals(themed.dp(72), style.keySize)
+    }
+
+    /** The divider is a rectangle a dp on the side, so a LinearLayout reads a line out of it. */
+    @Test
+    fun theLineBetweenTheKeysIsOneDpOfTheBorderColour() {
+        val themed = themed(ru.pravbeseda.currencyedittext.test.R.style.TestThemeWithCalculatorGeometry)
+
+        val line = CalculatorStyle.of(themed).keyBorderDrawable(themed)
+
+        assertEquals(themed.dp(1), line.intrinsicWidth)
+        assertEquals(themed.dp(1), line.intrinsicHeight)
+        assertEquals(Color.parseColor("#FF99AABB"), line.color?.defaultColor)
+    }
+
+    @Test
     fun aDisabledKeyIsDimmed() {
-        val colors = CalculatorColors.of(themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar))
+        val style = CalculatorStyle.of(themed(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar))
 
         assertTrue(
             "the sign key is disabled where negative values are not allowed, and must look it",
-            Color.alpha(colors.operatorText.disabled()) < Color.alpha(colors.operatorText.defaultColor),
+            Color.alpha(style.operatorText.disabled()) < Color.alpha(style.operatorText.defaultColor),
         )
     }
 
@@ -175,6 +211,8 @@ class CalculatorPanelThemeTest {
     }
 
     private fun themed(theme: Int) = ContextThemeWrapper(context, theme)
+
+    private fun Context.dp(value: Int): Int = (resources.displayMetrics.density * value).roundToInt()
 
     private fun Context.color(attr: Int): Int {
         val value = TypedValue()
