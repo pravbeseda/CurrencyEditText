@@ -41,7 +41,7 @@
         <item name="android:minHeight">48dp</item>
         <item name="android:minWidth">48dp</item>
         <!-- A key is laid out at an exact size, so the button's own padding would only crowd the
-             label: "()" does not fit a 56dp key with 16dp of it taken from each side. -->
+             label: "( )" does not fit a 56dp key with 16dp of it taken from each side. -->
         <item name="android:padding">0dp</item>
         <item name="android:textSize">18sp</item>
     </style>

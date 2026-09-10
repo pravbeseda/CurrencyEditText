@@ -34,7 +34,7 @@ class CalculatorKeyTest {
 
     @Test
     fun `the parenthesis key is drawn as both brackets, since one key writes either`() {
-        assertEquals("()", CalculatorKey.PARENTHESIS.label('.'))
+        assertEquals("( )", CalculatorKey.PARENTHESIS.label('.'))
     }
 
     @Test

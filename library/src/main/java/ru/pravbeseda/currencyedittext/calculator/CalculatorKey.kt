@@ -62,8 +62,12 @@ internal fun Char.printed(decimalSeparator: Char): Char =
         else -> PRINTED_OPERATORS[this] ?: this
     }
 
-/** Keys the panel labels with something other than the single character they append. */
-private val PRINTED_LABELS = mapOf(CalculatorKey.PARENTHESIS to "()")
+/**
+ * Keys the panel labels with something other than the single character they append. The
+ * parenthesis key is spaced, because two brackets closed up read as one glyph rather than as the
+ * pair the key writes.
+ */
+private val PRINTED_LABELS = mapOf(CalculatorKey.PARENTHESIS to "( )")
 
 /** The label the panel draws on the key's button. */
 internal fun CalculatorKey.label(decimalSeparator: Char): String = PRINTED_LABELS[this] ?: symbol.printed(decimalSeparator).toString()
