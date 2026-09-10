@@ -27,9 +27,9 @@ import org.junit.Test
 import ru.pravbeseda.currencyedittext.calculator.CalculatorPopup
 
 /**
- * A field opens one panel at a time. Placement waits for the keyboard to go, so between the tap and
- * the panel appearing the button that opened it still takes taps: without a guard, the second one
- * opens a second panel.
+ * Issue #43 — a field opens one panel at a time. Placement waits for the keyboard to go, so
+ * between the tap and the panel appearing the button that opened it still takes taps: without a
+ * guard, the second one opens a second panel.
  */
 class CalculatorPanelGuardTest {
     @Test
