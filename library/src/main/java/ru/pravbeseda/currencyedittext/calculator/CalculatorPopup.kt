@@ -175,21 +175,15 @@ internal class CalculatorPopup(
         window.showAsDropDown(anchor, alignmentOffset(), below, Gravity.END)
     }
 
-    /**
-     * How far the panel's end edge sits from the anchor's. [Gravity.END] aligns the panel with the
-     * view it hangs from, and on a `CurrencyMaterialEditText` that is the field inside the layout,
-     * whose end edge stops short of the end icon the panel belongs to.
-     */
-    private fun alignmentOffset(): Int {
-        if (alignTo === anchor) return 0
-        val anchorStart = IntArray(2).also { anchor.getLocationOnScreen(it) }[0]
-        val alignStart = IntArray(2).also { alignTo.getLocationOnScreen(it) }[0]
-        return if (anchor.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-            alignStart - anchorStart
-        } else {
-            (alignStart + alignTo.width) - (anchorStart + anchor.width)
-        }
-    }
+    /** Reads the two views off the screen and asks [CalculatorPlacement] for the offset between. */
+    private fun alignmentOffset(): Int =
+        CalculatorPlacement.endOffset(
+            anchorStart = IntArray(2).also { anchor.getLocationOnScreen(it) }[0],
+            anchorWidth = anchor.width,
+            alignStart = IntArray(2).also { alignTo.getLocationOnScreen(it) }[0],
+            alignWidth = alignTo.width,
+            rightToLeft = anchor.layoutDirection == View.LAYOUT_DIRECTION_RTL,
+        )
 
     /**
      * Labels, colours and the square every key is laid out at, and the line drawn between them: a

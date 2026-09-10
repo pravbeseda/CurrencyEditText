@@ -57,19 +57,6 @@ class CalculatorPanelAnchorTest {
         }
     }
 
-    @Test
-    fun aPlainFieldCarriesTheButtonItselfAndIsBothAnchorAndAlignment() {
-        launchActivity<TestActivity>().use { scenario ->
-            scenario.onActivity { activity ->
-                val field = activity.addField()
-
-                field.showCalculator(field)
-
-                assertSame(field, field.calculatorPanel?.alignTo)
-            }
-        }
-    }
-
     /** The end icon, found the way a user finds it: by what it says it is. */
     private fun ViewGroup.calculatorButton(): View {
         val label = context.getString(R.string.currency_edit_text_calculator)

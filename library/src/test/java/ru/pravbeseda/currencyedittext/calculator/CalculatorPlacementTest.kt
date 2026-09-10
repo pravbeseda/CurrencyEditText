@@ -54,4 +54,41 @@ class CalculatorPlacementTest {
             CalculatorPlacement.choose(spaceBelow = 300, spaceAbove = 300, wanted = 700),
         )
     }
+
+    @Test
+    fun `a panel aligned to the view it hangs from needs no offset`() {
+        assertEquals(0, endOffset(anchorStart = 40, anchorWidth = 300, alignStart = 40, alignWidth = 300))
+        assertEquals(
+            0,
+            endOffset(anchorStart = 40, anchorWidth = 300, alignStart = 40, alignWidth = 300, rightToLeft = true),
+        )
+    }
+
+    @Test
+    fun `a panel hugging a wider view moves out to that view's end edge`() {
+        assertEquals(126, endOffset(anchorStart = 40, anchorWidth = 700, alignStart = 40, alignWidth = 826))
+    }
+
+    @Test
+    fun `right to left takes the other edge, since the end of the row is the left one`() {
+        assertEquals(
+            -126,
+            endOffset(anchorStart = 166, anchorWidth = 700, alignStart = 40, alignWidth = 826, rightToLeft = true),
+        )
+    }
+
+    private fun endOffset(
+        anchorStart: Int,
+        anchorWidth: Int,
+        alignStart: Int,
+        alignWidth: Int,
+        rightToLeft: Boolean = false,
+    ): Int =
+        CalculatorPlacement.endOffset(
+            anchorStart = anchorStart,
+            anchorWidth = anchorWidth,
+            alignStart = alignStart,
+            alignWidth = alignWidth,
+            rightToLeft = rightToLeft,
+        )
 }

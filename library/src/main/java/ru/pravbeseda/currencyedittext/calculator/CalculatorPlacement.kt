@@ -16,8 +16,10 @@
 package ru.pravbeseda.currencyedittext.calculator
 
 /**
- * Where the panel hangs and how tall it may be. A [height] of `null` means it may take the height
- * it asked for; a number is the room it has to fit into, which the panel then scrolls inside.
+ * Where the panel goes: which side of the field it hangs on and how tall it may be, and — through
+ * [Companion.endOffset] — how far sideways it sits from the view it hangs from. A [height] of
+ * `null` means it may take the height it asked for; a number is the room it has to fit into, which
+ * the panel then scrolls inside.
  */
 internal data class CalculatorPlacement(
     val above: Boolean,
@@ -39,5 +41,25 @@ internal data class CalculatorPlacement(
             val room = if (above) spaceAbove else spaceBelow
             return CalculatorPlacement(above = above, height = if (wanted <= room) null else room)
         }
+
+        /**
+         * How far the panel's end edge sits from the end edge of the view it hangs from. A popup
+         * is aligned to its anchor, and on a `CurrencyMaterialEditText` the button the panel
+         * belongs to is the layout's end icon, outside the field the panel hangs under: this is
+         * the gap between the two. Right to left the end of the row is its left edge, so the two
+         * start edges are what have to meet instead.
+         */
+        fun endOffset(
+            anchorStart: Int,
+            anchorWidth: Int,
+            alignStart: Int,
+            alignWidth: Int,
+            rightToLeft: Boolean,
+        ): Int =
+            if (rightToLeft) {
+                alignStart - anchorStart
+            } else {
+                (alignStart + alignWidth) - (anchorStart + anchorWidth)
+            }
     }
 }
