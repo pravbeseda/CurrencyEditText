@@ -55,6 +55,8 @@ open class CurrencyMaterialEditText(
     init {
         var localeTag: String?
         var text: String?
+        var currencySymbol: String?
+        var useCurrencySymbolAsHint: Boolean
         var negativeValueAllow: Boolean
         var selectAllOnFocus: Boolean
         var decimalSeparator: Char?
@@ -72,6 +74,9 @@ open class CurrencyMaterialEditText(
             ).run {
                 localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
                 text = getString(R.styleable.CurrencyMaterialEditText_text)
+                currencySymbol = getString(R.styleable.CurrencyMaterialEditText_currencySymbol)
+                useCurrencySymbolAsHint =
+                    getBoolean(R.styleable.CurrencyMaterialEditText_useCurrencySymbolAsHint, false)
                 decimalSeparator =
                     getString(R.styleable.CurrencyMaterialEditText_decimalSeparator).firstChar()
                 groupingSeparator =
@@ -99,6 +104,7 @@ open class CurrencyMaterialEditText(
             // bugfix api26
             importantForAutofill = IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
         }
+        setCurrencySymbol(currencySymbol.orEmpty(), useCurrencySymbolAsHint)
         if (!text.isNullOrBlank()) setText(text!!)
         if (decimalSeparator !== null && groupingSeparator !== null) {
             setSeparators(
@@ -140,6 +146,13 @@ open class CurrencyMaterialEditText(
         newDecimalSeparator: Char,
     ) {
         editText.setSeparators(newGroupingSeparator, newDecimalSeparator)
+    }
+
+    fun setCurrencySymbol(
+        currencySymbol: String,
+        useCurrencySymbolAsHint: Boolean = false,
+    ) {
+        editText.setCurrencySymbol(currencySymbol, useCurrencySymbolAsHint)
     }
 
     fun setSelectAllOnFocus(selectOnFocus: Boolean) {

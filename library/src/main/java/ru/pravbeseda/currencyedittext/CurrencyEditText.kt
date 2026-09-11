@@ -111,7 +111,7 @@ open class CurrencyEditText(
                     recycle()
                 }
             }
-        currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
+        currencySymbolPrefix = prefixOf(prefix)
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
         if (!localeTag.isNullOrBlank()) {
             locale = getLocaleFromTag(localeTag!!)
@@ -200,10 +200,13 @@ open class CurrencyEditText(
         currencySymbol: String,
         useCurrencySymbolAsHint: Boolean = false,
     ) {
-        currencySymbolPrefix = "$currencySymbol "
+        currencySymbolPrefix = prefixOf(currencySymbol)
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
         invalidateTextWatcher()
     }
+
+    /** The symbol is stored with its trailing space; a blank one leaves no prefix at all. */
+    private fun prefixOf(currencySymbol: String): String = if (currencySymbol.isBlank()) "" else "$currencySymbol "
 
     fun setMaxNumberOfDecimalPlaces(maxDP: Int) {
         this.maxDecimalPlaces = maxDP

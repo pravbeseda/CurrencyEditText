@@ -114,6 +114,39 @@ class CurrencyMaterialEditTextTest {
         testSetText("100.1", "100.1")
     }
 
+    /** Issue #44 — the styleable declares both attributes; the init block has to read them. */
+    @Test
+    fun currencySymbolFromXmlPrefixesTheText() {
+        val fromXml = inflateWithSymbol()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            fromXml.setText("100")
+        }
+        Assert.assertEquals("$ 100", fromXml.text.toString())
+    }
+
+    /** Issue #44 — the layout takes the field's hint as its label when the host names none. */
+    @Test
+    fun useCurrencySymbolAsHintFromXmlLabelsTheLayout() {
+        Assert.assertEquals("$ ", inflateWithSymbol().hint.toString())
+    }
+
+    @Test
+    fun noCurrencySymbolByDefault() {
+        testSetText("100", "100")
+        Assert.assertNull(currencyEditText.hint)
+    }
+
+    @Test
+    fun setCurrencySymbolPrefixesTheText() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$")
+        }
+        testSetText("100", "$ 100")
+    }
+
+    private fun inflateWithSymbol(): CurrencyMaterialEditText =
+        inflateCurrencySymbolAttrs(context, ru.pravbeseda.currencyedittext.test.R.id.material_with_symbol)
+
     private fun testSetText(
         text: String,
         expected: String,
