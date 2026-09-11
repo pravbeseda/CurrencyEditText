@@ -103,11 +103,15 @@ kover {
                 // and ExpressionEvaluator, which are measured; CalculatorStyle
                 // reads the host's theme through a Context, and the instrumented
                 // CalculatorPanelThemeTest covers it instead.
-                // The trailing star reaches the companion object: everything
-                // CalculatorStyle does lives in one, and a bare class name
-                // leaves CalculatorStyle$Companion inside the measurement.
+                // The trailing star reaches the names the compiler derives
+                // from the file: everything CalculatorStyle does lives in a
+                // companion, and CalculatorPopup.kt's top-level members
+                // compile into CalculatorPopupKt. A bare class name leaves
+                // CalculatorStyle$Companion and CalculatorPopupKt inside the
+                // measurement, where the panel's key map counts against the
+                // floor and moves with the size of the panel.
                 classes(
-                        'ru.pravbeseda.currencyedittext.calculator.CalculatorPopup',
+                        'ru.pravbeseda.currencyedittext.calculator.CalculatorPopup*',
                         'ru.pravbeseda.currencyedittext.calculator.CalculatorStyle*'
                 )
             }
@@ -121,13 +125,15 @@ kover {
             verify {
                 onCheck = true
                 rule {
-                    // 80, against the 86% the filtered classes sit at today: the
-                    // floor has to leave room for a branch landing with its edge
-                    // cases covered a commit later, or it stops being a floor and
-                    // becomes a reason to argue with the build. It rises when the
-                    // margin turns out to be unused, never as a reaction to a red
-                    // run.
-                    minBound(80)
+                    // 90, against the 93% the filtered classes sit at today:
+                    // three points, which is room for a branch landing with its
+                    // edge cases covered a commit later. The floor has to leave
+                    // that room, or it stops being a floor and becomes a reason
+                    // to argue with the build. It rises when the margin turns
+                    // out to be unused, never as a reaction to a red run; it
+                    // was 80 until the panel's unmeasurable lines left the
+                    // filter and the margin turned out to be 13 points wide.
+                    minBound(90)
                 }
             }
         }
