@@ -28,7 +28,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import ru.pravbeseda.currencyedittext.calculator.CalculatorField
 import ru.pravbeseda.currencyedittext.calculator.CalculatorPopup
 import ru.pravbeseda.currencyedittext.model.CurrencyInputWatcherConfig
-import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.formatMoneyValue
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.parseMoneyValueWithLocale
@@ -76,45 +75,21 @@ open class CurrencyEditText(
         get() = isValidState()
 
     init {
-        var useCurrencySymbolAsHint = false
         inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
         keyListener = DigitsKeyListener.getInstance("0123456789.,-")
         textDirection = TEXT_DIRECTION_LTR
-        var localeTag: String?
-        val prefix: String
-        context.theme
-            .obtainStyledAttributes(
-                attrs,
-                R.styleable.CurrencyEditText,
-                0,
-                0,
-            ).run {
-                try {
-                    prefix = getString(R.styleable.CurrencyEditText_currencySymbol).orEmpty()
-                    localeTag = getString(R.styleable.CurrencyEditText_localeTag)
-                    decimalSeparator =
-                        getString(R.styleable.CurrencyEditText_decimalSeparator).firstChar()
-                    groupingSeparator =
-                        getString(R.styleable.CurrencyEditText_groupingSeparator).firstChar()
-                    useCurrencySymbolAsHint =
-                        getBoolean(R.styleable.CurrencyEditText_useCurrencySymbolAsHint, false)
-                    maxDecimalPlaces = getInt(R.styleable.CurrencyEditText_maxNumberOfDecimalPlaces, 2)
-                    negativeValueAllow =
-                        getBoolean(R.styleable.CurrencyEditText_negativeValueAllow, false)
-                    decimalZerosPadding =
-                        getBoolean(R.styleable.CurrencyEditText_decimalZerosPadding, false)
-                    emptyStringForZero =
-                        getBoolean(R.styleable.CurrencyEditText_emptyStringForZero, true)
-                    calculatorEnabled =
-                        getBoolean(R.styleable.CurrencyEditText_calculatorEnabled, false)
-                } finally {
-                    recycle()
-                }
-            }
-        currencySymbolPrefix = prefixOf(prefix)
-        if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
-        if (!localeTag.isNullOrBlank()) {
-            locale = getLocaleFromTag(localeTag!!)
+        val attributes = CurrencyViewAttributes.read(context, attrs)
+        groupingSeparator = attributes.groupingSeparator
+        decimalSeparator = attributes.decimalSeparator
+        maxDecimalPlaces = attributes.maxNumberOfDecimalPlaces
+        negativeValueAllow = attributes.negativeValueAllow
+        decimalZerosPadding = attributes.decimalZerosPadding
+        emptyStringForZero = attributes.emptyStringForZero
+        calculatorEnabled = attributes.calculatorEnabled
+        currencySymbolPrefix = prefixOf(attributes.currencySymbol)
+        if (attributes.useCurrencySymbolAsHint) hint = currencySymbolPrefix
+        if (!attributes.localeTag.isNullOrBlank()) {
+            locale = getLocaleFromTag(attributes.localeTag)
         }
         textWatcher = createTextWatcher()
         this.addTextChangedListener(textWatcher)
@@ -159,14 +134,23 @@ open class CurrencyEditText(
         newGroupingSeparator: Char,
         newDecimalSeparator: Char,
     ) {
-        var decimal = newDecimalSeparator
-        if (newGroupingSeparator == newDecimalSeparator) {
-            decimal = if (newDecimalSeparator == '.') ',' else '.'
-        }
+        applySeparators(newGroupingSeparator, newDecimalSeparator)
+    }
+
+    /**
+     * Applies the separators an attribute set gave, either of which may be absent: the locale's own
+     * stands in for the one that is, and [CurrencyInputWatcher] moves one of the two where they
+     * turn out to collide. [setSeparators] is the runtime door and takes both together.
+     */
+    internal fun applySeparators(
+        grouping: Char?,
+        decimal: Char?,
+    ) {
+        if (grouping == null && decimal == null) return
         val value = getValue()
         setText("")
+        groupingSeparator = grouping
         decimalSeparator = decimal
-        groupingSeparator = newGroupingSeparator
         invalidateTextWatcher()
         setValue(value)
     }

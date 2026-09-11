@@ -34,18 +34,9 @@ class CurrencyInputWatcher(
 
     private val editText: EditText? get() = editTextRef.get()
 
-    private val decimalSeparator: Char =
-        if (config.decimalSeparator !== null) {
-            config.decimalSeparator
-        } else {
-            DecimalFormatSymbols.getInstance(config.locale).decimalSeparator
-        }
-    private val groupingSeparator =
-        if (config.groupingSeparator !== null) {
-            config.groupingSeparator
-        } else {
-            DecimalFormatSymbols.getInstance(config.locale).groupingSeparator
-        }
+    private val separators = resolveSeparators(config)
+    private val decimalSeparator: Char = separators.decimal
+    private val groupingSeparator: Char = separators.grouping
 
     private val formatter = CurrencyTextFormatter(config, decimalSeparator, groupingSeparator)
 
@@ -67,3 +58,29 @@ class CurrencyInputWatcher(
 
     fun getGroupingSeparator(): Char = groupingSeparator
 }
+
+/** The pair the field formats with, once the locale has filled in whatever the config left out. */
+private data class Separators(
+    val decimal: Char,
+    val grouping: Char,
+)
+
+/**
+ * Two equal separators leave a number unreadable — `1,234,56` reads as 123456 — so one of them
+ * moves to the other of the point and the comma. The one the locale filled in yields, since the
+ * one that was asked for is the caller's intent; where both were asked for, the decimal one does,
+ * which is what `setSeparators` has always done.
+ */
+private fun resolveSeparators(config: CurrencyInputWatcherConfig): Separators {
+    val symbols = DecimalFormatSymbols.getInstance(config.locale)
+    val decimal = config.decimalSeparator ?: symbols.decimalSeparator
+    val grouping = config.groupingSeparator ?: symbols.groupingSeparator
+
+    return when {
+        decimal != grouping -> Separators(decimal, grouping)
+        config.groupingSeparator == null -> Separators(decimal, theOtherOf(decimal))
+        else -> Separators(theOtherOf(grouping), grouping)
+    }
+}
+
+private fun theOtherOf(separator: Char): Char = if (separator == '.') ',' else '.'

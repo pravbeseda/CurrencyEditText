@@ -20,14 +20,14 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import androidx.test.platform.app.InstrumentationRegistry
-import ru.pravbeseda.currencyedittext.test.R
 
 /**
- * Inflates the layout that carries `currencySymbol` and `useCurrencySymbolAsHint`, and hands back
- * the view with [viewId]. Only an inflated view is given the attributes; a constructed one is not.
+ * Inflates [layoutId] and hands back the view with [viewId]. Only an inflated view is given the
+ * XML attributes; a constructed one is not.
  */
-internal fun <T : View> inflateCurrencySymbolAttrs(
+internal fun <T : View> inflateAttrs(
     context: Context,
+    layoutId: Int,
     viewId: Int,
 ): T {
     val themed =
@@ -40,7 +40,7 @@ internal fun <T : View> inflateCurrencySymbolAttrs(
         view =
             LayoutInflater
                 .from(themed)
-                .inflate(R.layout.currency_symbol_attrs, null)
+                .inflate(layoutId, null)
                 .findViewById(viewId)
     }
     return view
