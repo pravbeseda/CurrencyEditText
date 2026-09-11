@@ -72,30 +72,34 @@ open class CurrencyMaterialEditText(
                 0,
                 0,
             ).run {
-                localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
-                text = getString(R.styleable.CurrencyMaterialEditText_text)
-                currencySymbol = getString(R.styleable.CurrencyMaterialEditText_currencySymbol)
-                useCurrencySymbolAsHint =
-                    getBoolean(R.styleable.CurrencyMaterialEditText_useCurrencySymbolAsHint, false)
-                decimalSeparator =
-                    getString(R.styleable.CurrencyMaterialEditText_decimalSeparator).firstChar()
-                groupingSeparator =
-                    getString(R.styleable.CurrencyMaterialEditText_groupingSeparator).firstChar()
-                negativeValueAllow =
-                    getBoolean(
-                        R.styleable.CurrencyMaterialEditText_negativeValueAllow,
-                        false,
-                    )
-                decimalZerosPadding =
-                    getBoolean(R.styleable.CurrencyMaterialEditText_decimalZerosPadding, false)
-                selectAllOnFocus =
-                    getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
-                maxDecimalPlaces =
-                    getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
-                emptyStringForZero =
-                    getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
-                enableCalculator =
-                    getBoolean(R.styleable.CurrencyMaterialEditText_calculatorEnabled, false)
+                try {
+                    localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
+                    text = getString(R.styleable.CurrencyMaterialEditText_text)
+                    currencySymbol = getString(R.styleable.CurrencyMaterialEditText_currencySymbol)
+                    useCurrencySymbolAsHint =
+                        getBoolean(R.styleable.CurrencyMaterialEditText_useCurrencySymbolAsHint, false)
+                    decimalSeparator =
+                        getString(R.styleable.CurrencyMaterialEditText_decimalSeparator).firstChar()
+                    groupingSeparator =
+                        getString(R.styleable.CurrencyMaterialEditText_groupingSeparator).firstChar()
+                    negativeValueAllow =
+                        getBoolean(
+                            R.styleable.CurrencyMaterialEditText_negativeValueAllow,
+                            false,
+                        )
+                    decimalZerosPadding =
+                        getBoolean(R.styleable.CurrencyMaterialEditText_decimalZerosPadding, false)
+                    selectAllOnFocus =
+                        getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
+                    maxDecimalPlaces =
+                        getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
+                    emptyStringForZero =
+                        getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
+                    enableCalculator =
+                        getBoolean(R.styleable.CurrencyMaterialEditText_calculatorEnabled, false)
+                } finally {
+                    recycle()
+                }
             }
         if (!localeTag.isNullOrBlank()) {
             setLocale(getLocaleFromTag(localeTag!!))
