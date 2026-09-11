@@ -79,7 +79,8 @@ open class CurrencyEditText(
         keyListener = DigitsKeyListener.getInstance("0123456789.,-")
         textDirection = TEXT_DIRECTION_LTR
         val attributes = CurrencyViewAttributes.read(context, attrs)
-        storeSeparators(attributes.groupingSeparator, attributes.decimalSeparator)
+        groupingSeparator = attributes.groupingSeparator
+        decimalSeparator = attributes.decimalSeparator
         maxDecimalPlaces = attributes.maxNumberOfDecimalPlaces
         negativeValueAllow = attributes.negativeValueAllow
         decimalZerosPadding = attributes.decimalZerosPadding
@@ -138,7 +139,8 @@ open class CurrencyEditText(
 
     /**
      * Applies the separators an attribute set gave, either of which may be absent: the locale's own
-     * stands in for the one that is. [setSeparators] is the runtime door and takes both together.
+     * stands in for the one that is, and [CurrencyInputWatcher] moves one of the two where they
+     * turn out to collide. [setSeparators] is the runtime door and takes both together.
      */
     internal fun applySeparators(
         grouping: Char?,
@@ -147,23 +149,10 @@ open class CurrencyEditText(
         if (grouping == null && decimal == null) return
         val value = getValue()
         setText("")
-        storeSeparators(grouping, decimal)
+        groupingSeparator = grouping
+        decimalSeparator = decimal
         invalidateTextWatcher()
         setValue(value)
-    }
-
-    /** A decimal separator equal to the grouping one leaves the number unreadable, so it moves. */
-    private fun storeSeparators(
-        grouping: Char?,
-        decimal: Char?,
-    ) {
-        groupingSeparator = grouping
-        decimalSeparator =
-            when {
-                decimal == null || decimal != grouping -> decimal
-                decimal == '.' -> ','
-                else -> '.'
-            }
     }
 
     fun getDecimalSeparator(): Char = textWatcher.getDecimalSeparator()
