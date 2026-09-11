@@ -19,7 +19,6 @@ import android.content.Context
 import android.text.Editable
 import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputLayout
-import ru.pravbeseda.currencyedittext.util.firstChar
 import ru.pravbeseda.currencyedittext.util.getLocaleFromTag
 import ru.pravbeseda.currencyedittext.util.isApi26AndAbove
 import java.math.BigDecimal
@@ -53,18 +52,9 @@ open class CurrencyMaterialEditText(
     private var calculatorEnabled: Boolean = false
 
     init {
-        var localeTag: String?
-        var text: String?
-        var currencySymbol: String?
-        var useCurrencySymbolAsHint: Boolean
-        var negativeValueAllow: Boolean
-        var selectAllOnFocus: Boolean
-        var decimalSeparator: Char?
-        var groupingSeparator: Char?
-        var maxDecimalPlaces: Int
-        var decimalZerosPadding: Boolean
-        var emptyStringForZero: Boolean
-        var enableCalculator: Boolean
+        val attributes = CurrencyViewAttributes.read(context, attrs)
+        val text: String?
+        val selectAllOnFocus: Boolean
         context.theme
             .obtainStyledAttributes(
                 attrs,
@@ -73,36 +63,16 @@ open class CurrencyMaterialEditText(
                 0,
             ).run {
                 try {
-                    localeTag = getString(R.styleable.CurrencyMaterialEditText_localeTag)
+                    // The two attributes this layout has and the field inside it does not.
                     text = getString(R.styleable.CurrencyMaterialEditText_text)
-                    currencySymbol = getString(R.styleable.CurrencyMaterialEditText_currencySymbol)
-                    useCurrencySymbolAsHint =
-                        getBoolean(R.styleable.CurrencyMaterialEditText_useCurrencySymbolAsHint, false)
-                    decimalSeparator =
-                        getString(R.styleable.CurrencyMaterialEditText_decimalSeparator).firstChar()
-                    groupingSeparator =
-                        getString(R.styleable.CurrencyMaterialEditText_groupingSeparator).firstChar()
-                    negativeValueAllow =
-                        getBoolean(
-                            R.styleable.CurrencyMaterialEditText_negativeValueAllow,
-                            false,
-                        )
-                    decimalZerosPadding =
-                        getBoolean(R.styleable.CurrencyMaterialEditText_decimalZerosPadding, false)
                     selectAllOnFocus =
                         getBoolean(R.styleable.CurrencyMaterialEditText_selectAllOnFocus, false)
-                    maxDecimalPlaces =
-                        getInt(R.styleable.CurrencyMaterialEditText_maxNumberOfDecimalPlaces, 2)
-                    emptyStringForZero =
-                        getBoolean(R.styleable.CurrencyMaterialEditText_emptyStringForZero, true)
-                    enableCalculator =
-                        getBoolean(R.styleable.CurrencyMaterialEditText_calculatorEnabled, false)
                 } finally {
                     recycle()
                 }
             }
-        if (!localeTag.isNullOrBlank()) {
-            setLocale(getLocaleFromTag(localeTag!!))
+        if (!attributes.localeTag.isNullOrBlank()) {
+            setLocale(getLocaleFromTag(attributes.localeTag))
         }
         if (isApi26AndAbove()) {
             // bugfix api26
@@ -111,21 +81,16 @@ open class CurrencyMaterialEditText(
         // Attached before it is configured: the layout takes the field's hint as its floating label
         // while attaching it, and the currency symbol belongs inside the field, not on that label.
         this.addView(editText)
-        setCurrencySymbol(currencySymbol.orEmpty(), useCurrencySymbolAsHint)
-        if (!text.isNullOrBlank()) setText(text!!)
-        if (decimalSeparator !== null && groupingSeparator !== null) {
-            setSeparators(
-                groupingSeparator!!,
-                decimalSeparator!!,
-            )
-        }
-        setNegativeValueAllow(negativeValueAllow)
+        setCurrencySymbol(attributes.currencySymbol, attributes.useCurrencySymbolAsHint)
+        if (!text.isNullOrBlank()) setText(text)
+        editText.applySeparators(attributes.groupingSeparator, attributes.decimalSeparator)
+        setNegativeValueAllow(attributes.negativeValueAllow)
         setSelectAllOnFocus(selectAllOnFocus)
-        setMaxNumberOfDecimalPlaces(maxDecimalPlaces)
-        setDecimalZerosPadding(decimalZerosPadding)
-        setEmptyStringForZero(emptyStringForZero)
+        setMaxNumberOfDecimalPlaces(attributes.maxNumberOfDecimalPlaces)
+        setDecimalZerosPadding(attributes.decimalZerosPadding)
+        setEmptyStringForZero(attributes.emptyStringForZero)
         // Only when asked for: the end icon belongs to the host until the calculator claims it.
-        if (enableCalculator) setCalculatorEnabled(true)
+        if (attributes.calculatorEnabled) setCalculatorEnabled(true)
     }
 
     fun setValue(value: BigDecimal) {

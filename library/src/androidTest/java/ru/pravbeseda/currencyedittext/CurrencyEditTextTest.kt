@@ -26,7 +26,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
+import java.text.DecimalFormatSymbols
 import java.util.Locale
+import ru.pravbeseda.currencyedittext.test.R as TestR
 
 class CurrencyEditTextTest {
     // Alternative getting context: private val context: Context = ApplicationProvider.getApplicationContext()
@@ -214,8 +216,40 @@ class CurrencyEditTextTest {
         assertEquals("Amount", currencyEditText.hint.toString())
     }
 
+    /** Issue #58 — a field naming one separator keeps the locale's own for the other. */
+    @Test
+    fun decimalSeparatorAloneFromXmlIsApplied() {
+        val fromXml = inflateSeparators(TestR.id.plain_with_decimal_separator)
+
+        assertEquals('.', fromXml.getDecimalSeparator())
+        assertEquals(russian.groupingSeparator, fromXml.getGroupingSeparator())
+    }
+
+    /** Issue #58 — the same the other way round: a grouping separator on its own. */
+    @Test
+    fun groupingSeparatorAloneFromXmlIsApplied() {
+        val fromXml = inflateSeparators(TestR.id.plain_with_grouping_separator)
+
+        assertEquals('\'', fromXml.getGroupingSeparator())
+        assertEquals(russian.decimalSeparator, fromXml.getDecimalSeparator())
+    }
+
+    /** Issue #58 — separators that clash leave the number unreadable, so the decimal one moves. */
+    @Test
+    fun clashingSeparatorsFromXmlMoveTheDecimalOne() {
+        val fromXml = inflateSeparators(TestR.id.plain_with_clashing_separators)
+
+        assertEquals('.', fromXml.getGroupingSeparator())
+        assertEquals(',', fromXml.getDecimalSeparator())
+    }
+
+    private val russian: DecimalFormatSymbols
+        get() = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("ru"))
+
+    private fun inflateSeparators(viewId: Int): CurrencyEditText = inflateAttrs(context, TestR.layout.separator_attrs, viewId)
+
     private fun inflateWithSymbol(): CurrencyEditText =
-        inflateCurrencySymbolAttrs(context, ru.pravbeseda.currencyedittext.test.R.id.plain_with_symbol)
+        inflateAttrs(context, TestR.layout.currency_symbol_attrs, TestR.id.plain_with_symbol)
 
     private fun setValue(value: BigDecimal) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {

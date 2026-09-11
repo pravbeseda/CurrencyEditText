@@ -19,9 +19,12 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.android.material.textfield.TextInputLayout
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.text.DecimalFormatSymbols
 import java.util.Locale
+import ru.pravbeseda.currencyedittext.test.R as TestR
 
 class CurrencyMaterialEditTextTest {
     private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -90,7 +93,7 @@ class CurrencyMaterialEditTextTest {
         }
         testSetText("1000.45", "1,000.45")
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            currencyEditText.setLocale(Locale("ru", "RU"))
+            currencyEditText.setLocale(Locale.forLanguageTag("ru-RU"))
         }
         testSetText("1000,45", "1 000,45")
     }
@@ -185,8 +188,64 @@ class CurrencyMaterialEditTextTest {
         Assert.assertEquals("$ ", currencyEditText.editText?.hint.toString())
     }
 
+    /** Issue #58 — a field naming one separator keeps the locale's own for the other. */
+    @Test
+    fun decimalSeparatorAloneFromXmlIsApplied() {
+        val fromXml = inflateSeparators(TestR.id.material_with_decimal_separator)
+
+        setText(fromXml, "1234.56")
+
+        assertEquals("1${russian.groupingSeparator}234.56", fromXml.text.toString())
+    }
+
+    /** Issue #58 — the same the other way round: a grouping separator on its own. */
+    @Test
+    fun groupingSeparatorAloneFromXmlIsApplied() {
+        val fromXml = inflateSeparators(TestR.id.material_with_grouping_separator)
+
+        setText(fromXml, "1234${russian.decimalSeparator}56")
+
+        assertEquals("1'234${russian.decimalSeparator}56", fromXml.text.toString())
+    }
+
+    /**
+     * Issue #58 — both components read the same attributes, so a default belongs to the pair
+     * rather than to one of them.
+     */
+    @Test
+    fun defaultsMatchThePlainField() {
+        val plain = CurrencyEditText(context, null)
+
+        assertEquals(plain.getNegativeValueAllow(), currencyEditText.getNegativeValueAllow())
+        assertEquals(plain.getDecimalZerosPadding(), currencyEditText.getDecimalZerosPadding())
+        assertEquals(plain.getEmptyStringForZero(), currencyEditText.getEmptyStringForZero())
+        assertEquals(plain.isCalculatorEnabled(), currencyEditText.isCalculatorEnabled())
+    }
+
+    /** Issue #58 — separators that clash leave the number unreadable, so the decimal one moves. */
+    @Test
+    fun clashingSeparatorsFromXmlMoveTheDecimalOne() {
+        val fromXml = inflateSeparators(TestR.id.material_with_clashing_separators)
+
+        setText(fromXml, "1234,56")
+
+        assertEquals("1.234,56", fromXml.text.toString())
+    }
+
+    private val russian: DecimalFormatSymbols
+        get() = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("ru"))
+
+    private fun inflateSeparators(viewId: Int): CurrencyMaterialEditText = inflateAttrs(context, TestR.layout.separator_attrs, viewId)
+
+    private fun setText(
+        field: CurrencyMaterialEditText,
+        text: String,
+    ) {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync { field.setText(text) }
+    }
+
     private fun inflateWithSymbol(): CurrencyMaterialEditText =
-        inflateCurrencySymbolAttrs(context, ru.pravbeseda.currencyedittext.test.R.id.material_with_symbol)
+        inflateAttrs(context, TestR.layout.currency_symbol_attrs, TestR.id.material_with_symbol)
 
     private fun testSetText(
         text: String,

@@ -133,6 +133,11 @@ Supporting pieces:
   (the panel's colour roles and its key size, read from the host's theme) — the two classes of the
   package that touch Android, and therefore the two excluded from the Kover filter;
   `library/build.gradle` carries the reason.
+- `CurrencyViewAttributes` — the XML attributes the two views share, read once for either of them.
+  An attribute id is global, so the shared ones resolve on either tag through
+  `R.styleable.CurrencyEditText`, and a default is written once rather than once per view. The two
+  the layout has and the field does not (`text`, `selectAllOnFocus`) stay in
+  `CurrencyMaterialEditText`.
 - `res-public/values/attrs.xml` — XML attributes; `library/build.gradle` adds `src/main/res-public`
   as a second res source dir.
 
@@ -143,9 +148,10 @@ Conventions that matter when editing the views:
   through `invalidateTextWatcher()`, which detaches the old watcher and builds a new one.
 - The currency symbol is stored as a prefix *with a trailing space* (`"$ "`) and is part of the
   field text; cursor handling in `onSelectionChanged` and in the watcher assumes this.
-- A new XML attribute must be added in three places: `attrs.xml` (both `declare-styleable` blocks),
-  the `init` block of `CurrencyEditText`, and the `init` block + delegating setter/getter of
-  `CurrencyMaterialEditText`.
+- A new XML attribute shared by both views is added in three places: `attrs.xml` (both
+  `declare-styleable` blocks), `CurrencyViewAttributes` — where its default lives, once — and the
+  `init` block of each view, which applies it. `CurrencyMaterialEditText` also needs its delegating
+  setter/getter. Reading it a second time inside a view is what let the two drift apart (#58).
 - `calculatorEnabled` is the one attribute that must **not** call `invalidateTextWatcher()`: the
   panel reads the field's configuration when it opens, so it changes nothing about the watcher.
   It is also the one setting `CurrencyMaterialEditText` does not delegate to the inner view — the
@@ -215,8 +221,8 @@ release cannot be taken back.
 `implementation`.** Reason: this repository has already shipped that bug — `androidx.test:monitor`
 leaked into the published library's runtime dependencies (`6b75231`).
 
-A new XML attribute goes in three places (see Architecture above) and gets a test for its default
-value in both components.
+A new XML attribute goes in three places (see Architecture above), keeps its default in
+`CurrencyViewAttributes` alone, and gets a test for that default in both components.
 
 ## Style
 
