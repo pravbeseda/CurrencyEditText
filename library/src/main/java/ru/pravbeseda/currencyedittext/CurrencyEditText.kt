@@ -200,8 +200,11 @@ open class CurrencyEditText(
         currencySymbol: String,
         useCurrencySymbolAsHint: Boolean = false,
     ) {
+        // A hint equal to the prefix in place is one this setter put there, so it follows the new
+        // symbol even when the flag is off; any other hint is the host's and is left alone.
+        val hintIsTheSymbol = hint?.toString() == currencySymbolPrefix
         currencySymbolPrefix = prefixOf(currencySymbol)
-        if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
+        if (useCurrencySymbolAsHint || hintIsTheSymbol) hint = currencySymbolPrefix
         invalidateTextWatcher()
     }
 

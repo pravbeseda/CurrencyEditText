@@ -195,6 +195,25 @@ class CurrencyEditTextTest {
         setTextAssertEquals("100", "100")
     }
 
+    /** A hint this setter put there follows the symbol, so dropping the symbol drops it too. */
+    @Test
+    fun clearingTheSymbolClearsAHintItSet() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+            currencyEditText.setCurrencySymbol("", useCurrencySymbolAsHint = false)
+        }
+        assertEquals("", currencyEditText.hint.toString())
+    }
+
+    @Test
+    fun setCurrencySymbolKeepsAHintItDidNotSet() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.hint = "Amount"
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = false)
+        }
+        assertEquals("Amount", currencyEditText.hint.toString())
+    }
+
     private fun inflateWithSymbol(): CurrencyEditText =
         inflateCurrencySymbolAttrs(context, ru.pravbeseda.currencyedittext.test.R.id.plain_with_symbol)
 
