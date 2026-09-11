@@ -155,13 +155,9 @@ Both components accept these attributes:
 `CurrencyMaterialEditText` accepts two more, `text` and `selectAllOnFocus` — see
 [CurrencyMaterialEditText specifics](#currencymaterialedittext-specifics).
 
-> `currencySymbol` and `useCurrencySymbolAsHint` are read by `CurrencyEditText` only; on
-> `CurrencyMaterialEditText` they are currently ignored
-> ([issue #44](https://github.com/pravbeseda/CurrencyEditText/issues/44)).
-
 ## Currency symbol
 
-A `CurrencyEditText` can show a symbol in front of the number:
+Either component can show a symbol in front of the number:
 
 ```xml
 app:currencySymbol="$"
@@ -176,6 +172,10 @@ editText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
 
 The symbol is kept as a prefix with a trailing space (`"$ "`) and is part of the field text; the
 value read by `getValue` never contains it.
+
+On `CurrencyMaterialEditText` the hint sits inside the field, exactly as it does on
+`CurrencyEditText`, and never becomes the layout's floating label — that label stays free for the
+`android:hint` the host sets.
 
 ## Localization
 

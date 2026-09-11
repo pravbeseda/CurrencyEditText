@@ -114,6 +114,80 @@ class CurrencyMaterialEditTextTest {
         testSetText("100.1", "100.1")
     }
 
+    /** Issue #44 — the styleable declares both attributes; the init block has to read them. */
+    @Test
+    fun currencySymbolFromXmlPrefixesTheText() {
+        val fromXml = inflateWithSymbol()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            fromXml.setText("100")
+        }
+        Assert.assertEquals("$ 100", fromXml.text.toString())
+    }
+
+    /** Issue #44 — the symbol hints inside the field, leaving the layout's label to the host. */
+    @Test
+    fun useCurrencySymbolAsHintFromXmlHintsInsideTheField() {
+        val fromXml = inflateWithSymbol()
+        Assert.assertEquals("$ ", fromXml.editText?.hint.toString())
+        Assert.assertNull(fromXml.hint)
+    }
+
+    @Test
+    fun noCurrencySymbolByDefault() {
+        testSetText("100", "100")
+        Assert.assertNull(currencyEditText.hint)
+    }
+
+    @Test
+    fun setCurrencySymbolPrefixesTheText() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$")
+        }
+        testSetText("100", "$ 100")
+    }
+
+    /** The code path has to land where the XML path lands: inside the field, not on the label. */
+    @Test
+    fun setCurrencySymbolAsHintFromCodeHintsInsideTheField() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("$ ", currencyEditText.editText?.hint.toString())
+        Assert.assertNull(currencyEditText.hint)
+    }
+
+    @Test
+    fun changingTheSymbolReplacesTheHint() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+            currencyEditText.setCurrencySymbol("E", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("E ", currencyEditText.editText?.hint.toString())
+        Assert.assertNull(currencyEditText.hint)
+    }
+
+    @Test
+    fun useCurrencySymbolAsHintSurvivesADisabledLabel() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.isHintEnabled = false
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("$ ", currencyEditText.editText?.hint.toString())
+    }
+
+    @Test
+    fun setCurrencySymbolAsHintKeepsAHostsOwnLabel() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.hint = "Amount"
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("Amount", currencyEditText.hint.toString())
+        Assert.assertEquals("$ ", currencyEditText.editText?.hint.toString())
+    }
+
+    private fun inflateWithSymbol(): CurrencyMaterialEditText =
+        inflateCurrencySymbolAttrs(context, ru.pravbeseda.currencyedittext.test.R.id.material_with_symbol)
+
     private fun testSetText(
         text: String,
         expected: String,

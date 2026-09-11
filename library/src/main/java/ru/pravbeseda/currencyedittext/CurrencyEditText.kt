@@ -111,7 +111,7 @@ open class CurrencyEditText(
                     recycle()
                 }
             }
-        currencySymbolPrefix = if (prefix.isBlank()) "" else "$prefix "
+        currencySymbolPrefix = prefixOf(prefix)
         if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
         if (!localeTag.isNullOrBlank()) {
             locale = getLocaleFromTag(localeTag!!)
@@ -200,10 +200,16 @@ open class CurrencyEditText(
         currencySymbol: String,
         useCurrencySymbolAsHint: Boolean = false,
     ) {
-        currencySymbolPrefix = "$currencySymbol "
-        if (useCurrencySymbolAsHint) hint = currencySymbolPrefix
+        // A hint equal to the prefix in place is one this setter put there, so it follows the new
+        // symbol even when the flag is off; any other hint is the host's and is left alone.
+        val hintIsTheSymbol = hint?.toString() == currencySymbolPrefix
+        currencySymbolPrefix = prefixOf(currencySymbol)
+        if (useCurrencySymbolAsHint || hintIsTheSymbol) hint = currencySymbolPrefix
         invalidateTextWatcher()
     }
+
+    /** The symbol is stored with its trailing space; a blank one leaves no prefix at all. */
+    private fun prefixOf(currencySymbol: String): String = if (currencySymbol.isBlank()) "" else "$currencySymbol "
 
     fun setMaxNumberOfDecimalPlaces(maxDP: Int) {
         this.maxDecimalPlaces = maxDP

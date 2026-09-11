@@ -176,6 +176,47 @@ class CurrencyEditTextTest {
         assertEquals(BigDecimal.ZERO, currencyEditText.getValue())
     }
 
+    @Test
+    fun currencySymbolFromXmlPrefixesTheTextAndHints() {
+        val fromXml = inflateWithSymbol()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            fromXml.setText("100")
+        }
+        assertEquals("$ 100", fromXml.text.toString())
+        assertEquals("$ ", fromXml.hint.toString())
+    }
+
+    /** Issue #44 — an empty symbol has to leave no prefix, the way the init block reads it. */
+    @Test
+    fun setCurrencySymbolWithAnEmptySymbolLeavesNoPrefix() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("")
+        }
+        setTextAssertEquals("100", "100")
+    }
+
+    /** A hint this setter put there follows the symbol, so dropping the symbol drops it too. */
+    @Test
+    fun clearingTheSymbolClearsAHintItSet() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+            currencyEditText.setCurrencySymbol("", useCurrencySymbolAsHint = false)
+        }
+        assertEquals("", currencyEditText.hint.toString())
+    }
+
+    @Test
+    fun setCurrencySymbolKeepsAHintItDidNotSet() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.hint = "Amount"
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = false)
+        }
+        assertEquals("Amount", currencyEditText.hint.toString())
+    }
+
+    private fun inflateWithSymbol(): CurrencyEditText =
+        inflateCurrencySymbolAttrs(context, ru.pravbeseda.currencyedittext.test.R.id.plain_with_symbol)
+
     private fun setValue(value: BigDecimal) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setValue(value)
