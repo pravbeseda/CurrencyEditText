@@ -3,8 +3,6 @@
 [![ci](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml/badge.svg)](https://github.com/pravbeseda/CurrencyEditText/actions/workflows/ci.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/ru.pravbeseda/CurrencyEditText.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/ru.pravbeseda/CurrencyEditText)
 
-**Maven Central:** https://central.sonatype.com/artifact/ru.pravbeseda/CurrencyEditText
-
 This library provides components `CurrencyEditText` and `CurrencyMaterialEditText` that can replace
 a regular `EditText`. With built-in number formatting, these components are useful for entering
 monetary amounts and other numeric values.
@@ -275,6 +273,8 @@ flips the operand being entered — and `=` writes the result back into the fiel
 negative in a field with
 `negativeValueAllow="false"` leaves the field untouched. The system keyboard is not replaced: the
 field still takes typed input as before.
+
+![Calculator](./demo/Calculator.png)
 
 On `CurrencyEditText` the button is drawn as a compound drawable and opens on a tap on the icon, so
 it is not a separate node for a screen reader. Where that matters, use `CurrencyMaterialEditText`:

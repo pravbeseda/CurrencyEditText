@@ -72,9 +72,11 @@ All six block the build, and `./gradlew build` runs all six:
 | ABI validation (Kotlin plugin's `abiValidation {}`) | `library/build.gradle` | `library/api/library.api` — the public API, not a debt list |
 
 Coverage is measured on `:library` only and filtered to
-`ru.pravbeseda.currencyedittext.watchers.*` and `…util.*`. The two Views cannot be reached from
-`src/test`, so an unfiltered figure would report the share of View code in the module rather than
-the quality of the tests.
+`ru.pravbeseda.currencyedittext.watchers.*`, `…util.*` and `…calculator.*`. The two Views cannot
+be reached from `src/test`, so an unfiltered figure would report the share of View code in the
+module rather than the quality of the tests. The calculator package is in because everything in
+it but `CalculatorPopup` and `CalculatorStyle`, the two that touch Android, is plain Kotlin
+`src/test` reaches.
 
 The plain `detekt` task is disabled on purpose: it analyses without type resolution and would offer
 a green run that checks a fraction of what the gate checks. Use `detektAll`, which is the same list
