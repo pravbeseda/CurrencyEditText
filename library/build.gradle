@@ -81,8 +81,9 @@ dependencies {
 // cannot be reached from src/test — they need a real Android runtime — so an
 // unfiltered figure would report the share of View code in the module rather
 // than the quality of the tests, and would sink whenever a View grew. The
-// filter leaves the code the JVM tests actually exercise: the watcher and the
-// utilities. :sample is left out entirely; it is a demo with no tests.
+// filter leaves the code the JVM tests actually exercise: the watcher, the
+// utilities and the calculator. :sample is left out entirely; it is a demo with
+// no tests.
 kover {
     reports {
         filters {

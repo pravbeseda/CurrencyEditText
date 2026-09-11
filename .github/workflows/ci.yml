@@ -61,9 +61,9 @@ jobs:
 
       - name: Verify coverage
         # The 90% bound is configured in library/build.gradle, filtered to the
-        # watcher and the utilities. koverLog prints the figure next to the
-        # verdict — a red run should say what the number was, not only that it
-        # was too low.
+        # watcher, the utilities and the calculator. koverLog prints the figure
+        # next to the verdict — a red run should say what the number was, not
+        # only that it was too low.
         if: always()
         run: ./gradlew :library:koverVerifyDebug :library:koverLogDebug --stacktrace
 
