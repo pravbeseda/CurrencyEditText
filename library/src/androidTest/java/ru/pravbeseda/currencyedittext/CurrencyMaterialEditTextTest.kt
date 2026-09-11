@@ -124,10 +124,12 @@ class CurrencyMaterialEditTextTest {
         Assert.assertEquals("$ 100", fromXml.text.toString())
     }
 
-    /** Issue #44 — the layout takes the field's hint as its label when the host names none. */
+    /** Issue #44 — the symbol hints inside the field, leaving the layout's label to the host. */
     @Test
-    fun useCurrencySymbolAsHintFromXmlLabelsTheLayout() {
-        Assert.assertEquals("$ ", inflateWithSymbol().hint.toString())
+    fun useCurrencySymbolAsHintFromXmlHintsInsideTheField() {
+        val fromXml = inflateWithSymbol()
+        Assert.assertEquals("$ ", fromXml.editText?.hint.toString())
+        Assert.assertNull(fromXml.hint)
     }
 
     @Test
@@ -144,14 +146,33 @@ class CurrencyMaterialEditTextTest {
         testSetText("100", "$ 100")
     }
 
-    /** Issue #44 — the layout reads the field's hint only while attaching it, never after. */
+    /** The code path has to land where the XML path lands: inside the field, not on the label. */
     @Test
-    fun setCurrencySymbolAsHintFromCodeLabelsTheLayout() {
+    fun setCurrencySymbolAsHintFromCodeHintsInsideTheField() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
         }
-        Assert.assertEquals("$ ", currencyEditText.hint.toString())
-        Assert.assertNull(currencyEditText.editText?.hint)
+        Assert.assertEquals("$ ", currencyEditText.editText?.hint.toString())
+        Assert.assertNull(currencyEditText.hint)
+    }
+
+    @Test
+    fun changingTheSymbolReplacesTheHint() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+            currencyEditText.setCurrencySymbol("E", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("E ", currencyEditText.editText?.hint.toString())
+        Assert.assertNull(currencyEditText.hint)
+    }
+
+    @Test
+    fun useCurrencySymbolAsHintSurvivesADisabledLabel() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.isHintEnabled = false
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("$ ", currencyEditText.editText?.hint.toString())
     }
 
     @Test

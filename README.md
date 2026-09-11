@@ -173,9 +173,9 @@ editText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
 The symbol is kept as a prefix with a trailing space (`"$ "`) and is part of the field text; the
 value read by `getValue` never contains it.
 
-On `CurrencyMaterialEditText` the hint reaches the layout the way `TextInputLayout` handles any
-hint of the field it wraps: with no `android:hint` of its own the layout shows the symbol as its
-floating label, and with one it keeps that label and leaves the symbol inside the field.
+On `CurrencyMaterialEditText` the hint sits inside the field, exactly as it does on
+`CurrencyEditText`, and never becomes the layout's floating label — that label stays free for the
+`android:hint` the host sets.
 
 ## Localization
 

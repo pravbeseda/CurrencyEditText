@@ -108,6 +108,9 @@ open class CurrencyMaterialEditText(
             // bugfix api26
             importantForAutofill = IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
         }
+        // Attached before it is configured: the layout takes the field's hint as its floating label
+        // while attaching it, and the currency symbol belongs inside the field, not on that label.
+        this.addView(editText)
         setCurrencySymbol(currencySymbol.orEmpty(), useCurrencySymbolAsHint)
         if (!text.isNullOrBlank()) setText(text!!)
         if (decimalSeparator !== null && groupingSeparator !== null) {
@@ -121,7 +124,6 @@ open class CurrencyMaterialEditText(
         setMaxNumberOfDecimalPlaces(maxDecimalPlaces)
         setDecimalZerosPadding(decimalZerosPadding)
         setEmptyStringForZero(emptyStringForZero)
-        this.addView(editText)
         // Only when asked for: the end icon belongs to the host until the calculator claims it.
         if (enableCalculator) setCalculatorEnabled(true)
     }
@@ -157,12 +159,6 @@ open class CurrencyMaterialEditText(
         useCurrencySymbolAsHint: Boolean = false,
     ) {
         editText.setCurrencySymbol(currencySymbol, useCurrencySymbolAsHint)
-        // The layout reads the field's hint once, while attaching it, so a call made after that
-        // has to hand the hint over itself — and leaves a host's own label alone, as attaching does.
-        if (useCurrencySymbolAsHint && hint.isNullOrEmpty()) {
-            hint = editText.hint
-            editText.hint = null
-        }
     }
 
     fun setSelectAllOnFocus(selectOnFocus: Boolean) {
