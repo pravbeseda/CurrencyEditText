@@ -144,6 +144,26 @@ class CurrencyMaterialEditTextTest {
         testSetText("100", "$ 100")
     }
 
+    /** Issue #44 — the layout reads the field's hint only while attaching it, never after. */
+    @Test
+    fun setCurrencySymbolAsHintFromCodeLabelsTheLayout() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("$ ", currencyEditText.hint.toString())
+        Assert.assertNull(currencyEditText.editText?.hint)
+    }
+
+    @Test
+    fun setCurrencySymbolAsHintKeepsAHostsOwnLabel() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            currencyEditText.hint = "Amount"
+            currencyEditText.setCurrencySymbol("$", useCurrencySymbolAsHint = true)
+        }
+        Assert.assertEquals("Amount", currencyEditText.hint.toString())
+        Assert.assertEquals("$ ", currencyEditText.editText?.hint.toString())
+    }
+
     private fun inflateWithSymbol(): CurrencyMaterialEditText =
         inflateCurrencySymbolAttrs(context, ru.pravbeseda.currencyedittext.test.R.id.material_with_symbol)
 

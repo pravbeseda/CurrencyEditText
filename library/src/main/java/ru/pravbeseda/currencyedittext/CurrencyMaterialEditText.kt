@@ -157,6 +157,12 @@ open class CurrencyMaterialEditText(
         useCurrencySymbolAsHint: Boolean = false,
     ) {
         editText.setCurrencySymbol(currencySymbol, useCurrencySymbolAsHint)
+        // The layout reads the field's hint once, while attaching it, so a call made after that
+        // has to hand the hint over itself — and leaves a host's own label alone, as attaching does.
+        if (useCurrencySymbolAsHint && hint.isNullOrEmpty()) {
+            hint = editText.hint
+            editText.hint = null
+        }
     }
 
     fun setSelectAllOnFocus(selectOnFocus: Boolean) {
