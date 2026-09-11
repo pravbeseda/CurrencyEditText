@@ -60,7 +60,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Verify coverage
-        # The 80% bound is configured in library/build.gradle, filtered to the
+        # The 90% bound is configured in library/build.gradle, filtered to the
         # watcher and the utilities. koverLog prints the figure next to the
         # verdict — a red run should say what the number was, not only that it
         # was too low.

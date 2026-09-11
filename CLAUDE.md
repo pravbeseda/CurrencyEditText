@@ -66,7 +66,7 @@ All six block the build, and `./gradlew build` runs all six:
 |---|---|---|
 | Spotless (ktlint + license header) | `spotless.gradle` | nothing — formatting is fixed, not frozen |
 | detekt 1.23.8, type resolution | `config/detekt/detekt.yml`, root `build.gradle` | `*/detekt-baseline-*.xml` |
-| Kover 0.9.9, `minBound(80)` | `library/build.gradle` | — the bound is a floor, not a baseline |
+| Kover 0.9.9, `minBound(90)` | `library/build.gradle` | — the bound is a floor, not a baseline |
 | Android Lint, `warningsAsErrors` | root `build.gradle` | `*/lint-baseline.xml` |
 | Unit tests | `library/src/test` | — |
 | ABI validation (Kotlin plugin's `abiValidation {}`) | `library/build.gradle` | `library/api/library.api` — the public API, not a debt list |
