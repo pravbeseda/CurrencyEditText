@@ -70,7 +70,7 @@ jobs:
       - name: Run detekt
         # Everything detekt finds today is frozen in the detekt-baseline-*.xml
         # files, so a failure means the diff added a smell. Regenerate a baseline
-        # only with a reason — see CLAUDE.md.
+        # only with a reason — see AGENTS.md.
         if: always()
         run: ./gradlew detektAll --stacktrace
 

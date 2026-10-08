@@ -69,7 +69,7 @@ subprojects {
     // Lint already ran inside `check`, but advisory: its findings blocked
     // nothing and so accumulated unread. The baseline freezes everything that
     // exists today, so a failure means the diff added a finding, and it only
-    // ever shrinks — see CLAUDE.md.
+    // ever shrinks — see AGENTS.md.
     // `moduleDir` is captured on purpose: inside the two nested closures below
     // Groovy resolves an unqualified file() against the root project, which
     // would point the baseline at a file that does not exist.
