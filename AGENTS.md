@@ -39,9 +39,11 @@ it goes away with the next AGP upgrade. Java source/target stays at 1.8, so `kot
 Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script
 instead is a bug, not a shortcut.
 
-Updates arrive through Renovate, configured in `renovate.json5`: weekly, patch releases
-automerged, minor and major read by a person, androidx grouped, the toolchain never automerged.
-The file only configures the bot — the GitHub App itself is installed on the repository by hand.
+Updates arrive through Renovate, configured in `renovate.json5` on top of the shared preset
+`github>pravbeseda/renovate-config`: weekly, one pull request for all Gradle minor and patch bumps
+and one for GitHub Actions, majors only after approval in the Dependency Dashboard, nothing
+automerged. The stdlib is excluded and `core-ktx` capped in `renovate.json5`. The file only
+configures the bot — the GitHub App itself is installed on the repository by hand.
 
 The Kotlin language and api versions are pinned to 2.1 in `library/build.gradle`, and
 `kotlin.stdlib.default.dependency=false` in `gradle.properties` hands the stdlib version to
@@ -52,7 +54,7 @@ on the library's own classes, but the POM would still carry the plugin's `kotlin
 one alone re-breaks it.
 
 `androidx.core` is held at 1.17.0 on purpose: 1.18.0 and above require Android Gradle plugin
-9.1.0. Renovate will keep offering the newer one; the pull request waits for the AGP upgrade.
+9.1.0. `renovate.json5` caps it below 1.18.0; lift the cap in the AGP upgrade.
 
 Git hooks live in `.githooks/` and are installed by `settings.gradle`, which points
 `core.hooksPath` at that directory on every Gradle invocation (skipped when `CI` is set). Nothing

@@ -13,6 +13,7 @@ kotlin = "2.4.10"
 # stdlib version the published POM declares, and it is the floor a consumer's own Kotlin
 # raises by conflict resolution. Held at the lowest version that speaks the language version
 # the library is compiled with, so a consumer on Kotlin 2.1 resolves a stdlib it can read.
+# renovate.json5 disables its updates, so it moves only by hand.
 kotlinStdlib = "2.1.0"
 mavenPublish = "0.34.0"
 
