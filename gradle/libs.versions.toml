@@ -8,7 +8,7 @@
 [versions]
 # --- toolchain -------------------------------------------------------------
 agp = "8.13.2"
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 # Deliberately behind `kotlin`, and not a mistake Renovate should quietly fix: this is the
 # stdlib version the published POM declares, and it is the floor a consumer's own Kotlin
 # raises by conflict resolution. Held at the lowest version that speaks the language version
@@ -25,7 +25,7 @@ dependencyAnalysis = "3.19.2"
 detekt = "1.23.8"
 kover = "0.9.11"
 ktlint = "1.8.0"
-spotless = "8.10.3"
+spotless = "8.10.4"
 
 # --- androidx --------------------------------------------------------------
 appcompat = "1.8.0"
