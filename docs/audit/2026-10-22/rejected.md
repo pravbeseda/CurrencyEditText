@@ -1,0 +1,6 @@
+# Rejected — audit 2026-10-22
+
+- **security:** Gradle sync overwrites a contributor's own `core.hooksPath` (`settings.gradle:28-39`) — a risk, not a defect: the owner sets no global `core.hooksPath` and is the only committer; as a suggestion it adds code and removes nothing (growth gate) — by verifier
+- **architecture:** `CurrencyEditText`'s supertype comes from `appcompat` declared as `implementation` (`library/build.gradle:63`) — no consequence: the Material 1.14.0 POM declares `androidx.appcompat:appcompat` in `compile` scope, so every consumer compiles today; the rest is a hypothetical future Material change — by verifier
+- **docs:** Five finished plans in `.github/tasks/` describe designs the later code went against (`16-18-…`, `calculator-input-panel`, `calculator-panel-placement-and-theme`, `calculator-compact-layout-and-style-roles`, `calculator-compact-keys-parentheses-and-borders`) — no consequence: finished plans are kept as historical records and no live file links to `.github/tasks` — by verifier
+- **docs:** Two plans are fully done and nothing live needs them (`21-kotlin-upgrade-and-builtin-abi-validation.md`, `46-calculator-dark-theme-defaults.md`) — no consequence, same ground as above — by verifier
