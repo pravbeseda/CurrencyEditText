@@ -91,8 +91,10 @@ of tasks each module's `check` is wired from.
 the code inside it. It is not a baseline: an intended API change is made by running
 `./gradlew :library:updateKotlinAbi` and committing the rewritten file, so the change arrives in
 the diff as a reviewable line instead of reaching Maven Central unnoticed — where it cannot be
-taken back. The Kotlin Gradle Plugin wires it into `check` itself, and CI runs it as its own step
-because that job runs the gate tasks one by one, not `check`.
+taken back. `library/build.gradle` wires it into `check` by hand: on AGP's built-in Kotlin the
+plugin no longer does, and the task cannot run there yet (KT-78025), so until that is fixed the
+build fails here rather than passing without an ABI check. CI runs it as its own step because that
+job runs the gate tasks one by one, not `check`.
 
 The gate is the Kotlin plugin's own `abiValidation {}`, enabled in `library/build.gradle`, rather
 than the standalone `binary-compatibility-validator` plugin it replaced in #21. Same reference
