@@ -30,31 +30,33 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ./gradlew buildHealth                  # dependency audit, run by hand — not part of `check`
 ```
 
-Toolchain: Gradle 8.14.5, AGP 8.13.0, Kotlin 2.4.10, JDK 17 (JDK 21 also works), minSdk 24,
-compileSdk/targetSdk 37. AGP 8.13.0 prints a warning that it has not been tested against compile
-SDK 37; it is left visible rather than silenced with `android.suppressUnsupportedCompileSdk`, and
-it goes away with the next AGP upgrade. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
+Toolchain: Gradle 9.8.2, AGP 9.5.0, Kotlin 2.4.21, JDK 17 (JDK 21 also works), minSdk 24,
+compileSdk/targetSdk 37. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
 = JVM_1_8 } }` is set in both modules to keep the two compilers in step.
+
+AGP 9 runs in its compatibility mode: `android.builtInKotlin=false` and `android.newDsl=false` in
+`gradle.properties` keep the separate `org.jetbrains.kotlin.android` plugin and the old variant
+API. detekt 1.23.8 creates its typed tasks only through those two, so on AGP 9 defaults the detekt
+gate would analyse nothing. Both flags are deprecated and removed in AGP 10; they go together with
+the Kotlin plugin once detekt supports built-in Kotlin.
 
 Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script
 instead is a bug, not a shortcut.
 
 Updates arrive through Renovate, configured in `renovate.json5` on top of the shared preset
-`github>pravbeseda/renovate-config`: weekly, one pull request for all Gradle minor and patch bumps
-and one for GitHub Actions, majors only after approval in the Dependency Dashboard, nothing
-automerged. The stdlib is excluded and `core-ktx` capped in `renovate.json5`. The file only
+`github>pravbeseda/renovate-config`: weekly, one pull request per package manager for minor and
+patch bumps, which merge themselves once CI is green, and a pull request of its own for each
+major, merged by hand. The stdlib is excluded in `renovate.json5`, and AGP and Gradle majors are grouped into
+one pull request: an AGP major needs a Gradle major, so apart neither builds. The file only
 configures the bot — the GitHub App itself is installed on the repository by hand.
 
 The Kotlin language and api versions are pinned to 2.1 in `library/build.gradle`, and
 `kotlin.stdlib.default.dependency=false` in `gradle.properties` hands the stdlib version to
 the catalog's `kotlinStdlib = "2.1.0"`, declared by both modules. Together they are what
 lets a consumer on Kotlin 2.1 use the published artifact: the pin alone stamps `mv=[2,1,0]`
-on the library's own classes, but the POM would still carry the plugin's `kotlin-stdlib`
-2.4.10 and stop that consumer on the stdlib instead. Both halves are needed; changing either
+on the library's own classes, but the POM would still carry the plugin's own
+`kotlin-stdlib` and stop that consumer on the stdlib instead. Both halves are needed; changing either
 one alone re-breaks it.
-
-`androidx.core` is held at 1.17.0 on purpose: 1.18.0 and above require Android Gradle plugin
-9.1.0. `renovate.json5` caps it below 1.18.0; lift the cap in the AGP upgrade.
 
 Git hooks live in `.githooks/` and are installed by `settings.gradle`, which points
 `core.hooksPath` at that directory on every Gradle invocation (skipped when `CI` is set). Nothing
