@@ -19,9 +19,9 @@ mavenPublish = "0.37.0"
 
 # --- quality gates ---------------------------------------------------------
 dependencyAnalysis = "3.20.0"
-# An alpha on purpose: the last stable line, 1.23.8, cannot analyse a project on
-# AGP 9's built-in Kotlin. See the note in the root build script for why, and for
-# how the typed run is checked on every upgrade.
+# An alpha on purpose: the last stable line, 1.23.8, misreads this build on
+# AGP 9. See the note in the root build script for why, and for how the typed
+# run is checked on every upgrade.
 detekt = "2.0.0-alpha.6"
 kover = "0.9.11"
 ktlint = "1.8.0"

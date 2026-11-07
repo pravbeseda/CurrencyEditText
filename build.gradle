@@ -13,13 +13,15 @@ plugins {
     // Applied in :library only — see library/build.gradle for why the sample app
     // is left out.
     alias(libs.plugins.kover) apply false
-    // An alpha, on purpose: detekt 1.23.8, the last stable line, creates its typed
-    // tasks only through the separate Kotlin plugin and AGP's old variant API, and
-    // AGP 9 has neither by default — the gate would analyse nothing. 2.0.0-alpha.6
-    // supports AGP's built-in Kotlin. The typed run below is checked rather than
-    // assumed on every detekt or Kotlin upgrade: a deliberate
+    // detekt 2 is still an alpha, taken on purpose: 1.23.8 analyses with its
+    // embedded Kotlin 2.0 and misreads what it is handed — 24 compiler errors in
+    // :sample on AGP 9, which lifts its stdlib to 2.2, and 322 in :library's unit
+    // tests, which it never let see the module's internals. A run with compiler
+    // errors stays green while its typed rules misfire. detekt 2 compiles with
+    // Kotlin 2.4 and reports none. The typed run below is checked
+    // rather than assumed on every detekt or Kotlin upgrade: a deliberate
     // UnsafeCallOnNullableType was planted and detekt failed the build on it,
-    // which it can only do with type resolution working.
+    // and `detekt { debug = true }` shows no compiler error in any module.
     alias(libs.plugins.detekt) apply false
     // Applied, not `apply false`: it configures every module from the root. It is
     // an audit run by hand — `./gradlew buildHealth` — and deliberately not part

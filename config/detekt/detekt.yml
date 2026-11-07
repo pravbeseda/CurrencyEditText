@@ -1,8 +1,26 @@
 # Overrides on top of detekt's default config (`buildUponDefaultConfig = true`),
 # so only the deviations live here. The full default set is at
-# https://github.com/detekt/detekt/blob/v1.23.8/detekt-core/src/main/resources/default-detekt-config.yml
-# The default `build.maxIssues: 0` is kept: with a baseline in place, any finding
-# that is not already frozen must fail the build.
+# https://github.com/detekt/detekt/blob/v2.0.0-alpha.6/detekt-core/src/main/resources/default-detekt-config.yml
+# Every rule reports at error severity, which is what detekt 2's default
+# `failOnSeverity` fails on: with a baseline in place, any finding that is not
+# already frozen fails the build.
+
+complexity:
+  # One below detekt 2's defaults on purpose: 1.23.x fired at its `threshold`,
+  # 2.x fires only above `allowed*`, and detekt lowered the number for some rules
+  # but not these four. This keeps the gate where 1.23.8 had it.
+  LargeClass:
+    allowedLines: 599
+  LongMethod:
+    allowedLines: 59
+  NestedBlockDepth:
+    allowedDepth: 3
+  TooManyFunctions:
+    allowedFunctionsPerFile: 10
+    allowedFunctionsPerClass: 10
+    allowedFunctionsPerInterface: 10
+    allowedFunctionsPerObject: 10
+    allowedFunctionsPerEnum: 10
 
 style:
   MaxLineLength:
@@ -22,3 +40,8 @@ style:
         value: 'FIXME:'
       - reason: 'Reference an issue instead, so the debt is tracked outside the code.'
         value: 'STOPSHIP:'
+  MagicNumber:
+    # detekt 2 stopped checking literals in property and local declarations;
+    # 1.23.x checked them, and naming the number is the point of the rule.
+    ignorePropertyDeclaration: false
+    ignoreLocalVariableDeclaration: false

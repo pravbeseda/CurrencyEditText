@@ -37,8 +37,7 @@ compileSdk/targetSdk 37. Java source/target stays at 1.8, so `kotlin { compilerO
 Kotlin is compiled by AGP's built-in Kotlin support; the modules apply no Kotlin plugin of their
 own. The root build script still declares `org.jetbrains.kotlin.android` with `apply false`: that
 puts the catalog's Kotlin Gradle plugin on the build classpath, so the compiler version is the
-catalog's and not the one AGP bundles. detekt runs on `2.0.0-alpha.6`, because 1.23.8, the last
-stable line, cannot analyse a project on built-in Kotlin.
+catalog's and not the one AGP bundles.
 
 Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script
 instead is a bug, not a shortcut.
