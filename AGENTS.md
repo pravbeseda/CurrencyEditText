@@ -31,8 +31,10 @@ Gradle modules: `:library` (the published artifact) and `:sample` (demo app).
 ```
 
 Toolchain: Gradle 9.8.2, AGP 9.5.0, Kotlin 2.4.21, JDK 17 (JDK 21 also works), minSdk 24,
-compileSdk/targetSdk 37. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
-= JVM_1_8 } }` is set in both modules to keep the two compilers in step.
+compileSdk/targetSdk 37. Java source/target is 11, and `kotlin { compilerOptions { jvmTarget
+= JVM_11 } }` is set in both modules to keep the two compilers in step. 11 is the floor:
+`androidx.core` 1.19 ships JVM 11 bytecode, and its inline functions cannot be inlined into a
+1.8 target.
 
 AGP 9 runs in its compatibility mode: `android.builtInKotlin=false` and `android.newDsl=false` in
 `gradle.properties` keep the separate `org.jetbrains.kotlin.android` plugin, and the old variant

@@ -10,8 +10,8 @@ android {
     compileSdk 37
 
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility 11
+        targetCompatibility 11
     }
 
     defaultConfig {
@@ -35,7 +35,7 @@ android {
 
 kotlin {
     compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
         // The metadata version of the published classes follows the language
         // version, so building with the compiler's own 2.4 stamps mv=[2,4,0] and
         // every consumer still on Kotlin 2.1 or 2.2 is met with "class file was
