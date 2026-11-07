@@ -37,7 +37,7 @@ jobs:
         # gradle-actions-caching, a proprietary component under Gradle's own
         # Terms of Use rather than the MIT licence. v5 is the last release that
         # runs on Node 24 without that decision attached.
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Check formatting
         # First, and blocking: ktlint is deterministic, needs no Android SDK and
@@ -140,7 +140,7 @@ jobs:
 
       - name: Set up Gradle
         # Held at v5 for the same reason as the job above.
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Enable KVM
         # Without it the emulator falls back to software rendering and the job
