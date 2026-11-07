@@ -7,7 +7,7 @@
 
 [versions]
 # --- toolchain -------------------------------------------------------------
-agp = "8.13.2"
+agp = "9.5.0"
 kotlin = "2.4.21"
 # Deliberately behind `kotlin`, and not a mistake Renovate should quietly fix: this is the
 # stdlib version the published POM declares, and it is the floor a consumer's own Kotlin
