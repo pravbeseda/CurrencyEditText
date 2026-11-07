@@ -7,7 +7,7 @@
 
 [versions]
 # --- toolchain -------------------------------------------------------------
-agp = "8.13.2"
+agp = "9.5.0"
 kotlin = "2.4.21"
 # Deliberately behind `kotlin`, and not a mistake Renovate should quietly fix: this is the
 # stdlib version the published POM declares, and it is the floor a consumer's own Kotlin
@@ -19,10 +19,10 @@ mavenPublish = "0.37.0"
 
 # --- quality gates ---------------------------------------------------------
 dependencyAnalysis = "3.20.0"
-# 1.23.8 is the last stable line; detekt 2.x has been in alpha since 2025. See
-# the note in the root build script for how its lag behind our Kotlin version is
-# checked rather than tolerated.
-detekt = "1.23.8"
+# An alpha on purpose: the last stable line, 1.23.8, misreads this build on
+# AGP 9. See the note in the root build script for why, and for how the typed
+# run is checked on every upgrade.
+detekt = "2.0.0-alpha.6"
 kover = "0.9.11"
 ktlint = "1.8.0"
 spotless = "8.10.4"
@@ -60,7 +60,7 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }

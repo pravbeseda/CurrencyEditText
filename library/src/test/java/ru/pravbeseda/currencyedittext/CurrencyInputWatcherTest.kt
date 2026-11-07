@@ -359,10 +359,8 @@ class CurrencyInputWatcherTest {
     @Test
     fun `Should throw an Exception when maximum dp is bellow zero`() {
         for (locale in locales) {
-            try {
-                val (editText, editable, watcher) = setupTestVariables(locale, decimalPlaces = -1)
-                Assert.fail("Should have caught an illegalArgumentException at this point")
-            } catch (e: IllegalArgumentException) {
+            Assert.assertThrows(IllegalArgumentException::class.java) {
+                setupTestVariables(locale, decimalPlaces = -1)
             }
         }
     }

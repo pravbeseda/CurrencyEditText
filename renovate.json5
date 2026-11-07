@@ -10,10 +10,10 @@
       enabled: false,
     },
     {
-      // androidx.core 1.18.0 and above require Android Gradle plugin 9.1.0. Lift the ceiling in the
-      // change that upgrades AGP.
-      matchPackageNames: ['androidx.core:core-ktx'],
-      allowedVersions: '<1.18.0',
+      // An AGP major needs a Gradle major: apart, neither pull request builds (#68, #69).
+      matchDepNames: ['com.android.application', 'com.android.library', 'gradle'],
+      matchUpdateTypes: ['major'],
+      groupName: 'AGP and Gradle major',
     },
   ],
 }
