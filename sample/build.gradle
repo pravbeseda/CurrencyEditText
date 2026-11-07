@@ -1,10 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace 'pravbeseda'
+    namespace = 'pravbeseda'
     compileSdk 37
 
     compileOptions {
@@ -13,7 +12,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 
     defaultConfig {

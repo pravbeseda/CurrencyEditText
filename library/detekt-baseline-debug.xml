@@ -2,19 +2,14 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>SwallowedException:Utils.kt$e: IllformedLocaleException</ID>
-    <ID>TooManyFunctions:CurrencyEditText.kt$CurrencyEditText : AppCompatEditText</ID>
-    <ID>TooManyFunctions:CurrencyMaterialEditText.kt$CurrencyMaterialEditText : TextInputLayout</ID>
-    <ID>TopLevelPropertyNaming:Routines.kt$// Public API since 1.0: renaming it to EMPTY_CHAR would break consumers. @Suppress("ktlint:standard:property-naming") const val emptyChar = 'n' // from null</ID>
-    <ID>UnsafeCallOnNullableType:CurrencyEditText.kt$CurrencyEditText$localeTag!!</ID>
-    <ID>UnsafeCallOnNullableType:CurrencyMaterialEditText.kt$CurrencyMaterialEditText$decimalSeparator!!</ID>
-    <ID>UnsafeCallOnNullableType:CurrencyMaterialEditText.kt$CurrencyMaterialEditText$groupingSeparator!!</ID>
-    <ID>UnsafeCallOnNullableType:CurrencyMaterialEditText.kt$CurrencyMaterialEditText$localeTag!!</ID>
-    <ID>UnsafeCallOnNullableType:CurrencyMaterialEditText.kt$CurrencyMaterialEditText$text!!</ID>
-    <ID>UnsafeCallOnNullableType:EasyTextWatcher.kt$EasyTextWatcher$modifiedText!!</ID>
-    <ID>UseOrEmpty:CurrencyEditText.kt$CurrencyEditText$(validator?.let { it1 -&gt; it1(checkedValue) }) ?: ""</ID>
-    <ID>UseOrEmpty:CurrencyEditText.kt$CurrencyEditText$str ?: ""</ID>
-    <ID>UseRequire:CurrencyInputWatcher.kt$CurrencyInputWatcher$throw IllegalArgumentException( "Maximum number of Decimal Places must be a positive integer", )</ID>
-    <ID>UtilityClassWithPublicConstructor:Routines.kt$Routines</ID>
+    <ID>SwallowedException:Utils.kt:e: IllformedLocaleException</ID>
+    <ID>TooManyFunctions:CurrencyEditText.kt:CurrencyEditText : AppCompatEditText</ID>
+    <ID>TooManyFunctions:CurrencyMaterialEditText.kt:CurrencyMaterialEditText : TextInputLayout</ID>
+    <ID>TopLevelPropertyNaming:Routines.kt:// Public API since 1.0: renaming it to EMPTY_CHAR would break consumers. @Suppress("ktlint:standard:property-naming") const val emptyChar = 'n' // from null</ID>
+    <ID>UnsafeCallOnNullableType:EasyTextWatcher.kt:EasyTextWatcher$modifiedText!!</ID>
+    <ID>UseOrEmpty:CurrencyEditText.kt:CurrencyEditText$(validator?.let { it1 -&gt; it1(checkedValue) }) ?: ""</ID>
+    <ID>UseOrEmpty:CurrencyEditText.kt:CurrencyEditText$str ?: ""</ID>
+    <ID>UseRequire:CurrencyInputWatcher.kt:CurrencyInputWatcher$throw IllegalArgumentException( "Maximum number of Decimal Places must be a positive integer", )</ID>
+    <ID>UtilityClassWithPublicConstructor:Routines.kt:Routines</ID>
   </CurrentIssues>
 </SmellBaseline>

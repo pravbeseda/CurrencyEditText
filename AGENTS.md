@@ -34,11 +34,11 @@ Toolchain: Gradle 9.8.2, AGP 9.5.0, Kotlin 2.4.21, JDK 17 (JDK 21 also works), m
 compileSdk/targetSdk 37. Java source/target stays at 1.8, so `kotlin { compilerOptions { jvmTarget
 = JVM_1_8 } }` is set in both modules to keep the two compilers in step.
 
-AGP 9 runs in its compatibility mode: `android.builtInKotlin=false` and `android.newDsl=false` in
-`gradle.properties` keep the separate `org.jetbrains.kotlin.android` plugin and the old variant
-API. detekt 1.23.8 creates its typed tasks only through those two, so on AGP 9 defaults the detekt
-gate would analyse nothing. Both flags are deprecated and removed in AGP 10; they go together with
-the Kotlin plugin once detekt supports built-in Kotlin.
+Kotlin is compiled by AGP's built-in Kotlin support; the modules apply no Kotlin plugin of their
+own. The root build script still declares `org.jetbrains.kotlin.android` with `apply false`: that
+puts the catalog's Kotlin Gradle plugin on the build classpath, so the compiler version is the
+catalog's and not the one AGP bundles. detekt runs on `2.0.0-alpha.6`, because 1.23.8, the last
+stable line, cannot analyse a project on built-in Kotlin.
 
 Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script
 instead is a bug, not a shortcut.
@@ -69,7 +69,7 @@ All six block the build, and `./gradlew build` runs all six:
 | Gate | Where it is configured | What is frozen |
 |---|---|---|
 | Spotless (ktlint + license header) | `spotless.gradle` | nothing — formatting is fixed, not frozen |
-| detekt 1.23.8, type resolution | `config/detekt/detekt.yml`, root `build.gradle` | `*/detekt-baseline-*.xml` |
+| detekt 2.0.0-alpha.6, type resolution | `config/detekt/detekt.yml`, root `build.gradle` | `*/detekt-baseline-*.xml` |
 | Kover 0.9.9, `minBound(90)` | `library/build.gradle` | — the bound is a floor, not a baseline |
 | Android Lint, `warningsAsErrors` | root `build.gradle` | `*/lint-baseline.xml` |
 | Unit tests | `library/src/test` | — |

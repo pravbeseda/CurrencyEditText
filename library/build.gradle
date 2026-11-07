@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.kover)
 }
 
 android {
-    namespace 'ru.pravbeseda.currencyedittext'
+    namespace = 'ru.pravbeseda.currencyedittext'
     compileSdk 37
 
     compileOptions {

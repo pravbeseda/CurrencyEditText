@@ -13,12 +13,13 @@ plugins {
     // Applied in :library only — see library/build.gradle for why the sample app
     // is left out.
     alias(libs.plugins.kover) apply false
-    // detekt 1.23.8 is the last stable line: detekt 2.x has been in alpha since
-    // 2025, and an alpha is not what a build gate is made of. It is compiled
-    // against Kotlin 2.0.21, four minor lines behind our 2.4.10, so the
-    // typed run below is checked rather than assumed on every Kotlin upgrade: a
-    // deliberate UnsafeCallOnNullableType was planted and detekt failed the build
-    // on it, which it can only do with type resolution working.
+    // An alpha, on purpose: detekt 1.23.8, the last stable line, creates its typed
+    // tasks only through the separate Kotlin plugin and AGP's old variant API, and
+    // AGP 9 has neither by default — the gate would analyse nothing. 2.0.0-alpha.6
+    // supports AGP's built-in Kotlin. The typed run below is checked rather than
+    // assumed on every detekt or Kotlin upgrade: a deliberate
+    // UnsafeCallOnNullableType was planted and detekt failed the build on it,
+    // which it can only do with type resolution working.
     alias(libs.plugins.detekt) apply false
     // Applied, not `apply false`: it configures every module from the root. It is
     // an audit run by hand — `./gradlew buildHealth` — and deliberately not part
@@ -56,7 +57,7 @@ def typedDetektTasks = [
 ]
 
 subprojects {
-    apply plugin: 'io.gitlab.arturbosch.detekt'
+    apply plugin: 'dev.detekt'
     // The root application above only creates the aggregating `buildHealth` task;
     // since 3.x the plugin has to be applied to every module that should be
     // analysed as well.
@@ -77,12 +78,12 @@ subprojects {
     plugins.withId('com.android.base') {
         android {
             lint {
-                abortOnError true
+                abortOnError = true
                 // abortOnError alone only fails on error-severity findings, and
                 // almost everything lint has to say here is a warning. Without
                 // this the gate would wave through a new unused resource or a
                 // hardcoded string.
-                warningsAsErrors true
+                warningsAsErrors = true
                 // AndroidGradlePluginVersion fires when a newer AGP exists in
                 // the world, not when anything in the diff is wrong, and it
                 // cannot be frozen: it reports against
