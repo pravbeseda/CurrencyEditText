@@ -7,7 +7,7 @@
 
 [versions]
 # --- toolchain -------------------------------------------------------------
-agp = "9.5.0"
+agp = "9.5.1"
 kotlin = "2.4.21"
 # Deliberately behind `kotlin`, and not a mistake Renovate should quietly fix: this is the
 # stdlib version the published POM declares, and it is the floor a consumer's own Kotlin
@@ -18,14 +18,14 @@ kotlinStdlib = "2.1.0"
 mavenPublish = "0.37.0"
 
 # --- quality gates ---------------------------------------------------------
-dependencyAnalysis = "3.20.0"
+dependencyAnalysis = "3.20.1"
 # An alpha on purpose: the last stable line, 1.23.8, misreads this build on
 # AGP 9. See the note in the root build script for why, and for how the typed
 # run is checked on every upgrade.
 detekt = "2.0.0-alpha.6"
 kover = "0.9.11"
 ktlint = "1.8.0"
-spotless = "8.10.4"
+spotless = "8.11.0"
 
 # --- androidx --------------------------------------------------------------
 appcompat = "1.8.0"
