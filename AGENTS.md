@@ -36,11 +36,10 @@ compileSdk/targetSdk 37. Java source/target is 11, and `kotlin { compilerOptions
 `androidx.core` 1.19 ships JVM 11 bytecode, and its inline functions cannot be inlined into a
 1.8 target.
 
-AGP 9 runs in its compatibility mode: `android.builtInKotlin=false` and `android.newDsl=false` in
-`gradle.properties` keep the separate `org.jetbrains.kotlin.android` plugin, and the old variant
-API it requires. The ABI gate is why: on AGP's built-in Kotlin the Kotlin plugin's ABI validation
-leaves `check` and fails when run (KT-78025). Both flags are deprecated and removed in AGP 10;
-they go together with the Kotlin plugin once KT-78025 is fixed.
+Kotlin is compiled by AGP's built-in Kotlin support; the modules apply no Kotlin plugin of their
+own. The root build script still declares `org.jetbrains.kotlin.android` with `apply false`: that
+puts the catalog's Kotlin Gradle plugin on the build classpath, so the compiler version is the
+catalog's and not the one AGP bundles.
 
 Every version lives in `gradle/libs.versions.toml`. A coordinate written into a build script
 instead is a bug, not a shortcut.
@@ -93,8 +92,10 @@ of tasks each module's `check` is wired from.
 the code inside it. It is not a baseline: an intended API change is made by running
 `./gradlew :library:updateKotlinAbi` and committing the rewritten file, so the change arrives in
 the diff as a reviewable line instead of reaching Maven Central unnoticed — where it cannot be
-taken back. The Kotlin Gradle Plugin wires it into `check` itself, and CI runs it as its own step
-because that job runs the gate tasks one by one, not `check`.
+taken back. `library/build.gradle` wires it into `check` by hand: on AGP's built-in Kotlin the
+plugin no longer does, and the task cannot run there yet (KT-78025), so until that is fixed the
+build fails here rather than passing without an ABI check. CI runs it as its own step because that
+job runs the gate tasks one by one, not `check`.
 
 The gate is the Kotlin plugin's own `abiValidation {}`, enabled in `library/build.gradle`, rather
 than the standalone `binary-compatibility-validator` plugin it replaced in #21. Same reference

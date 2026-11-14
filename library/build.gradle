@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.kover)
 }
 
 android {
-    namespace 'ru.pravbeseda.currencyedittext'
+    namespace = 'ru.pravbeseda.currencyedittext'
     compileSdk 37
 
     compileOptions {
@@ -52,11 +51,17 @@ kotlin {
     // outward boundary. It is the Kotlin plugin's own feature rather than the
     // standalone binary-compatibility-validator it replaced in #21: same
     // reference file and, byte for byte, the same dump, with one dependency
-    // fewer. `checkKotlinAbi` is wired into `check` by the plugin; an intended
-    // change is committed by running `updateKotlinAbi`.
+    // fewer. An intended change is committed by running `updateKotlinAbi`.
     abiValidation {
         enabled = true
     }
+}
+
+// On AGP's built-in Kotlin the plugin no longer wires `checkKotlinAbi` into
+// `check`, and the task itself cannot run there yet (KT-78025). Wired by hand
+// so that gap fails the build instead of leaving it green with no ABI check.
+tasks.named('check') {
+    dependsOn 'checkKotlinAbi'
 }
 
 dependencies {

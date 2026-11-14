@@ -1,10 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace 'pravbeseda'
+    namespace = 'pravbeseda'
     compileSdk 37
 
     compileOptions {
@@ -13,7 +12,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 
     defaultConfig {
@@ -43,3 +42,15 @@ dependencies {
 }
 
 apply from: '../spotless.gradle'
+
+// Under AGP's built-in Kotlin the detekt plugin hands its typed tasks the
+// libraries but not this module's own Java classes — here the generated view
+// bindings — so every reference to one is unresolved and the typed rules misfire
+// without failing. After evaluation, because the plugin registers these tasks
+// from onVariants, and an earlier `from` would replace its classpath instead of
+// extending it.
+afterEvaluate {
+    def javaClasses = tasks.named('compileDebugJavaWithJavac').flatMap { it.destinationDirectory }
+    tasks.matching { it.name ==~ /detekt(Baseline)?Debug(UnitTest|AndroidTest)?/ }
+        .configureEach { classpath.from(javaClasses) }
+}
